@@ -63,7 +63,6 @@ Elements\Auras.lua
 Elements\Bags.lua
 Elements\DataTexts\DataTexts.lua
 Elements\DataTexts\Armor.lua
-Elements\DataTexts\AttackPower.lua
 Elements\DataTexts\BagSlots.lua
 Elements\DataTexts\CombatTime.lua
 Elements\DataTexts\Coordinates.lua
@@ -83,7 +82,6 @@ Elements\DataTexts\Mastery.lua
 Elements\DataTexts\PrimaryStat.lua
 Elements\DataTexts\Quests.lua
 Elements\DataTexts\Speed.lua
-Elements\DataTexts\SpellPower.lua
 Elements\DataTexts\System.lua
 Elements\DataTexts\TimeLocal.lua
 Elements\DataTexts\TimeRealm.lua
