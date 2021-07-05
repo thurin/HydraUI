@@ -20,6 +20,7 @@ Defaults["unitframes-player-cast-height"] = 24
 Defaults["unitframes-player-enable-castbar"] = true
 Defaults["player-enable-portrait"] = false
 Defaults["player-enable-pvp-indicator"] = true
+Defaults["player-enable"] = true
 
 local UF = HydraUI:GetModule("Unit Frames")
 
@@ -755,11 +756,13 @@ end
 
 GUI:AddWidgets(Language["General"], Language["Player"], Language["Unit Frames"], function(left, right)
 	left:CreateHeader(Language["Styling"])
+	left:CreateSwitch("player-enable", Settings["player-enable"], Language["Enable Player"], Language["Enable the player unit frame"], ReloadUI):RequiresReload(true)
 	left:CreateSlider("unitframes-player-width", Settings["unitframes-player-width"], 120, 320, 1, "Width", "Set the width of the player unit frame", UpdatePlayerWidth)
 	left:CreateSwitch("unitframes-player-enable-resource", Settings["unitframes-player-enable-resource"], Language["Enable Resource Bar"], Language["Enable the player resources such as combo points, runes, etc."], ReloadUI):RequiresReload(true)
 	left:CreateSwitch("unitframes-show-player-buffs", Settings["unitframes-show-player-buffs"], Language["Show Player Buffs"], Language["Show your auras above the player unit frame"], UpdateShowPlayerBuffs)
 	left:CreateSwitch("player-enable-portrait", Settings["player-enable-portrait"], Language["Enable Portrait"], Language["Display the player unit portrait"], UpdatePlayerEnablePortrait)
 	left:CreateSwitch("player-enable-pvp-indicator", Settings["player-enable-pvp-indicator"], Language["Enable PVP Indicator"], Language["Display the pvp indicator"], UpdatePlayerEnablePVPIndicator)
+	
 	
 	left:CreateHeader(Language["Health"])
 	left:CreateSwitch("unitframes-player-health-reverse", Settings["unitframes-player-health-reverse"], Language["Reverse Health Fill"], Language["Reverse the fill of the health bar"], UpdatePlayerHealthFill)
