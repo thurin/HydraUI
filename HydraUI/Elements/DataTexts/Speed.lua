@@ -24,7 +24,7 @@ local OnLeave = function()
 end
 
 local Update = function(self)
-	self.Text:SetFormattedText("|cFF%s%s:|r |cFF%s%s|r", Settings["data-text-label-color"], Label, Settings["data-text-value-color"], GetSpeed())
+	self.Text:SetFormattedText("|cFF%s%s:|r |cFF%s%.2f%%|r", Settings["data-text-label-color"], Label, Settings["data-text-value-color"], GetSpeed())
 end
 
 local OnEnable = function(self)
