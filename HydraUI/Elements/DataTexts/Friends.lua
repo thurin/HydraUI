@@ -3,7 +3,6 @@ local HydraUI, GUI, Language, Assets, Settings = select(2, ...):get()
 local GetNumFriends = C_FriendList.GetNumFriends
 local GetNumOnlineFriends = C_FriendList.GetNumOnlineFriends
 local BNGetNumFriends = BNGetNumFriends
-local BNGetGameAccountInfo = BNGetGameAccountInfo
 local GetFriendInfoByIndex = C_FriendList.GetFriendInfoByIndex
 local GetFriendAccountInfo = C_BattleNet.GetFriendAccountInfo
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS

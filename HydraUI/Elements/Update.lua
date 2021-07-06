@@ -11,33 +11,34 @@ local User = HydraUI.UserName .. "-" .. HydraUI.UserRealm
 
 local Update = HydraUI:NewModule("Update")
 
-
---[[local WhatsNew = {
-	[1.01] = {
-		"Alert frames",
-		"Version check module",
-	},
-}
-]]
-
--- display a simple "What's new" list.
-local WhatsNewOnMouseUp = function()
-
-end
-
--- To be implemented. Add something here like a link or whatever to update.
 local UpdateOnMouseUp = function()
 	HydraUI:print(Language["You can get an updated version of HydraUI at https://www.curseforge.com/wow/addons/hydraui"])
 	print(Language["Join the Discord community for support and feedback https://discord.gg/XGYDaBF"])
 end
 
-function Update:PLAYER_ENTERING_WORLD()
-	--[[if self.NewVersion then
-		HydraUI:SendAlert("What's new?", "Click here to learn more", nil, WhatsNewOnMouseUp, true)
+function Update:FRIENDLIST_UPDATE()
+	for i = 1, BNGetNumFriends() do
+		local Info = C_BattleNet.GetFriendAccountInfo(i)
 		
-		self.NewVersion = false
-	end]]
+		if (Info and Info.gameAccountInfo.clientProgram == "WoW" and Info.gameAccountInfo.wowProjectID == 1) then
+			BNSendGameData(Info.gameAccountInfo.gameAccountID, "HydraUI-Version", AddOnVersion)
+		end
+	end
 	
+	for i = 1, C_FriendList.GetNumFriends() do
+		Info = C_FriendList.GetFriendInfoByIndex(i)
+		
+		if Info.connected then
+			SendAddonMessage("HydraUI-Version", AddOnVersion, "WHISPER", Info.name)
+		end
+	end
+	
+	Info = nil
+	
+	self:UnregisterEvent("FRIENDLIST_UPDATE")
+end
+
+function Update:PLAYER_ENTERING_WORLD()
 	if IsInGuild() then
 		SendAddonMessage("HydraUI-Version", AddOnVersion, "GUILD")
 	end
@@ -57,6 +58,28 @@ function Update:PLAYER_ENTERING_WORLD()
 			SendAddonMessage("HydraUI-Version", AddOnVersion, "PARTY")
 		end
 	end
+	
+	--[[JoinTemporaryChannel("HydraUI", "version", ChatFrame10:GetID())
+	
+	local Name, ChannelID, _
+	
+	for i = 1, GetNumDisplayChannels() do
+		Name, _, _, ChannelID = GetChannelDisplayInfo(i)
+		
+		if (Name == "HydraUI") then
+			break
+		end
+	end
+	
+	if ChannelID then
+		SendAddonMessage("HydraUI-Version", AddOnVersion, "CHANNEL", ChannelID)
+		
+		C_ChatInfo.SwapChatChannelsByChannelIndex(ChannelID, 10)
+		
+		ChatFrame_RemoveChannel(ChatFrame1, "HydraUI")
+	end]]
+	
+	C_FriendList.ShowFriends()
 end
 
 function Update:GUILD_ROSTER_UPDATE()
@@ -107,6 +130,26 @@ function Update:VARIABLES_LOADED(event)
 	self:UnregisterEvent(event)
 end
 
+function Update:BN_CHAT_MSG_ADDON(event, prefix, message, channel, sender)
+	if (prefix ~= "HydraUI-Version") then
+		return
+	end
+	
+	message = tonumber(message)
+	
+	if (AddOnVersion > message) then -- We have a higher version, share it
+		BNSendGameData(sender, "HydraUI-Version", AddOnVersion)
+	elseif (message > AddOnVersion) then -- We're behind!
+		HydraUI:SendAlert(Language["New Version!"], format(Language["Update to version |cFF%s%s|r"], Settings["ui-header-font-color"], message), nil, UpdateOnMouseUp, true)
+		
+		-- Store this higher version and tell anyone else who asks
+		AddOnVersion = message
+		
+		self:RegisterEvent("FRIENDLIST_UPDATE")
+		self:PLAYER_ENTERING_WORLD() -- Tell others that we found a new version
+	end
+end
+
 function Update:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
 	if (sender == HydraUI.UserName or prefix ~= "HydraUI-Version") then
 		return
@@ -114,24 +157,16 @@ function Update:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
 	
 	message = tonumber(message)
 	
-	if (channel == "WHISPER") then
-		if (message > AddOnVersion) then
-			HydraUI:SendAlert(Language["New Version!"], format(Language["Update to version |cFF%s%s|r"], Settings["ui-header-font-color"], message), nil, UpdateOnMouseUp, true)
-			
-			-- Store this higher version and tell anyone else who asks
-			AddOnVersion = message
-		end
-	else
-		if (AddOnVersion > message) then -- We have a higher version, share it
-			SendAddonMessage("HydraUI-Version", AddOnVersion, "WHISPER", sender)
-		elseif (message > AddOnVersion) then -- We're behind!
-			HydraUI:SendAlert(Language["New Version!"], format(Language["Update to version |cFF%s%s|r"], Settings["ui-header-font-color"], message), nil, UpdateOnMouseUp, true)
-			
-			-- Store this higher version and tell anyone else who asks
-			AddOnVersion = message
-			
-			self:PLAYER_ENTERING_WORLD() -- Tell others that we found a new version
-		end
+	if (AddOnVersion > message) then -- We have a higher version, share it
+		SendAddonMessage("HydraUI-Version", AddOnVersion, "WHISPER", sender)
+	elseif (message > AddOnVersion) then -- We're behind!
+		HydraUI:SendAlert(Language["New Version!"], format(Language["Update to version |cFF%s%s|r"], Settings["ui-header-font-color"], message), nil, UpdateOnMouseUp, true)
+		
+		-- Store this higher version and tell anyone else who asks
+		AddOnVersion = message
+		
+		self:RegisterEvent("FRIENDLIST_UPDATE")
+		self:PLAYER_ENTERING_WORLD() -- Tell others that we found a new version
 	end
 end
 
@@ -141,11 +176,13 @@ function Update:OnEvent(event, ...)
 	end
 end
 
+Update:RegisterEvent("FRIENDLIST_UPDATE")
 Update:RegisterEvent("VARIABLES_LOADED")
 Update:RegisterEvent("PLAYER_ENTERING_WORLD")
 Update:RegisterEvent("GUILD_ROSTER_UPDATE")
 Update:RegisterEvent("GROUP_ROSTER_UPDATE")
 Update:RegisterEvent("CHAT_MSG_ADDON")
+Update:RegisterEvent("BN_CHAT_MSG_ADDON")
 Update:SetScript("OnEvent", Update.OnEvent)
 
 C_ChatInfo.RegisterAddonMessagePrefix("HydraUI-Version")
