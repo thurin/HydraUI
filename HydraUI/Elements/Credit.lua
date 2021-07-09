@@ -36,6 +36,12 @@ GUI:AddWidgets(Language["Info"], Language["Credits"], function(left, right)
 	right:CreateHeader("LibSharedMedia")
 	right:CreateLine("", "Elkano, funkehdude")
 	
+	right:CreateHeader("LibClassicDurations, LibClassicCasterino")
+	right:CreateLine("", "d87_")
+	
+	right:CreateHeader("LibClassicMobHealth-1.0")
+	right:CreateLine("", "Pneumatus")
+	
 	right:CreateHeader("LibDeflate")
 	right:CreateLine("", "yoursafety")
 	
