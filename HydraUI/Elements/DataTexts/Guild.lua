@@ -14,8 +14,8 @@ local Label = GUILD
 local MaxCharacters = 30
 
 local StatusLabels = {
-	[1] = "|cFFFFFF33" .. DEFAULT_AFK_MESSAGE .. "|r",
-	[2] = "|cFFFF6666" .. DEFAULT_DND_MESSAGE .. "|r",
+	[1] = "|cFFFFFF33" .. CHAT_FLAG_AFK .. "|r",
+	[2] = "|cFFFF6666" .. CHAT_FLAG_DND .. "|r",
 }
 
 local OnEnter = function(self)
@@ -35,7 +35,7 @@ local OnEnter = function(self)
 	local Name, Rank, RankIndex, Level, ClassName, Zone, Note, OfficerNote, Online, Status, Class
 	local Color, LevelColor
 	
-	GameTooltip:AddDoubleLine(GuildName, format("%s/%s", NumOnlineAndMobile, NumTotal))
+	GameTooltip:AddDoubleLine(GuildName, format("%s/%s", NumOnlineAndMobile, NumTotal), nil, nil, nil, 1, 1, 1)
 	GameTooltip:AddLine(" ")
 	
 	if (GuildMessage and GuildMessage ~= "") then
@@ -44,34 +44,45 @@ local OnEnter = function(self)
 		GameTooltip:AddLine(" ")
 	end
 	
-	local Limit = NumOnlineAndMobile > MaxCharacters and MaxCharacters or NumOnlineAndMobile
+	local Limit = NumTotal > MaxCharacters and MaxCharacters or NumTotal
+	local Count = 0
 	
-	for i = 1, Limit do
+	for i = 1, NumTotal do
+		if (Count == Limit) then
+			break
+		end
+		
 		Name, Rank, RankIndex, Level, ClassName, Zone, Note, OfficerNote, Online, Status, Class = GetGuildRosterInfo(i)
 		
-		if Name then
+		if (Name and Online) then
 			Name = match(Name, "(%S+)-%S+")
 			Color = RAID_CLASS_COLORS[Class].colorStr
 			LevelColor = GetQuestDifficultyColor(Level)
 			LevelColor = HydraUI:RGBToHex(LevelColor.r, LevelColor.g, LevelColor.b)
 			
 			if StatusLabels[Status] then
-				Name = format("|cFF%s%s |c%s%s|r [%s]", LevelColor, Level, Color, Name, StatusLabels[Status])
+				Name = format("|cFF%s%s |c%s%s|r %s", LevelColor, Level, Color, Name, StatusLabels[Status])
 			else
 				Name = format("|cFF%s%s |c%s%s|r", LevelColor, Level, Color, Name)
 			end
 			
 			if IsModifierKeyDown() then
-				GameTooltip:AddDoubleLine(Name, Rank)
+				GameTooltip:AddDoubleLine(Name, Rank, nil, nil, nil, 1, 1, 1)
 			else
-				GameTooltip:AddDoubleLine(Name, Zone)
+				if (Zone == GetRealZoneText()) then
+					Zone = format("|cFF33FF33%s|r", Zone)
+				end
+				
+				GameTooltip:AddDoubleLine(Name, Zone or UNKNOWN, nil, nil, nil, 1, 1, 1)
 			end
+			
+			Count = Count + 1
 		end
 	end
 	
 	if (NumOnlineAndMobile > MaxCharacters) then
 		GameTooltip:AddLine(" ")
-		GameTooltip:AddLine(NumOnlineAndMobile - MaxCharacters .. Language[" more characters not shown"])
+		GameTooltip:AddLine(NumOnlineAndMobile - MaxCharacters .. Language[" more characters not shown"], 1, 1, 1)
 	end
 	
 	self.TooltipShown = true

@@ -253,7 +253,7 @@ local OnEnter = function(self)
 		local Left, Right = GetClientInformation(Client, AccountName, (BNetIDGameAccount or PresenceID))
 		
 		if Right then
-			GameTooltip:AddDoubleLine(Left, Right)
+			GameTooltip:AddDoubleLine(Left, Right, nil, nil, nil, 1, 1, 1)
 		else
 			GameTooltip:AddLine(Left)
 		end
