@@ -29,9 +29,8 @@ local sub = string.sub
 local gsub = string.gsub
 local match = string.match
 
-local FRAME_WIDTH = 392
-local FRAME_HEIGHT = 104
-local BAR_HEIGHT = 22
+local BarHeight = 22 -- Potential setting
+local NoCall = function() end
 
 local SetHyperlink = ItemRefTooltip.SetHyperlink
 local ChatEdit_ChooseBoxForSend = ChatEdit_ChooseBoxForSend
@@ -222,7 +221,7 @@ function Chat:CreateChatWindow()
 	local R, G, B = HydraUI:HexToRGB(Settings["ui-window-main-color"])
 	local Width = Settings["chat-frame-width"]
 	
-	self:SetSize(Width + 4, Settings["chat-frame-height"] + (BAR_HEIGHT * 2) + (4 * 2))
+	self:SetSize(Width + 4, Settings["chat-frame-height"] + (BarHeight * 2) + (4 * 2))
 	self:SetPoint("BOTTOMLEFT", HydraUI.UIParent, 11, 11)
 	self:SetBackdrop(HydraUI.BackdropAndBorder)
 	self:SetBackdropColor(R, G, B, (Settings["chat-bg-opacity"] / 100))
@@ -231,7 +230,7 @@ function Chat:CreateChatWindow()
 	
 	-- All this just to achieve an empty center :P
 	self.Top = CreateFrame("Frame", nil, self, "BackdropTemplate")
-	self.Top:SetHeight(BAR_HEIGHT + 4)
+	self.Top:SetHeight(BarHeight + 4)
 	self.Top:SetPoint("TOPLEFT", self, 0, 0)
 	self.Top:SetPoint("TOPRIGHT", self, 0, 0)
 	self.Top:SetBackdrop(HydraUI.BackdropAndBorder)
@@ -240,7 +239,7 @@ function Chat:CreateChatWindow()
 	self.Top:SetFrameStrata("LOW")
 	
 	self.Bottom = CreateFrame("Frame", nil, self, "BackdropTemplate")
-	self.Bottom:SetHeight(BAR_HEIGHT + 4)
+	self.Bottom:SetHeight(BarHeight + 4)
 	self.Bottom:SetPoint("BOTTOMLEFT", self, 0, 0)
 	self.Bottom:SetPoint("BOTTOMRIGHT", self, 0, 0)
 	self.Bottom:SetBackdrop(HydraUI.BackdropAndBorder)
@@ -267,7 +266,7 @@ function Chat:CreateChatWindow()
 	self.Right:SetFrameStrata("LOW")
 	
 	self.TopBar = CreateFrame("Frame", "HydraUIChatFrameTop", HydraUI.UIParent, "BackdropTemplate")
-	self.TopBar:SetHeight(BAR_HEIGHT)
+	self.TopBar:SetHeight(BarHeight)
 	self.TopBar:SetPoint("TOPLEFT", self, 2, -2)
 	self.TopBar:SetPoint("TOPRIGHT", self, -2, -2)
 	self.TopBar:SetBackdrop(HydraUI.BackdropAndBorder)
@@ -282,7 +281,7 @@ function Chat:CreateChatWindow()
 	self.TopBar.Texture:SetVertexColor(HydraUI:HexToRGB(Settings["ui-window-main-color"]))
 	
 	self.BottomBar = CreateFrame("Frame", "HydraUIChatFrameBottom", HydraUI.UIParent, "BackdropTemplate")
-	self.BottomBar:SetHeight(BAR_HEIGHT)
+	self.BottomBar:SetHeight(BarHeight)
 	self.BottomBar:SetPoint("BOTTOMLEFT", self, 2, 2)
 	self.BottomBar:SetPoint("BOTTOMRIGHT", self, -2, 2)
 	self.BottomBar:SetBackdrop(HydraUI.BackdropAndBorder)
@@ -328,7 +327,7 @@ local Disable = function(object)
 		object:SetScript("OnUpdate", nil)
 	end
 	
-	object.Show = function() end
+	object.Show = NoCall
 	object:Hide()
 end
 
@@ -683,11 +682,13 @@ function Chat:StyleChatFrame(frame)
 	Tab:HookScript("OnLeave", TabOnLeave)
 	
 	HydraUI:SetFontInfo(TabText, Settings["chat-tab-font"], Settings["chat-tab-font-size"], Settings["chat-tab-font-flags"])
-	--TabText.SetFont = function() end
+	TabText._SetFont = TabText.SetFont
+	TabText.SetFont = NoCall
 	
 	TabText:SetTextColor(HydraUI:HexToRGB(Settings["chat-tab-font-color"]))
+	Tab.textWidth = TabText:GetWidth()
 	TabText._SetTextColor = TabText.SetTextColor
-	TabText.SetTextColor = function() end
+	TabText.SetTextColor = NoCall
 	
 	if Tab.glow then
 		Tab.glow:SetPoint("CENTER", Tab, 0, 1)
@@ -698,9 +699,8 @@ function Chat:StyleChatFrame(frame)
 	frame:SetClampRectInsets(0, 0, 0, 0)
 	frame:SetClampedToScreen(false)
 	frame:SetFading(false)
-	frame:SetMovable(true)
-	--frame:SetUserPlaced(true)
-	--frame:SetScript("OnMouseWheel", OnMouseWheel)
+	--frame:SetMovable(true)
+	frame:SetScript("OnMouseWheel", OnMouseWheel)
 	frame:SetSize(self:GetWidth() - 8, self:GetHeight() - 8)
 	frame:SetFrameLevel(self:GetFrameLevel() + 1)
 	frame:SetFrameStrata("MEDIUM")
@@ -1168,7 +1168,7 @@ HydraUI.FormatLinks = FormatLinks
 local UpdateChatFrameSize = function()
 	local Width = Settings["chat-frame-width"]
 	
-	Chat:SetSize(Width + 4, Settings["chat-frame-height"] + (BAR_HEIGHT * 2) + (4 * 2))
+	Chat:SetSize(Width + 4, Settings["chat-frame-height"] + (BarHeight * 2) + (4 * 2))
 	
 	Chat.TopBar:ClearAllPoints()
 	Chat.TopBar:SetPoint("TOPLEFT", Chat, 2, -2)
@@ -1221,10 +1221,10 @@ local UpdateChatTabFont = function()
 		TabText:_SetTextColor(R, G, B)
 		
 		if IsPixel then
-			TabText:SetFont(Font, Settings["chat-tab-font-size"], "MONOCHROME, OUTLINE")
+			TabText:_SetFont(Font, Settings["chat-tab-font-size"], "MONOCHROME, OUTLINE")
 			TabText:SetShadowColor(0, 0, 0, 0)
 		else
-			TabText:SetFont(Font, Settings["chat-tab-font-size"], Settings["chat-tab-font-flags"])
+			TabText:_SetFont(Font, Settings["chat-tab-font-size"], Settings["chat-tab-font-flags"])
 			TabText:SetShadowColor(0, 0, 0)
 			TabText:SetShadowOffset(1, -1)
 		end
