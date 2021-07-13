@@ -113,6 +113,8 @@ function Update:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
 			
 			-- Store this higher version and tell anyone else who asks
 			AddOnVersion = message
+			
+			self:PLAYER_ENTERING_WORLD() -- Tell others that we found a new version
 		end
 	else
 		if (AddOnVersion > message) then -- We have a higher version, share it
@@ -124,6 +126,8 @@ function Update:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
 			
 			-- Store this higher version and tell anyone else who asks
 			AddOnVersion = message
+			
+			self:PLAYER_ENTERING_WORLD() -- Tell others that we found a new version
 		end
 	end
 end
@@ -142,5 +146,4 @@ Update:RegisterEvent("CHAT_MSG_ADDON")
 Update:RegisterEvent("CHAT_MSG_CHANNEL_NOTICE")
 Update:SetScript("OnEvent", Update.OnEvent)
 
-C_ChatInfo.RegisterAddonMessagePrefix("HydraUI-Version")
 C_ChatInfo.RegisterAddonMessagePrefix("HydraUI-Version")
