@@ -1,6 +1,6 @@
 ## Interface: 11307
 ## Author: Hydra
-## Version: 1.16
+## Version: 1.17
 ## Title: |cFFFFC44DHydra|r|cFFFFFFFFUI|r
 ## Notes: An interface replacement for Classic
 ## SavedVariables: HydraUIProfileData, HydraUIProfiles, HydraUIData, HydraUIGold
