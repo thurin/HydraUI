@@ -957,7 +957,7 @@ function UF:Load()
 		self.RaidAnchor:SetHeight((Settings["raid-health-height"] + Settings["raid-power-height"]) * (Settings["raid-max-columns"] + (Settings["raid-y-offset"])) - 1)
 		self.RaidAnchor:SetPoint("BOTTOMLEFT", HydraUIChatFrameTop, "TOPLEFT", -3, 5)
 		
-		local Hider = CreateFrame("Frame", nil, HydraUI.UIParent, "SecureHandlerStateTemplate")
+		--[[local Hider = CreateFrame("Frame", nil, HydraUI.UIParent, "SecureHandlerStateTemplate")
 		Hider:Hide()
 		
 		if CompactRaidFrameContainer then
@@ -965,8 +965,8 @@ function UF:Load()
 			CompactRaidFrameContainer:SetParent(Hider)
 			
 			--CompactRaidFrameManager:UnregisterAllEvents()
-			CompactRaidFrameManager:SetParent(Hider)
-		end
+			--CompactRaidFrameManager:SetParent(Hider)
+		end]]
 		
 		Raid:SetPoint("TOPLEFT", self.RaidAnchor, 0, 0)
 		Raid:SetParent(HydraUI.UIParent)
