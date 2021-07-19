@@ -45,6 +45,7 @@ Elements\Experience.lua
 Elements\Reputation.lua
 Elements\ActionBars\ActionBars.lua
 Elements\ActionBars\KeyBinding.lua
+Elements\UnitFrames\Tags.lua
 Elements\UnitFrames\UnitFrames.lua
 Elements\UnitFrames\Player.lua
 Elements\UnitFrames\Target.lua

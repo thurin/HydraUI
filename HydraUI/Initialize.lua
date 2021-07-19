@@ -209,7 +209,7 @@ function HydraUI:CreatePluginWindow()
 			Anchor:CreateHeader(self.Plugins[i].Title)
 			Anchor:CreateDoubleLine("", Language["Author"], self.Plugins[i].Author)
 			Anchor:CreateDoubleLine("", Language["Version"], self.Plugins[i].Version)
-			Anchor:CreateMessage("", "|cff" .. Settings["ui-header-font-color"] .. self.Plugins[i].Notes .. "|r")
+			Anchor:CreateMessage("", self.Plugins[i].Notes)
 		end
 	end)
 end

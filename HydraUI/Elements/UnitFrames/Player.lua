@@ -161,7 +161,13 @@ HydraUI.StyleFuncs["player"] = function(self, unit)
 		PowerLeft:SetPoint("LEFT", Power, 3, 0)
 		PowerLeft:SetJustifyH("LEFT")
 		
-		-- Heal prediction
+		--[[ AdditionalPower
+		local AdditionalPower = CreateFrame("StatusBar", nil, self)
+		AdditionalPower:SetAllPoints(Power)
+		AdditionalPower:SetStatusBarTexture(Assets:GetTexture(Settings["ui-widget-texture"]))
+		AdditionalPower:SetReverseFill(Settings["unitframes-player-power-reverse"])]]
+		
+		-- Power prediction
 		local MainBar = CreateFrame("StatusBar", nil, Power)
 		MainBar:SetReverseFill(true)
 		MainBar:SetPoint("TOPLEFT")
@@ -188,6 +194,7 @@ HydraUI.StyleFuncs["player"] = function(self, unit)
 		self.Power.bg = PowerBG
 		self.PowerLeft = PowerLeft
 		self.PowerRight = PowerRight
+		--self.AdditionalPower = AdditionalPower
 	end
 	
     -- Castbar
