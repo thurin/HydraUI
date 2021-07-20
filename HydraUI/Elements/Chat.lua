@@ -358,15 +358,18 @@ Chat.ChatEdit_UpdateHeader = function(editbox)
 	end
 	
 	local HeaderText = editbox.header:GetText()
-	local Subs = 0
 	
-	HeaderText, Subs = gsub(HeaderText, "%s$", "")
-	
-	if Subs then
-		editbox.header:SetText(HeaderText)
+	if HeaderText then
+		local Subs = 0
+		
+		HeaderText, Subs = gsub(HeaderText, "%s$", "")
+		
+		if Subs then
+			editbox.header:SetText(HeaderText)
+		end
+		
+		editbox.HeaderBackdrop:SetWidth(editbox.header:GetWidth() + 14)
 	end
-	
-	editbox.HeaderBackdrop:SetWidth(editbox.header:GetWidth() + 14)
 end
 
 local OnEditFocusLost = function(self)
