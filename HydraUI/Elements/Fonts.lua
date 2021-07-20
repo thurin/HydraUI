@@ -37,7 +37,6 @@ function Fonts:UpdateFont(object)
 	object:SetFont(Font, Size, Outline)
 end
 
-
 Fonts:UpdateFont(AchievementFont_Small)
 Fonts:UpdateFont(ChatBubbleFont)
 Fonts:UpdateFont(ChatFontSmall)
