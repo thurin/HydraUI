@@ -46,6 +46,11 @@ local GetColor = function(p, r1, g1, b1, r2, g2, b2)
 end
 
 -- Tags
+Events["ColorStop"] = "PLAYER_ENTERING_WORLD"
+Methods["ColorStop"] = function()
+	return "|r"
+end
+
 Events["Status"] = "UNIT_HEALTH UNIT_CONNECTION PLAYER_ENTERING_WORLD PLAYER_FLAGS_CHANGED"
 Methods["Status"] = function(unit)
 	if UnitIsDead(unit) then

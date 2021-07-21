@@ -99,6 +99,8 @@ Assets:SetStyle("HydraUI", {
 	["raid-font"] = "Roboto",
 	["raid-font-size"] = 12,
 	["raid-font-flags"] = "",
+	
+	["replacement-ui-font"] = "Roboto",
 })
 
 -- HydraUI 2
@@ -200,6 +202,8 @@ Assets:SetStyle("HydraUI 2", {
 	["raid-font"] = "PT Sans",
 	["raid-font-size"] = 12,
 	["raid-font-flags"] = "",
+	
+	["replacement-ui-font"] = "PT Sans",
 })
 
 -- Conjured Muffin -- Casting: 2ECC71 - Interrupted: F39C12 - Failed: D35400
@@ -301,6 +305,8 @@ Assets:SetStyle("Conjured Muffin", {
 	["raid-font"] = "Roboto",
 	["raid-font-size"] = 12,
 	["raid-font-flags"] = "",
+	
+	["replacement-ui-font"] = "Roboto",
 })
 
 -- Sci-Fi
@@ -402,4 +408,6 @@ Assets:SetStyle("Sci-Fi", {
 	["raid-font"] = "Prototype",
 	["raid-font-size"] = 12,
 	["raid-font-flags"] = "",
+	
+	["replacement-ui-font"] = "Prototype",
 })
