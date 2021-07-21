@@ -84,8 +84,8 @@ function Map:Style()
 	
 	MinimapNorthTag:SetTexture(nil)
 	
-	MiniMapBattlefieldFrame:ClearAllPoints()
-	MiniMapBattlefieldFrame:SetPoint("BOTTOMLEFT", Minimap, 0, -2)
+	--[[MiniMapBattlefieldFrame:ClearAllPoints()
+	MiniMapBattlefieldFrame:SetPoint("BOTTOMLEFT", Minimap, 0, -2)]]
 	
 	if MiniMapTrackingFrame then
 		MiniMapTrackingFrame:ClearAllPoints()
