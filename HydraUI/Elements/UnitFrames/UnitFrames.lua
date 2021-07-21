@@ -117,6 +117,11 @@ function UF:SetPowerAttributes(power, value)
 end
 
 -- Tags
+Events["ColorStop"] = "PLAYER_ENTERING_WORLD"
+Methods["ColorStop"] = function()
+	return "|r"
+end
+
 Events["Status"] = "UNIT_HEALTH UNIT_CONNECTION PLAYER_ENTERING_WORLD PLAYER_FLAGS_CHANGED"
 Methods["Status"] = function(unit)
 	if UnitIsDead(unit) then
