@@ -820,6 +820,14 @@ function AB:CreateStanceBar()
 	end
 end
 
+local UpdateZoneAbilityPosition = function(frame, anchor, parent)
+	if (parent and parent ~= AB.ExtraBar) then
+		frame:ClearAllPoints()
+		frame:SetPoint("CENTER", AB.ExtraBar)
+		frame:SetParent(AB.ExtraBar)
+	end
+end
+
 -- Extra Bar
 function AB:CreateExtraBar()
 	self.ExtraBar = CreateFrame("Frame", "HydraUI Extra Action", HydraUI.UIParent, "SecureHandlerStateTemplate")
@@ -831,14 +839,22 @@ function AB:CreateExtraBar()
 	ExtraActionBarFrame:SetAllPoints(self.ExtraBar)
 	ExtraActionButton1.style:SetAlpha(0)
 	
-	ExtraActionBarFrame._SetParent = ExtraActionBarFrame.SetParent
+	--[[ExtraActionBarFrame._SetParent = ExtraActionBarFrame.SetParent
 	ExtraActionBarFrame.SetParent = function() end
 	ExtraActionBarFrame._ClearAllPoints = ExtraActionBarFrame.ClearAllPoints
 	ExtraActionBarFrame.ClearAllPoints = function() end
 	ExtraActionBarFrame._SetAllPoints = ExtraActionBarFrame.SetAllPoints
-	ExtraActionBarFrame.SetAllPoints = function() end
+	ExtraActionBarFrame.SetAllPoints = function() end]]
+	
+	hooksecurefunc(ExtraActionBarFrame, "SetPoint", UpdateZoneAbilityPosition)
 	
 	self:StyleActionButton(ExtraActionButton1)
+	
+	ZoneAbilityFrame:ClearAllPoints()
+	ZoneAbilityFrame:SetPoint("CENTER", self.ExtraBar)
+	ZoneAbilityFrame.Style:SetAlpha(0)
+	
+	hooksecurefunc(ZoneAbilityFrame, "SetPoint", UpdateZoneAbilityPosition)
 end
 
 function AB:CreateBars()
@@ -873,31 +889,6 @@ local Bar1PostMove = function(self)
 	self:SetPoint(A1, HydraUI.UIParent, A2, X, Y)
 end
 
-local ExtraBarPreMove = function(self)
-	ExtraActionBarFrame:_SetParent(UIParent)
-	ExtraActionBarFrame:_ClearAllPoints()
---[[
-	local A1, P, A2, X, Y = self:GetPoint()
-	
-	AB.ExtraBar:Hide()
-	AB.ExtraBar:ClearAllPoints()
-	AB.ExtraBar:SetPoint(A1, HydraUI.UIParent, A2, X, Y)]]
-end
-
-local ExtraBarPostMove = function(self)
---[[	local A1, P, A2, X, Y = self:GetPoint()
-	
-	self:ClearAllPoints()
-	
-	AB.ExtraBar:ClearAllPoints()
-	AB.ExtraBar:SetPoint("CENTER", self, 0, 0) 
-	
-	self:SetPoint(A1, HydraUI.UIParent, A2, X, Y)]]
-	
-	ExtraActionBarFrame:_SetParent(AB.ExtraBar)
-	ExtraActionBarFrame:_SetAllPoints(AB.ExtraBar)
-end
-
 function AB:CreateMovers()
 	self.Bar1Mover = HydraUI:CreateMover(self.Bar1)
 	HydraUI:CreateMover(self.Bar2)
@@ -910,9 +901,6 @@ function AB:CreateMovers()
 	
 	self.Bar1Mover.PreMove = Bar1PreMove
 	self.Bar1Mover.PostMove = Bar1PostMove
-	
-	self.ExtraBarMover.PreMove = ExtraBarPreMove
-	self.ExtraBarMover.PostMove = ExtraBarPostMove
 end
 
 function AB:SetCVars()
