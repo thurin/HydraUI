@@ -79,33 +79,6 @@ GUI:AddWidgets(Language["Info"], Language["Supporters"], function(left, right)
 		end
 	end
 	
-	left:CreateHeader(Language["Links"])
-	
-	local Patreon = left:CreateLine("", "|cFFF96854www.patreon.com/hydramods|r")
-	local PayPal = left:CreateLine("", "|cFF009CDEwww.paypal.me/vuiaddon|r")
-	
-	Patreon = Patreon:GetParent()
-	PayPal = PayPal:GetParent()
-	
-	Patreon:SetScript("OnEnter", function(self)
-		self.Text:SetText("|cFFEEEEEEwww.patreon.com/hydramods|r")
-	end)
-	
-	Patreon:SetScript("OnLeave", function(self) 
-		self.Text:SetText("|cFFF96854www.patreon.com/hydramods|r")
-	end)
-	
-	PayPal:SetScript("OnEnter", function(self)
-		self.Text:SetText("|cFFEEEEEEwww.paypal.me/vuiaddon|r")
-	end)
-	
-	PayPal:SetScript("OnLeave", function(self) 
-		self.Text:SetText("|cFF009CDEwww.paypal.me/vuiaddon|r")
-	end)
-	
-	Patreon:SetScript("OnMouseUp", function() print("https://www.patreon.com/hydramods") end)
-	PayPal:SetScript("OnMouseUp", function() print("https://www.paypal.me/vuiaddon") end)
-	
 	local ExPatrons = ""
 	
 	for i = 1, #Previous do
