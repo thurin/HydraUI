@@ -820,11 +820,11 @@ function AB:CreateStanceBar()
 	end
 end
 
-local UpdateZoneAbilityPosition = function(frame, anchor, parent)
+local UpdateZoneAbilityPosition = function(self, anchor, parent)
 	if (parent and parent ~= AB.ExtraBar) then
-		frame:ClearAllPoints()
-		frame:SetPoint("CENTER", AB.ExtraBar)
-		frame:SetParent(AB.ExtraBar)
+		self:ClearAllPoints()
+		self:SetPoint("CENTER", AB.ExtraBar)
+		self:SetParent(AB.ExtraBar)
 	end
 end
 
