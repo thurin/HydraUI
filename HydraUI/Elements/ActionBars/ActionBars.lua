@@ -820,11 +820,10 @@ function AB:CreateStanceBar()
 	end
 end
 
-local UpdateZoneAbilityPosition = function(self, anchor, parent)
+local UpdateExtraActionPosition = function(self, anchor, parent)
 	if (parent and parent ~= AB.ExtraBar) then
 		self:ClearAllPoints()
 		self:SetPoint("CENTER", AB.ExtraBar)
-		self:SetParent(AB.ExtraBar)
 	end
 end
 
@@ -834,19 +833,11 @@ function AB:CreateExtraBar()
 	self.ExtraBar:SetSize(Settings["ab-extra-button-size"], Settings["ab-extra-button-size"])
 	self.ExtraBar:SetPoint("CENTER", HydraUI.UIParent, 0, -220)
 	
-	ExtraActionBarFrame:SetParent(self.ExtraBar)
 	ExtraActionBarFrame:ClearAllPoints()
 	ExtraActionBarFrame:SetAllPoints(self.ExtraBar)
 	ExtraActionButton1.style:SetAlpha(0)
 	
-	--[[ExtraActionBarFrame._SetParent = ExtraActionBarFrame.SetParent
-	ExtraActionBarFrame.SetParent = function() end
-	ExtraActionBarFrame._ClearAllPoints = ExtraActionBarFrame.ClearAllPoints
-	ExtraActionBarFrame.ClearAllPoints = function() end
-	ExtraActionBarFrame._SetAllPoints = ExtraActionBarFrame.SetAllPoints
-	ExtraActionBarFrame.SetAllPoints = function() end]]
-	
-	hooksecurefunc(ExtraActionBarFrame, "SetPoint", UpdateZoneAbilityPosition)
+	hooksecurefunc(ExtraActionBarFrame, "SetPoint", UpdateExtraActionPosition)
 	
 	self:StyleActionButton(ExtraActionButton1)
 	
@@ -854,7 +845,7 @@ function AB:CreateExtraBar()
 	ZoneAbilityFrame:SetPoint("CENTER", self.ExtraBar)
 	ZoneAbilityFrame.Style:SetAlpha(0)
 	
-	hooksecurefunc(ZoneAbilityFrame, "SetPoint", UpdateZoneAbilityPosition)
+	hooksecurefunc(ZoneAbilityFrame, "SetPoint", UpdateExtraActionPosition)
 end
 
 function AB:CreateBars()
