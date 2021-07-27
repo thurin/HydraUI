@@ -144,17 +144,17 @@ local CancelAuraOnMouseUp = function(aura, button)
 end
 
 UF.PostCreateIcon = function(unit, button)
-	button:SetBackdrop(HydraUI.BackdropAndBorder)
-	button:SetBackdropColor(0, 0, 0, 0)
-	button:SetBackdropBorderColor(0, 0, 0, 0)
-	button:SetFrameLevel(6)
-	
 	local ID = button:GetName():match("%d+")
-
+	
 	if ID then
 		button.ID = tonumber(ID)
 		button:SetScript("OnMouseUp", CancelAuraOnMouseUp)
 	end
+	
+	button:SetBackdrop(HydraUI.BackdropAndBorder)
+	button:SetBackdropColor(0, 0, 0, 0)
+	button:SetBackdropBorderColor(0, 0, 0, 0)
+	button:SetFrameLevel(6)
 	
 	button.cd.noOCC = true
 	button.cd.noCooldownCount = true
