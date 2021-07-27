@@ -20,6 +20,7 @@ Defaults["unitframes-player-cast-height"] = 24
 Defaults["unitframes-player-enable-castbar"] = true
 Defaults["player-enable-portrait"] = false
 Defaults["player-enable-pvp-indicator"] = true
+Defaults["player-move-resources"] = true
 Defaults["player-enable"] = true
 
 local UF = HydraUI:GetModule("Unit Frames")
@@ -259,13 +260,27 @@ HydraUI.StyleFuncs["player"] = function(self, unit)
 	end
 	
 	if Settings["unitframes-player-enable-resource"] then
+		local ResourceAnchor
+		
+		if Settings["player-move-resources"] then
+			ResourceAnchor = CreateFrame("Frame", "HydraUI Resources", HydraUI.UIParent)
+			ResourceAnchor:SetSize(Settings["unitframes-player-width"], 10)
+			ResourceAnchor:SetPoint("CENTER", HydraUI.UIParent, 0, -120)
+			HydraUI:CreateMover(ResourceAnchor)
+		end
+		
 		if (HydraUI.UserClass == "ROGUE" or HydraUI.UserClass == "DRUID") then
 			local ComboPoints = CreateFrame("Frame", self:GetName() .. "ComboPoints", self, "BackdropTemplate")
-			ComboPoints:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, -1)
 			ComboPoints:SetSize(Settings["unitframes-player-width"], 10)
 			ComboPoints:SetBackdrop(HydraUI.Backdrop)
 			ComboPoints:SetBackdropColor(0, 0, 0)
 			ComboPoints:SetBackdropBorderColor(0, 0, 0)
+			
+			if ResourceAnchor then
+				ComboPoints:SetPoint("CENTER", ResourceAnchor, 0, 0)
+			else
+				ComboPoints:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, -1)
+			end
 			
 			local Max = (HydraUI.UserClass == "ROGUE" and 6 or 5)
 			local Width = (Settings["unitframes-player-width"] / Max) - 1
@@ -322,11 +337,16 @@ HydraUI.StyleFuncs["player"] = function(self, unit)
 			self.AuraParent = ComboPoints
 		elseif (HydraUI.UserClass == "WARLOCK") then
 			local SoulShards = CreateFrame("Frame", self:GetName() .. "SoulShards", self, "BackdropTemplate")
-			SoulShards:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, -1)
 			SoulShards:SetSize(Settings["unitframes-player-width"], 10)
 			SoulShards:SetBackdrop(HydraUI.Backdrop)
 			SoulShards:SetBackdropColor(0, 0, 0)
 			SoulShards:SetBackdropBorderColor(0, 0, 0)
+			
+			if ResourceAnchor then
+				SoulShards:SetPoint("CENTER", ResourceAnchor, 0, 0)
+			else
+				SoulShards:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, -1)
+			end
 			
 			local Width = (Settings["unitframes-player-width"] / 5) - 1
 			
@@ -355,11 +375,16 @@ HydraUI.StyleFuncs["player"] = function(self, unit)
 			self.AuraParent = SoulShards
 		elseif (HydraUI.UserClass == "MAGE") then
 			local ArcaneCharges = CreateFrame("Frame", self:GetName() .. "ArcaneCharges", self, "BackdropTemplate")
-			ArcaneCharges:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, -1)
 			ArcaneCharges:SetSize(Settings["unitframes-player-width"], 10)
 			ArcaneCharges:SetBackdrop(HydraUI.Backdrop)
 			ArcaneCharges:SetBackdropColor(0, 0, 0)
 			ArcaneCharges:SetBackdropBorderColor(0, 0, 0)
+			
+			if ResourceAnchor then
+				ArcaneCharges:SetPoint("CENTER", ResourceAnchor, 0, 0)
+			else
+				ArcaneCharges:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, -1)
+			end
 			
 			local Width = (Settings["unitframes-player-width"] / 4)
 			
@@ -394,6 +419,12 @@ HydraUI.StyleFuncs["player"] = function(self, unit)
 			Chi:SetBackdropColor(0, 0, 0)
 			Chi:SetBackdropBorderColor(0, 0, 0)
 			
+			if ResourceAnchor then
+				Chi:SetPoint("CENTER", ResourceAnchor, 0, 0)
+			else
+				Chi:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, -1)
+			end
+			
 			local Width = (Settings["unitframes-player-width"] / 6) - 1
 			
 			for i = 1, 6 do
@@ -418,9 +449,14 @@ HydraUI.StyleFuncs["player"] = function(self, unit)
 			
 			local Stagger = CreateFrame("StatusBar", nil, self)
 			Stagger:SetSize(Settings["unitframes-player-width"] - 2, 8)
-			Stagger:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, 0)
 			Stagger:SetStatusBarTexture(Assets:GetTexture(Settings["ui-widget-texture"]))
 			Stagger:Hide()
+			
+			if ResourceAnchor then
+				Stagger:SetPoint("CENTER", ResourceAnchor, 0, 0)
+			else
+				Stagger:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 1, 0)
+			end
 			
 			Stagger.bg = Stagger:CreateTexture(nil, "ARTWORK")
 			Stagger.bg:SetAllPoints()
@@ -438,12 +474,17 @@ HydraUI.StyleFuncs["player"] = function(self, unit)
 			self.AuraParent = Chi
 		elseif (HydraUI.UserClass == "DEATHKNIGHT") then
 			local Runes = CreateFrame("Frame", self:GetName() .. "Runes", self, "BackdropTemplate")
-			Runes:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, -1)
 			Runes:SetSize(Settings["unitframes-player-width"], 10)
 			Runes:SetBackdrop(HydraUI.Backdrop)
 			Runes:SetBackdropColor(0, 0, 0)
 			Runes:SetBackdropBorderColor(0, 0, 0)
 			Runes.sortOrder = "asc" -- desc
+			
+			if ResourceAnchor then
+				Runes:SetPoint("CENTER", ResourceAnchor, 0, 0)
+			else
+				Runes:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, -1)
+			end
 			
 			local Width = (Settings["unitframes-player-width"] / 6) - 1
 			
@@ -499,6 +540,12 @@ HydraUI.StyleFuncs["player"] = function(self, unit)
 			HolyPower:SetBackdropColor(0, 0, 0)
 			HolyPower:SetBackdropBorderColor(0, 0, 0)
 			
+			if ResourceAnchor then
+				HolyPower:SetPoint("CENTER", ResourceAnchor, 0, 0)
+			else
+				HolyPower:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, -1)
+			end
+			
 			local Width = (Settings["unitframes-player-width"] / 5) - 1
 			
 			for i = 1, 5 do
@@ -530,7 +577,6 @@ HydraUI.StyleFuncs["player"] = function(self, unit)
 	-- Auras
 	local Buffs = CreateFrame("Frame", self:GetName() .. "Buffs", self)
 	Buffs:SetSize(Settings["unitframes-player-width"], 28)
-	Buffs:SetPoint("BOTTOMLEFT", self.AuraParent, "TOPLEFT", 0, 2)
 	Buffs.size = 28
 	Buffs.spacing = 2
 	Buffs.num = 40
@@ -542,6 +588,12 @@ HydraUI.StyleFuncs["player"] = function(self, unit)
 	Buffs.PostUpdateIcon = UF.PostUpdateIcon
 	--Buffs.SetPosition = BuffsSetPosition
 	Buffs.showType = true
+	
+	if Settings["player-move-resources"] then
+		Buffs:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 2)
+	else
+		Buffs:SetPoint("BOTTOMLEFT", self.AuraParent, "TOPLEFT", 0, 2)
+	end
 	
 	local Debuffs = CreateFrame("Frame", self:GetName() .. "Debuffs", self)
 	Debuffs:SetSize(Settings["unitframes-player-width"], 28)
