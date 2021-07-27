@@ -45,6 +45,15 @@ function UF:SetHealthAttributes(health, value)
 		health.colorClass = false
 		health.colorReaction = true
 		health.colorHealth = false
+	elseif (value == "BLIZZARD") then
+		health.colorClass = false
+		health.colorReaction = false
+		health.colorSelection = true
+	elseif (value == "THREAT") then
+		health.colorClass = true
+		health.colorReaction = true
+		health.colorSelection = false
+		health.colorThreat = true
 	elseif (value == "CUSTOM") then
 		health.colorClass = false
 		health.colorReaction = false
