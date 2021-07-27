@@ -21,6 +21,7 @@ local UnitIsAFK = UnitIsAFK
 local UnitClass = UnitClass
 local UnitLevel = UnitLevel
 local UnitEffectiveLevel = UnitEffectiveLevel
+local GetQuestDifficultyColor = GetQuestDifficultyColor
 local UnitReaction = UnitReaction
 local IsResting = IsResting
 local UnitAura = UnitAura
@@ -233,6 +234,17 @@ Methods["Health"] = function(unit)
 		Current = UnitHealth(unit)
 	end
 
+	return Current
+end
+
+Events["Health:Short"] = "UNIT_HEALTH_FREQUENT PLAYER_ENTERING_WORLD"
+Methods["Health:Short"] = function(unit)
+	local Current, Max, Found = LCMH:GetUnitHealth(unit)
+	
+	if (not Found) then
+		Current = UnitHealth(unit)
+	end
+
 	return HydraUI:ShortValue(Current)
 end
 
@@ -261,12 +273,44 @@ Methods["HealthValues"] = function(unit)
 		Max = UnitHealthMax(unit)
 	end
 	
-	--return HydraUI:ShortValue(Current) .. " / " .. HydraUI:ShortValue(Max)
 	return Current .. " / " .. Max
+end
+
+Events["HealthValues:Short"] = "UNIT_HEALTH_FREQUENT UNIT_CONNECTION PLAYER_ENTERING_WORLD"
+Methods["HealthValues:Short"] = function(unit)
+	local Current, Max, Found = LCMH:GetUnitHealth(unit)
+	
+	if (not Found) then
+		Current = UnitHealth(unit)
+		Max = UnitHealthMax(unit)
+	end
+	
+	return HydraUI:ShortValue(Current) .. " / " .. HydraUI:ShortValue(Max)
 end
 
 Events["HealthDeficit"] = "UNIT_HEALTH_FREQUENT PLAYER_ENTERING_WORLD PLAYER_FLAGS_CHANGED UNIT_CONNECTION"
 Methods["HealthDeficit"] = function(unit)
+	if UnitIsDead(unit) then
+		return "|cFFEE4D4D" .. DEAD .. "|r"
+	elseif UnitIsGhost(unit) then
+		return "|cFFEEEEEE" .. Language["Ghost"] .. "|r"
+	elseif (not UnitIsConnected(unit)) then
+		return "|cFFEEEEEE" .. PLAYER_OFFLINE .. "|r"
+	elseif UnitIsAFK(unit) then
+		return "|cFFEEEEEE" .. CHAT_MSG_AFK .. "|r"
+	end
+	
+	local Current = UnitHealth(unit)
+	local Max = UnitHealthMax(unit)
+	local Deficit = Max - Current
+	
+	if ((Deficit ~= 0) or (Current ~= Max)) then
+		return "-" .. Deficit
+	end
+end
+
+Events["HealthDeficit:Short"] = "UNIT_HEALTH_FREQUENT PLAYER_ENTERING_WORLD PLAYER_FLAGS_CHANGED UNIT_CONNECTION"
+Methods["HealthDeficit:Short"] = function(unit)
 	if UnitIsDead(unit) then
 		return "|cFFEE4D4D" .. DEAD .. "|r"
 	elseif UnitIsGhost(unit) then
@@ -332,12 +376,29 @@ end
 Events["Power"] = "UNIT_POWER_FREQUENT PLAYER_ENTERING_WORLD"
 Methods["Power"] = function(unit)
 	if (UnitPower(unit) ~= 0) then
+		return UnitPower(unit)
+	end
+end
+
+Events["Power:Short"] = "UNIT_POWER_FREQUENT PLAYER_ENTERING_WORLD"
+Methods["Power:Short"] = function(unit)
+	if (UnitPower(unit) ~= 0) then
 		return HydraUI:ShortValue(UnitPower(unit))
 	end
 end
 
 Events["PowerValues"] = "UNIT_POWER_FREQUENT PLAYER_ENTERING_WORLD"
 Methods["PowerValues"] = function(unit)
+	local Current = UnitPower(unit)
+	local Max = UnitPowerMax(unit)
+	
+	if (Max ~= 0) then
+		return Current .. " / " .. Max
+	end
+end
+
+Events["PowerValues:Short"] = "UNIT_POWER_FREQUENT PLAYER_ENTERING_WORLD"
+Methods["PowerValues:Short"] = function(unit)
 	local Current = UnitPower(unit)
 	local Max = UnitPowerMax(unit)
 	
@@ -474,15 +535,30 @@ Methods["Reaction"] = function(unit)
 	end
 end
 
-local GetQuestDifficultyColor = GetQuestDifficultyColor
-
 Events["LevelColor"] = "UNIT_LEVEL PLAYER_LEVEL_UP PLAYER_ENTERING_WORLD"
 Methods["LevelColor"] = function(unit)
 	local Level = UnitLevel(unit)
 	local Color = GetQuestDifficultyColor(Level)
 	
 	return "|cFF" .. HydraUI:RGBToHex(Color.r, Color.g, Color.b)
-	--return HydraUI:UnitDifficultyColor(unit)
+end
+
+Events["RaidGroup"] = "GROUP_ROSTER_UPDATE PLAYER_ENTERING_WORLD"
+Methods["RaidGroup"] = function(unit)
+	local Name = UnitName(unit)
+	local Unit, Rank, Group
+	
+	for i = 1, MAX_RAID_MEMBERS do
+		Unit, Rank, Group = GetRaidRosterInfo(i)
+		
+		if (not Unit) then
+			break
+		end
+		
+		if (Unit == Name) then
+			return Group
+		end
+	end
 end
 
 Events["PetColor"] = "UNIT_HAPPINESS UNIT_LEVEL PLAYER_LEVEL_UP PLAYER_ENTERING_WORLD UNIT_PET"
