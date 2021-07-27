@@ -148,6 +148,11 @@ end
 
 Events["Health"] = "UNIT_HEALTH PLAYER_ENTERING_WORLD"
 Methods["Health"] = function(unit)
+	return UnitHealth(unit)
+end
+
+Events["Health:Short"] = "UNIT_HEALTH PLAYER_ENTERING_WORLD"
+Methods["Health:Short"] = function(unit)
 	return HydraUI:ShortValue(UnitHealth(unit))
 end
 
@@ -168,11 +173,40 @@ Methods["HealthValues"] = function(unit)
 	local Current = UnitHealth(unit)
 	local Max = UnitHealthMax(unit)
 	
+	return Current .. " / " .. Max
+end
+
+Events["HealthValues:Short"] = "UNIT_HEALTH UNIT_CONNECTION PLAYER_ENTERING_WORLD"
+Methods["HealthValues:Short"] = function(unit)
+	local Current = UnitHealth(unit)
+	local Max = UnitHealthMax(unit)
+	
 	return HydraUI:ShortValue(Current) .. " / " .. HydraUI:ShortValue(Max)
 end
 
 Events["HealthDeficit"] = "UNIT_HEALTH PLAYER_ENTERING_WORLD PLAYER_FLAGS_CHANGED UNIT_CONNECTION"
 Methods["HealthDeficit"] = function(unit)
+	if UnitIsDead(unit) then
+		return "|cFFEE4D4D" .. DEAD .. "|r"
+	elseif UnitIsGhost(unit) then
+		return "|cFFEEEEEE" .. Language["Ghost"] .. "|r"
+	elseif (not UnitIsConnected(unit)) then
+		return "|cFFEEEEEE" .. PLAYER_OFFLINE .. "|r"
+	elseif UnitIsAFK(unit) then
+		return "|cFFEEEEEE" .. DEFAULT_AFK_MESSAGE .. "|r"
+	end
+	
+	local Current = UnitHealth(unit)
+	local Max = UnitHealthMax(unit)
+	local Deficit = Max - Current
+	
+	if ((Deficit ~= 0) or (Current ~= Max)) then
+		return "-" .. Deficit
+	end
+end
+
+Events["HealthDeficit:Short"] = "UNIT_HEALTH PLAYER_ENTERING_WORLD PLAYER_FLAGS_CHANGED UNIT_CONNECTION"
+Methods["HealthDeficit:Short"] = function(unit)
 	if UnitIsDead(unit) then
 		return "|cFFEE4D4D" .. DEAD .. "|r"
 	elseif UnitIsGhost(unit) then
@@ -230,12 +264,29 @@ end
 Events["Power"] = "UNIT_POWER_FREQUENT UNIT_POWER_UPDATE PLAYER_ENTERING_WORLD"
 Methods["Power"] = function(unit)
 	if (UnitPower(unit) ~= 0) then
+		return UnitPower(unit)
+	end
+end
+
+Events["Power:Short"] = "UNIT_POWER_FREQUENT UNIT_POWER_UPDATE PLAYER_ENTERING_WORLD"
+Methods["Power:Short"] = function(unit)
+	if (UnitPower(unit) ~= 0) then
 		return HydraUI:ShortValue(UnitPower(unit))
 	end
 end
 
 Events["PowerValues"] = "UNIT_POWER_FREQUENT UNIT_POWER_UPDATE PLAYER_ENTERING_WORLD"
 Methods["PowerValues"] = function(unit)
+	local Current = UnitPower(unit)
+	local Max = UnitPowerMax(unit)
+	
+	if (Max ~= 0) then
+		return Current .. " / " .. Max
+	end
+end
+
+Events["PowerValues:Short"] = "UNIT_POWER_FREQUENT UNIT_POWER_UPDATE PLAYER_ENTERING_WORLD"
+Methods["PowerValues:Short"] = function(unit)
 	local Current = UnitPower(unit)
 	local Max = UnitPowerMax(unit)
 	

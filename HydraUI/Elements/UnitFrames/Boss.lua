@@ -200,8 +200,8 @@ HydraUI.StyleFuncs["boss"] = function(self, unit)
 	-- Tags
 	self:Tag(HealthLeft, "[LevelColor][Level][Plus]|r [Name30]")
 	self:Tag(HealthRight, "[HealthPercent]")
-	self:Tag(PowerLeft, "[HealthValues]")
-	self:Tag(PowerRight, "[PowerValues]")
+	self:Tag(PowerLeft, "[HealthValues:Short]")
+	self:Tag(PowerRight, "[PowerValues:Short]")
 	
 	self.Range = {
 		insideAlpha = 1,
