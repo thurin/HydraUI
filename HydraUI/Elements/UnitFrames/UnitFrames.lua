@@ -27,6 +27,10 @@ local IsResting = IsResting
 local UnitAura = UnitAura
 local GetTime = GetTime
 
+local DEAD = DEAD
+local CHAT_MSG_AFK = CHAT_MSG_AFK
+local PLAYER_OFFLINE = PLAYER_OFFLINE
+
 local LCMH = LibStub("LibClassicMobHealth-1.0")
 local LCD = LibStub("LibClassicDurations")
 
@@ -122,16 +126,25 @@ Methods["ColorStop"] = function()
 	return "|r"
 end
 
-Events["Status"] = "UNIT_HEALTH UNIT_CONNECTION PLAYER_ENTERING_WORLD PLAYER_FLAGS_CHANGED"
+Events["Resting"] = "PLAYER_UPDATE_RESTING"
+Methods["Resting"] = function(unit)
+	if (unit == "player" and IsResting()) then
+		return "zZz"
+	end
+end
+
+Events["Status"] = "UNIT_HEALTH UNIT_CONNECTION PLAYER_ENTERING_WORLD PLAYER_FLAGS_CHANGED PLAYER_UPDATE_RESTING"
 Methods["Status"] = function(unit)
 	if UnitIsDead(unit) then
-		return "|cFFEE4D4D" .. Language["Dead"] .. "|r"
+		return "|cFFEE4D4D" .. DEAD .. "|r"
 	elseif UnitIsGhost(unit) then
 		return "|cFFEEEEEE" .. Language["Ghost"] .. "|r"
 	elseif (not UnitIsConnected(unit)) then
-		return "|cFFEEEEEE" .. Language["Offline"] .. "|r"
+		return "|cFFEEEEEE" .. PLAYER_OFFLINE .. "|r"
 	elseif UnitIsAFK(unit) then
 		return "|cFFEEEEEE" .. CHAT_MSG_AFK .. "|r"
+	else
+		return Methods["Resting"](unit)
 	end
 	
 	return ""
@@ -247,11 +260,11 @@ end
 Events["HealthDeficit"] = "UNIT_HEALTH_FREQUENT PLAYER_ENTERING_WORLD PLAYER_FLAGS_CHANGED UNIT_CONNECTION"
 Methods["HealthDeficit"] = function(unit)
 	if UnitIsDead(unit) then
-		return "|cFFEE4D4D" .. Language["Dead"] .. "|r"
+		return "|cFFEE4D4D" .. DEAD .. "|r"
 	elseif UnitIsGhost(unit) then
 		return "|cFFEEEEEE" .. Language["Ghost"] .. "|r"
 	elseif (not UnitIsConnected(unit)) then
-		return "|cFFEEEEEE" .. Language["Offline"] .. "|r"
+		return "|cFFEEEEEE" .. PLAYER_OFFLINE .. "|r"
 	elseif UnitIsAFK(unit) then
 		return "|cFFEEEEEE" .. CHAT_MSG_AFK .. "|r"
 	end
@@ -268,11 +281,11 @@ end
 Events["GroupStatus"] = "UNIT_HEALTH_FREQUENT UNIT_CONNECTION PLAYER_FLAGS_CHANGED PLAYER_ENTERING_WORLD"
 Methods["GroupStatus"] = function(unit)
 	if UnitIsDead(unit) then
-		return "|cFFEE4D4D" .. Language["Dead"] .. "|r"
+		return "|cFFEE4D4D" .. DEAD .. "|r"
 	elseif UnitIsGhost(unit) then
 		return "|cFFEEEEEE" .. Language["Ghost"] .. "|r"
 	elseif (not UnitIsConnected(unit)) then
-		return "|cFFEEEEEE" .. Language["Offline"] .. "|r"
+		return "|cFFEEEEEE" .. PLAYER_OFFLINE .. "|r"
 	elseif UnitIsAFK(unit) then
 		return "|cFFEEEEEE" .. CHAT_MSG_AFK .. "|r"
 	end
