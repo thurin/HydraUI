@@ -20,7 +20,7 @@ Defaults["unitframes-player-cast-height"] = 24
 Defaults["unitframes-player-enable-castbar"] = true
 Defaults["player-enable-portrait"] = false
 Defaults["player-enable-pvp-indicator"] = true
-Defaults["player-move-resources"] = true
+Defaults["player-move-resources"] = false
 Defaults["player-enable"] = true
 
 local UF = HydraUI:GetModule("Unit Frames")
@@ -822,7 +822,6 @@ GUI:AddWidgets(Language["General"], Language["Player"], Language["Unit Frames"],
 	left:CreateSwitch("player-enable-portrait", Settings["player-enable-portrait"], Language["Enable Portrait"], Language["Display the player unit portrait"], UpdatePlayerEnablePortrait)
 	left:CreateSwitch("player-enable-pvp-indicator", Settings["player-enable-pvp-indicator"], Language["Enable PVP Indicator"], Language["Display the pvp indicator"], UpdatePlayerEnablePVPIndicator)
 	
-	
 	left:CreateHeader(Language["Health"])
 	left:CreateSwitch("unitframes-player-health-reverse", Settings["unitframes-player-health-reverse"], Language["Reverse Health Fill"], Language["Reverse the fill of the health bar"], UpdatePlayerHealthFill)
 	left:CreateSlider("unitframes-player-health-height", Settings["unitframes-player-health-height"], 6, 60, 1, "Health Bar Height", "Set the height of the player health bar", UpdatePlayerHealthHeight)
@@ -842,4 +841,7 @@ GUI:AddWidgets(Language["General"], Language["Player"], Language["Unit Frames"],
 	right:CreateSwitch("unitframes-player-enable-castbar", Settings["unitframes-player-enable-castbar"], Language["Enable Cast Bar"], Language["Enable the player cast bar"], ReloadUI):RequiresReload(true)
 	right:CreateSlider("unitframes-player-cast-width", Settings["unitframes-player-cast-width"], 80, 360, 1, Language["Cast Bar Width"], Language["Set the width of the player cast bar"], UpdatePlayerCastBarSize)
 	right:CreateSlider("unitframes-player-cast-height", Settings["unitframes-player-cast-height"], 8, 50, 1, Language["Cast Bar Height"], Language["Set the height of the player cast bar"], UpdatePlayerCastBarSize)
+	
+	right:CreateHeader(Language["Class Resources"])
+	right:CreateSwitch("player-move-resources", Settings["player-move-resources"], Language["Detach Class Bar"], Language["Detach the class resources from the unit frame, to be moved by the UI"], ReloadUI):RequiresReload(true)
 end)
