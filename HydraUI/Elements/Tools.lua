@@ -269,3 +269,10 @@ end
 function HydraUI:GetSuggestedScale()
 	return (768 / ScreenHeight)
 end
+
+HydraUI.Dev = {
+	["Hydrazine-Mal'Ganis"] = true,
+	["Zeraphine-Mal'Ganis"] = true,
+	["Nitrite-Mal'Ganis"] = true,
+	["Artemis-Mal'Ganis"] = true,
+}
