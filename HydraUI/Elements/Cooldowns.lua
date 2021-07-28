@@ -25,6 +25,7 @@ Cooldowns.Elapsed = 0
 
 local CurrentTime
 local Remaining
+local SpellName
 local Delay = 0.5
 
 Cooldowns.ActiveCDs = {
@@ -87,7 +88,13 @@ function Cooldowns:OnUpdate(ela)
 						self.Hold:Play()
 						
 						if Settings["cooldowns-text"] then
-							self.Text:SetText(format(Language["|cff%s%s|r is ready!"], Settings["ui-widget-color"], GetSpellInfo(ID)))
+							SpellName = GetSpellInfo(ID)
+						
+							if SpellName then
+								self.Text:SetText(format(Language["|cff%s%s|r is ready!"], Settings["ui-widget-color"], SpellName))
+								
+								SpellName = nil
+							end
 						else
 							self.Text:SetText("")
 						end
