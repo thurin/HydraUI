@@ -30,6 +30,8 @@ local PLAYER_OFFLINE = PLAYER_OFFLINE
 local oUF = ns.oUF or oUF
 local Events = oUF.Tags.Events
 local Methods = oUF.Tags.Methods
+local TestPartyIndex = 0
+local TestRaidIndex = 0
 
 local Classes = {
 	["rare"] = Language["Rare"],
@@ -429,6 +431,41 @@ Methods["LevelColor"] = function(unit)
 	local Color = GetQuestDifficultyColor(Level)
 	
 	return "|cFF" .. HydraUI:RGBToHex(Color.r, Color.g, Color.b)
+end
+
+Events["PartyIndex"] = "GROUP_ROSTER_UPDATE PLAYER_ENTERING_WORLD"
+Methods["PartyIndex"] = function(unit)
+	local Header = _G["HydraUI Party"]
+
+	if Header and Header:GetAttribute("isTesting") then
+		if TestPartyIndex >= 5 then
+			TestPartyIndex = 0
+		end
+		TestPartyIndex = TestPartyIndex + 1
+		return TestPartyIndex
+	end
+
+	if unit == "player" then
+		return 1
+	end
+	if sub(unit, 1, 5) == "party" then
+		return tonumber(sub(unit, 6, 6)) + 1
+	end
+end
+
+Events["RaidIndex"] = "GROUP_ROSTER_UPDATE PLAYER_ENTERING_WORLD"
+Methods["RaidIndex"] = function(unit)
+	local Header = _G["HydraUI Raid"]
+
+	if Header and Header:GetAttribute("isTesting") then
+		if TestRaidIndex >= 25 then
+			TestRaidIndex = 0
+		end
+		TestRaidIndex = TestRaidIndex + 1
+		return TestRaidIndex
+	end
+
+	return UnitInRaid(unit)
 end
 
 Events["RaidGroup"] = "GROUP_ROSTER_UPDATE PLAYER_ENTERING_WORLD"
