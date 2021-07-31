@@ -40,6 +40,8 @@ local oUF = ns.oUF or oUF
 local Events = oUF.Tags.Events
 local Methods = oUF.Tags.Methods
 local Name, Duration, Expiration, Caster, SpellID, _
+local TestPartyIndex = 0
+local TestRaidIndex = 0
 
 Defaults["unitframes-only-player-debuffs"] = false
 Defaults["unitframes-show-player-buffs"] = true
@@ -1054,6 +1056,7 @@ function UF:Load()
 		local Party = oUF:SpawnHeader("HydraUI Party", nil, "party,solo",
 			"initial-width", Settings["party-width"],
 			"initial-height", (Settings["party-health-height"] + Settings["party-power-height"] + 3),
+			"isTesting", false,
 			"showSolo", false,
 			"showPlayer", true,
 			"showParty", true,
@@ -1110,6 +1113,7 @@ function UF:Load()
 		local Raid = oUF:SpawnHeader("HydraUI Raid", nil, "raid,solo",
 			"initial-width", Settings["raid-width"],
 			"initial-height", (Settings["raid-health-height"] + Settings["raid-power-height"] + 3),
+			"isTesting", false,
 			"showSolo", false,
 			"showPlayer", true,
 			"showParty", false,
