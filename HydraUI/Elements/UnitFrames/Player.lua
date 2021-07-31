@@ -433,7 +433,6 @@ HydraUI.StyleFuncs["player"] = function(self, unit)
 			self.AuraParent = ArcaneCharges
 		elseif (HydraUI.UserClass == "MONK") then
 			local Chi = CreateFrame("Frame", self:GetName() .. "Chi", self, "BackdropTemplate")
-			Chi:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, -1)
 			Chi:SetSize(Settings["unitframes-player-width"], 10)
 			Chi:SetBackdrop(HydraUI.Backdrop)
 			Chi:SetBackdropColor(0, 0, 0)
@@ -554,7 +553,6 @@ HydraUI.StyleFuncs["player"] = function(self, unit)
 			self.AuraParent = Runes
 		elseif (HydraUI.UserClass == "PALADIN") then
 			local HolyPower = CreateFrame("Frame", self:GetName() .. "HolyPower", self, "BackdropTemplate")
-			HolyPower:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, -1)
 			HolyPower:SetSize(Settings["unitframes-player-width"], 10)
 			HolyPower:SetBackdrop(HydraUI.Backdrop)
 			HolyPower:SetBackdropColor(0, 0, 0)
@@ -670,6 +668,10 @@ local UpdatePlayerWidth = function(value)
 		-- Auras
 		Frame.Buffs:SetWidth(value)
 		Frame.Debuffs:SetWidth(value)
+		
+		if Settings["player-move-power"] then
+			return
+		end
 		
 		-- Combo points
 		if Frame.ComboPoints then
