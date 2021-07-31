@@ -140,6 +140,22 @@ function Tracker:ReplaceColor(key, value)
 	OBJECTIVE_TRACKER_COLOR[key].b = B
 end
 
+local MinimizeHook = function(button, collapsed)
+	if collapsed then
+		button.Texture:SetTexture(Assets:GetTexture("Arrow Down"))
+	else
+		button.Texture:SetTexture(Assets:GetTexture("Arrow Up"))
+	end
+	
+	for i = 1, button:GetNumRegions() do
+		local Region = select(i, button:GetRegions())
+		
+		if (Region and Region:GetObjectType() == "Texture") then
+			Region:SetTexture(nil)
+		end
+	end
+end
+
 function Tracker:CreateCustomHeader(tracker)
 	if tracker.Background then
 		tracker.Background:Hide()
@@ -148,6 +164,24 @@ function Tracker:CreateCustomHeader(tracker)
 	if tracker.Text then
 		HydraUI:SetFontInfo(tracker.Text, Settings["tracker-header-font"], Settings["tracker-header-font-size"], Settings["tracker-header-font-flags"])
 		tracker.Text:SetTextColor(HydraUI:HexToRGB(Settings["tracker-module-font-color"]))
+	end
+	
+	if tracker.MinimizeButton then
+		tracker.MinimizeButton.Texture = ObjectiveTrackerFrame.HeaderMenu:CreateTexture(nil, "OVERLAY")
+		tracker.MinimizeButton.Texture:SetSize(16, 16)
+		tracker.MinimizeButton.Texture:SetPoint("CENTER", tracker.MinimizeButton, 0, -1)
+		tracker.MinimizeButton.Texture:SetTexture(Assets:GetTexture("Arrow Up"))
+		tracker.MinimizeButton.Texture:SetVertexColor(HydraUI:HexToRGB(Settings["ui-widget-color"]))
+		
+		hooksecurefunc(tracker.MinimizeButton, "SetCollapsed", MinimizeHook)
+		
+		for i = 1, tracker.MinimizeButton:GetNumRegions() do
+			local Region = select(i, tracker.MinimizeButton:GetRegions())
+			
+			if (Region and Region:GetObjectType() == "Texture") then
+				Region:SetTexture(nil)
+			end
+		end
 	end
 	
 	if (tracker and tracker.CreateTexture) then
@@ -243,14 +277,6 @@ function Tracker:StyleWindow()
 	ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:ClearAllPoints()
 	ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:SetPoint("TOPRIGHT", ObjectiveTrackerFrame, -4, -6)
 	ObjectiveTrackerFrame.HeaderMenu.MinimizeButton:SetAlpha(0)
-	
-	--[[ObjectiveTrackerFrame.HeaderMenu.NewMinimize = CreateFrame("Frame", nil, ObjectiveTrackerFrame)
-	ObjectiveTrackerFrame.HeaderMenu.NewMinimize:SetSize(20, 20)
-	ObjectiveTrackerFrame.HeaderMenu.NewMinimize:SetFrameLevel(20)
-	ObjectiveTrackerFrame.HeaderMenu.NewMinimize:SetPoint("CENTER", ObjectiveTrackerFrame.HeaderMenu.MinimizeButton, 0, 0)
-	ObjectiveTrackerFrame.HeaderMenu.NewMinimize:SetBackdrop(HydraUI.BackdropAndBorder)
-	ObjectiveTrackerFrame.HeaderMenu.NewMinimize:SetBackdropColor(HydraUI:HexToRGB(Settings["ui-window-main-color"]))
-	ObjectiveTrackerFrame.HeaderMenu.NewMinimize:SetBackdropBorderColor(0, 0, 0)]]
 	
 	ObjectiveTrackerFrame.HeaderMenu.Texture = ObjectiveTrackerFrame.HeaderMenu:CreateTexture(nil, "OVERLAY")
 	ObjectiveTrackerFrame.HeaderMenu.Texture:SetSize(16, 16)
@@ -499,6 +525,10 @@ function Tracker:Load()
 	self:MoveTrackerFrame()
 	self:StyleWindow()
 	self:AddHooks()
+	
+	if ObjectiveTrackerUIWidgetFrame then
+		
+	end
 end
 
 local UpdateCategoryFont = function()
