@@ -20,7 +20,8 @@ Defaults["unitframes-player-cast-height"] = 24
 Defaults["unitframes-player-enable-castbar"] = true
 Defaults["player-enable-portrait"] = false
 Defaults["player-enable-pvp-indicator"] = true
-Defaults["player-move-resources"] = false
+Defaults["player-resource-height"] = 8
+Defaults["player-move-resource"] = false
 Defaults["player-move-power"] = false
 Defaults["player-enable"] = true
 
@@ -145,8 +146,8 @@ HydraUI.StyleFuncs["player"] = function(self, unit)
 		
 		if Settings["player-move-power"] then
 			PowerAnchor = CreateFrame("Frame", "HydraUI Player Power", HydraUI.UIParent)
-			PowerAnchor:SetSize(Settings["unitframes-player-width"], 10)
-			PowerAnchor:SetPoint("CENTER", HydraUI.UIParent, 0, -136)
+			PowerAnchor:SetSize(Settings["unitframes-player-width"], Settings["unitframes-player-power-height"])
+			PowerAnchor:SetPoint("CENTER", HydraUI.UIParent, 0, -133)
 			HydraUI:CreateMover(PowerAnchor)
 			
 			Power:SetPoint("BOTTOMLEFT", PowerAnchor, 1, 1)
@@ -282,16 +283,16 @@ HydraUI.StyleFuncs["player"] = function(self, unit)
 	if Settings["unitframes-player-enable-resource"] then
 		local ResourceAnchor
 		
-		if Settings["player-move-resources"] then
-			ResourceAnchor = CreateFrame("Frame", "HydraUI Resources", HydraUI.UIParent)
-			ResourceAnchor:SetSize(Settings["unitframes-player-width"], 10)
+		if Settings["player-move-resource"] then
+			ResourceAnchor = CreateFrame("Frame", "HydraUI Class Resource", HydraUI.UIParent)
+			ResourceAnchor:SetSize(Settings["unitframes-player-width"], Settings["player-resource-height"] + 2)
 			ResourceAnchor:SetPoint("CENTER", HydraUI.UIParent, 0, -120)
 			HydraUI:CreateMover(ResourceAnchor)
 		end
 		
 		if (HydraUI.UserClass == "ROGUE" or HydraUI.UserClass == "DRUID") then
 			local ComboPoints = CreateFrame("Frame", self:GetName() .. "ComboPoints", self, "BackdropTemplate")
-			ComboPoints:SetSize(Settings["unitframes-player-width"], 10)
+			ComboPoints:SetSize(Settings["unitframes-player-width"], Settings["player-resource-height"] + 2)
 			ComboPoints:SetBackdrop(HydraUI.Backdrop)
 			ComboPoints:SetBackdropColor(0, 0, 0)
 			ComboPoints:SetBackdropBorderColor(0, 0, 0)
@@ -307,7 +308,7 @@ HydraUI.StyleFuncs["player"] = function(self, unit)
 			
 			for i = 1, Max do
 				ComboPoints[i] = CreateFrame("StatusBar", self:GetName() .. "ComboPoint" .. i, ComboPoints)
-				ComboPoints[i]:SetSize(Width, 8)
+				ComboPoints[i]:SetSize(Width, Settings["player-resource-height"])
 				ComboPoints[i]:SetStatusBarTexture(Assets:GetTexture(Settings["ui-widget-texture"]))
 				ComboPoints[i]:SetStatusBarColor(HydraUI.ComboPoints[i][1], HydraUI.ComboPoints[i][2], HydraUI.ComboPoints[i][3])
 				ComboPoints[i]:SetWidth(i == 1 and Width - 1 or Width)
@@ -357,7 +358,7 @@ HydraUI.StyleFuncs["player"] = function(self, unit)
 			self.AuraParent = ComboPoints
 		elseif (HydraUI.UserClass == "WARLOCK") then
 			local SoulShards = CreateFrame("Frame", self:GetName() .. "SoulShards", self, "BackdropTemplate")
-			SoulShards:SetSize(Settings["unitframes-player-width"], 10)
+			SoulShards:SetSize(Settings["unitframes-player-width"], Settings["player-resource-height"] + 2)
 			SoulShards:SetBackdrop(HydraUI.Backdrop)
 			SoulShards:SetBackdropColor(0, 0, 0)
 			SoulShards:SetBackdropBorderColor(0, 0, 0)
@@ -372,7 +373,7 @@ HydraUI.StyleFuncs["player"] = function(self, unit)
 			
 			for i = 1, 5 do
 				SoulShards[i] = CreateFrame("StatusBar", self:GetName() .. "SoulShard" .. i, SoulShards)
-				SoulShards[i]:SetSize(Width, 8)
+				SoulShards[i]:SetSize(Width, Settings["player-resource-height"])
 				SoulShards[i]:SetStatusBarTexture(Assets:GetTexture(Settings["ui-widget-texture"]))
 				SoulShards[i]:SetStatusBarColor(HydraUI:HexToRGB(Settings["color-soul-shards"]))
 				SoulShards[i]:SetWidth(i == 1 and Width - 1 or Width)
@@ -395,7 +396,7 @@ HydraUI.StyleFuncs["player"] = function(self, unit)
 			self.AuraParent = SoulShards
 		elseif (HydraUI.UserClass == "MAGE") then
 			local ArcaneCharges = CreateFrame("Frame", self:GetName() .. "ArcaneCharges", self, "BackdropTemplate")
-			ArcaneCharges:SetSize(Settings["unitframes-player-width"], 10)
+			ArcaneCharges:SetSize(Settings["unitframes-player-width"], Settings["player-resource-height"] + 2)
 			ArcaneCharges:SetBackdrop(HydraUI.Backdrop)
 			ArcaneCharges:SetBackdropColor(0, 0, 0)
 			ArcaneCharges:SetBackdropBorderColor(0, 0, 0)
@@ -410,7 +411,7 @@ HydraUI.StyleFuncs["player"] = function(self, unit)
 			
 			for i = 1, 4 do
 				ArcaneCharges[i] = CreateFrame("StatusBar", self:GetName() .. "ArcaneCharge" .. i, ArcaneCharges)
-				ArcaneCharges[i]:SetSize(Width, 8)
+				ArcaneCharges[i]:SetSize(Width, Settings["player-resource-height"])
 				ArcaneCharges[i]:SetStatusBarTexture(Assets:GetTexture(Settings["ui-widget-texture"]))
 				ArcaneCharges[i]:SetStatusBarColor(HydraUI:HexToRGB(Settings["color-arcane-charges"]))
 				ArcaneCharges[i]:SetWidth(i == 1 and Width - 1 or Width)
@@ -433,7 +434,7 @@ HydraUI.StyleFuncs["player"] = function(self, unit)
 			self.AuraParent = ArcaneCharges
 		elseif (HydraUI.UserClass == "MONK") then
 			local Chi = CreateFrame("Frame", self:GetName() .. "Chi", self, "BackdropTemplate")
-			Chi:SetSize(Settings["unitframes-player-width"], 10)
+			Chi:SetSize(Settings["unitframes-player-width"], Settings["player-resource-height"] + 2)
 			Chi:SetBackdrop(HydraUI.Backdrop)
 			Chi:SetBackdropColor(0, 0, 0)
 			Chi:SetBackdropBorderColor(0, 0, 0)
@@ -448,7 +449,7 @@ HydraUI.StyleFuncs["player"] = function(self, unit)
 			
 			for i = 1, 6 do
 				Chi[i] = CreateFrame("StatusBar", self:GetName() .. "Chi" .. i, Chi)
-				Chi[i]:SetSize(Width, 8)
+				Chi[i]:SetSize(Width, Settings["player-resource-height"])
 				Chi[i]:SetStatusBarTexture(Assets:GetTexture(Settings["ui-widget-texture"]))
 				Chi[i]:SetStatusBarColor(HydraUI:HexToRGB(Settings["color-chi"]))
 				Chi[i]:SetWidth(i == 1 and Width - 1 or Width)
@@ -467,7 +468,7 @@ HydraUI.StyleFuncs["player"] = function(self, unit)
 			end
 			
 			local Stagger = CreateFrame("StatusBar", nil, self)
-			Stagger:SetSize(Settings["unitframes-player-width"] - 2, 8)
+			Stagger:SetSize(Settings["unitframes-player-width"] - 2, Settings["player-resource-height"])
 			Stagger:SetStatusBarTexture(Assets:GetTexture(Settings["ui-widget-texture"]))
 			Stagger:Hide()
 			
@@ -493,7 +494,7 @@ HydraUI.StyleFuncs["player"] = function(self, unit)
 			self.AuraParent = Chi
 		elseif (HydraUI.UserClass == "DEATHKNIGHT") then
 			local Runes = CreateFrame("Frame", self:GetName() .. "Runes", self, "BackdropTemplate")
-			Runes:SetSize(Settings["unitframes-player-width"], 10)
+			Runes:SetSize(Settings["unitframes-player-width"], Settings["player-resource-height"] + 2)
 			Runes:SetBackdrop(HydraUI.Backdrop)
 			Runes:SetBackdropColor(0, 0, 0)
 			Runes:SetBackdropBorderColor(0, 0, 0)
@@ -509,7 +510,7 @@ HydraUI.StyleFuncs["player"] = function(self, unit)
 			
 			for i = 1, 6 do
 				Runes[i] = CreateFrame("StatusBar", self:GetName() .. "Rune" .. i, Runes)
-				Runes[i]:SetSize(Width, 8)
+				Runes[i]:SetSize(Width, Settings["player-resource-height"])
 				Runes[i]:SetStatusBarTexture(Assets:GetTexture(Settings["ui-widget-texture"]))
 				Runes[i]:SetStatusBarColor(HydraUI:HexToRGB(Settings["color-runes"]))
 				Runes[i]:SetWidth(i == 1 and Width - 1 or Width)
@@ -553,7 +554,7 @@ HydraUI.StyleFuncs["player"] = function(self, unit)
 			self.AuraParent = Runes
 		elseif (HydraUI.UserClass == "PALADIN") then
 			local HolyPower = CreateFrame("Frame", self:GetName() .. "HolyPower", self, "BackdropTemplate")
-			HolyPower:SetSize(Settings["unitframes-player-width"], 10)
+			HolyPower:SetSize(Settings["unitframes-player-width"], Settings["player-resource-height"] + 2)
 			HolyPower:SetBackdrop(HydraUI.Backdrop)
 			HolyPower:SetBackdropColor(0, 0, 0)
 			HolyPower:SetBackdropBorderColor(0, 0, 0)
@@ -568,7 +569,7 @@ HydraUI.StyleFuncs["player"] = function(self, unit)
 			
 			for i = 1, 5 do
 				HolyPower[i] = CreateFrame("StatusBar", self:GetName() .. "HolyPower" .. i, HolyPower)
-				HolyPower[i]:SetSize(Width, 8)
+				HolyPower[i]:SetSize(Width, Settings["player-resource-height"])
 				HolyPower[i]:SetStatusBarTexture(Assets:GetTexture(Settings["ui-widget-texture"]))
 				HolyPower[i]:SetStatusBarColor(HydraUI:HexToRGB(Settings["color-holy-power"]))
 				HolyPower[i]:SetWidth(i == 1 and Width - 1 or Width)
@@ -607,7 +608,7 @@ HydraUI.StyleFuncs["player"] = function(self, unit)
 	--Buffs.SetPosition = BuffsSetPosition
 	Buffs.showType = true
 	
-	if Settings["player-move-resources"] then
+	if Settings["player-move-resource"] then
 		Buffs:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 2)
 	else
 		Buffs:SetPoint("BOTTOMLEFT", self.AuraParent, "TOPLEFT", 0, 2)
@@ -673,7 +674,6 @@ local UpdatePlayerWidth = function(value)
 			return
 		end
 		
-		-- Combo points
 		if Frame.ComboPoints then
 			Frame.ComboPoints:SetWidth(value)
 			
@@ -835,11 +835,62 @@ local UpdateShowPlayerBuffs = function(value)
 	end
 end
 
+local UpdateResourceBarHeight = function(value)
+	if HydraUI.UnitFrames["player"] then
+		local Frame = HydraUI.UnitFrames["player"]
+		
+		--[[if (not Settings["player-move-resource"]) then
+			return
+		end]]
+		
+		if Frame.ComboPoints then
+			Frame.ComboPoints:SetHeight(value + 2)
+			
+			local Max = UnitPowerMax("player", Enum.PowerType.ComboPoints)
+			
+			for i = 1, Max do
+				Frame.ComboPoints[i]:SetWidth(i == 1 and Width - 1 or Width)
+			end
+		elseif Frame.SoulShards then
+			Frame.SoulShards:SetHeight(value + 2)
+			
+			for i = 1, 5 do
+				Frame.SoulShards[i]:SetHeight(value)
+			end
+		elseif Frame.ArcanePower then
+			Frame.ArcanePower:SetHeight(value + 2)
+			
+			for i = 1, 4 do
+				Frame.ArcanePower[i]:SetHeight(value)
+			end
+		elseif Frame.Chi then
+			Frame.Chi:SetHeight(value + 2)
+			Frame.Stagger:SetHeight(value)
+			
+			for i = 1, 6 do
+				Frame.Chi[i]:SetHeight(value)
+			end
+		elseif Frame.Runes then
+			Frame.Runes:SetHeight(value + 2)
+			
+			for i = 1, 6 do
+				Frame.Runes[i]:SetHeight(value)
+			end
+		elseif Frame.HolyPower then
+			Frame.HolyPower:SetHeight(value + 2)
+			
+			for i = 1, 5 do
+				Frame.HolyPower[i]:SetHeight(value)
+			end
+		end
+	end
+end
+
 GUI:AddWidgets(Language["General"], Language["Player"], Language["Unit Frames"], function(left, right)
 	left:CreateHeader(Language["Styling"])
 	left:CreateSwitch("player-enable", Settings["player-enable"], Language["Enable Player"], Language["Enable the player unit frame"], ReloadUI):RequiresReload(true)
 	left:CreateSlider("unitframes-player-width", Settings["unitframes-player-width"], 120, 320, 1, "Width", "Set the width of the player unit frame", UpdatePlayerWidth)
-	left:CreateSwitch("unitframes-player-enable-resource", Settings["unitframes-player-enable-resource"], Language["Enable Resource Bar"], Language["Enable the player resources such as combo points, runes, etc."], ReloadUI):RequiresReload(true)
+	left:CreateSwitch("unitframes-player-enable-resource", Settings["unitframes-player-enable-resource"], Language["Enable Resource Bar"], Language["Enable the player resource such as combo points, runes, etc."], ReloadUI):RequiresReload(true)
 	left:CreateSwitch("unitframes-show-player-buffs", Settings["unitframes-show-player-buffs"], Language["Show Player Buffs"], Language["Show your auras above the player unit frame"], UpdateShowPlayerBuffs)
 	left:CreateSwitch("player-enable-portrait", Settings["player-enable-portrait"], Language["Enable Portrait"], Language["Display the player unit portrait"], UpdatePlayerEnablePortrait)
 	left:CreateSwitch("player-enable-pvp-indicator", Settings["player-enable-pvp-indicator"], Language["Enable PVP Indicator"], Language["Display the pvp indicator"], UpdatePlayerEnablePVPIndicator)
@@ -865,6 +916,7 @@ GUI:AddWidgets(Language["General"], Language["Player"], Language["Unit Frames"],
 	right:CreateSlider("unitframes-player-cast-width", Settings["unitframes-player-cast-width"], 80, 360, 1, Language["Cast Bar Width"], Language["Set the width of the player cast bar"], UpdatePlayerCastBarSize)
 	right:CreateSlider("unitframes-player-cast-height", Settings["unitframes-player-cast-height"], 8, 50, 1, Language["Cast Bar Height"], Language["Set the height of the player cast bar"], UpdatePlayerCastBarSize)
 	
-	right:CreateHeader(Language["Class Resources"])
-	right:CreateSwitch("player-move-resources", Settings["player-move-resources"], Language["Detach Class Bar"], Language["Detach the class resources from the unit frame, to be moved by the UI"], ReloadUI):RequiresReload(true)
+	right:CreateHeader(Language["Class Resource"])
+	right:CreateSwitch("player-move-resource", Settings["player-move-resource"], Language["Detach Class Bar"], Language["Detach the class resource from the unit frame, to be moved by the UI"], ReloadUI):RequiresReload(true)
+	right:CreateSlider("player-resource-height", Settings["player-resource-height"], 4, 30, 1, Language["Set Height"], Language["Set the height of the player resource bar"], UpdateResourceBarHeight)
 end)
