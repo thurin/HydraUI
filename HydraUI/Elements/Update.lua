@@ -27,7 +27,7 @@ end
 -- To be implemented. Add something here like a link or whatever to update.
 local UpdateOnMouseUp = function()
 	HydraUI:print(Language["You can get an updated version of HydraUI at https://www.curseforge.com/wow/addons/hydraui"])
-	print(Language["Join the Discord community for support and feedback https://discord.gg/XGYDaBF"])
+	print(Language["Join the Discord community for support and feedback https://discord.gg/XefDFa6nJR"])
 end
 
 function Update:PLAYER_ENTERING_WORLD()
@@ -109,7 +109,7 @@ function Update:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
 		if (message > AddOnVersion) then
 			HydraUI:SendAlert(Language["New Version!"], format(Language["Update to version |cFF%s%s|r"], Settings["ui-header-font-color"], message), nil, UpdateOnMouseUp, true)
 			--HydraUI:print(format(Language["Update to version |cFF%s%s|r! www.curseforge.com/wow/addons/HydraUI"], Settings["ui-header-font-color"], message))
-			--print(Language["Join the Discord community for support and feedback https://discord.gg/XGYDaBF"])
+			--print(Language["Join the Discord community for support and feedback https://discord.gg/XefDFa6nJR"])
 			
 			-- Store this higher version and tell anyone else who asks
 			AddOnVersion = message
@@ -122,7 +122,7 @@ function Update:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
 		elseif (message > AddOnVersion) then -- We're behind!
 			HydraUI:SendAlert(Language["New Version!"], format(Language["Update to version |cFF%s%s|r"], Settings["ui-header-font-color"], message), nil, UpdateOnMouseUp, true)
 			--HydraUI:print(format(Language["Update to version |cFF%s%s|r! www.curseforge.com/wow/addons/HydraUI"], Settings["ui-header-font-color"], message))
-			--print(Language["Join the Discord community for support and feedback https://discord.gg/XGYDaBF"])
+			--print(Language["Join the Discord community for support and feedback https://discord.gg/XefDFa6nJR"])
 			
 			-- Store this higher version and tell anyone else who asks
 			AddOnVersion = message

@@ -45,7 +45,7 @@ local GetDiscordLink = function()
 	end
 	
 	if (not Throttle:IsThrottled("discord-request")) then
-		HydraUI:print(Language["Join the Discord community for support and feedback https://discord.gg/XGYDaBF"])
+		HydraUI:print(Language["Join the Discord community for support and feedback https://discord.gg/XefDFa6nJR"])
 		
 		Throttle:Start("discord-request")
 	end
