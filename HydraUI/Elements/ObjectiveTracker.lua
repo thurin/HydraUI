@@ -488,7 +488,7 @@ function Tracker:AddHooks()
 	if (not ObjectiveTrackerFrame.initialized) then -- I'll move or hook this case later, but the tracker also loads on player entering world, so sometimes we need to start it
 		ObjectiveTracker_Initialize(ObjectiveTrackerFrame)
 		
-		ObjectiveTracker_Update()
+		--ObjectiveTracker_Update() -- Tainting in 9.1
 		
 		if (not QuestSuperTracking_IsSuperTrackedQuestValid()) then
 			QuestSuperTracking_ChooseClosestQuest()
