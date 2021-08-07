@@ -73,6 +73,8 @@ function Map:Style()
 	Minimap:SetParent(self)
 	Minimap:ClearAllPoints()
 	Minimap:SetSize(Settings["minimap-size"], Settings["minimap-size"])
+    Minimap:SetArchBlobRingScalar(0)
+    Minimap:SetQuestBlobRingScalar(0)
 	Minimap:EnableMouseWheel(true)
 	Minimap:SetScript("OnMouseWheel", OnMouseWheel)
 	
