@@ -119,8 +119,8 @@ end
 function MinimapButtons:SkinButtons()
 	for _, Child in next, {Minimap:GetChildren()} do
 		local Name = Child:GetName()
-		print(Child, Name)
-		if (Name and not IgnoredBlizzard[Name] and not IsIgnoredAddOn(Name) and Child:IsShown()) or (not Name) then
+		
+		if (Name and not IgnoredBlizzard[Name] and not IsIgnoredAddOn(Name) and Child:IsShown()) then
 			local Type = Child:GetObjectType()
 			
 			Child:SetParent(self.Panel)

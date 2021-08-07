@@ -1,6 +1,6 @@
 ## Interface: 11307
 ## Author: Hydra
-## Version: 1.21
+## Version: 1.22
 ## Title: |cFFFFC44DHydra|r|cFFFFFFFFUI|r
 ## Notes: An interface replacement for Classic
 ## SavedVariables: HydraUIProfileData, HydraUIProfiles, HydraUIData, HydraUIGold
@@ -62,6 +62,7 @@ Elements\MiniMap\MiniMap.lua
 Elements\MiniMap\MiniMapButtons.lua
 Elements\ZoneText.lua
 Elements\Update.lua
+Elements\AuraTemplate.xml
 Elements\Auras.lua
 Elements\Bags.lua
 Elements\DataTexts\DataTexts.lua
