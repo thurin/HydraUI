@@ -1077,14 +1077,21 @@ function UF:Load()
 	end
 	
 	if Settings["party-enable"] then
-		local Point = "LEFT"
-		local X = Settings["party-spacing"]
-		local Y = 0
+		local XOffset = 0
+		local YOffset = 0
 		
-		if (Settings["party-orientation"] == "VERTICAL") then
-			Point = "BOTTOM"
-			X = 0
-			Y = Settings["party-spacing"]
+		if (Settings["party-point"] == "LEFT") then
+			XOffset = Settings["party-spacing"]
+			YOffset = 0
+		elseif (Settings["party-point"] == "RIGHT") then
+			XOffset = - Settings["party-spacing"]
+			YOffset = 0
+		elseif (Settings["party-point"] == "TOP") then
+			XOffset = 0
+			YOffset = - Settings["party-spacing"]
+		elseif (Settings["party-point"] == "BOTTOM") then
+			XOffset = 0
+			YOffset = Settings["party-spacing"]
 		end
 		
 		local Party = oUF:SpawnHeader("HydraUI Party", nil, "party,solo",
@@ -1095,9 +1102,9 @@ function UF:Load()
 			"showPlayer", true,
 			"showParty", true,
 			"showRaid", false,
-			"xoffset", X,
-			"yOffset", Y,
-			"point", Point,
+			"xOffset", XOffset,
+			"yOffset", YOffset,
+			"point", Settings["party-point"],
 			"oUF-initialConfigFunction", [[
 				local Header = self:GetParent()
 				
@@ -1120,6 +1127,23 @@ function UF:Load()
 		HydraUI:CreateMover(self.PartyAnchor)
 		
 		if Settings["party-pets-enable"] then
+			local XOffset = 0
+			local YOffset = 0
+			
+			if (Settings["party-point"] == "LEFT") then
+				XOffset = Settings["party-spacing"]
+				YOffset = 0
+			elseif (Settings["party-point"] == "RIGHT") then
+				XOffset = - Settings["party-spacing"]
+				YOffset = 0
+			elseif (Settings["party-point"] == "TOP") then
+				XOffset = 0
+				YOffset = - Settings["party-spacing"]
+			elseif (Settings["party-point"] == "BOTTOM") then
+				XOffset = 0
+				YOffset = Settings["party-spacing"]
+			end
+
 			local PartyPet = oUF:SpawnHeader("HydraUI Party Pets", "SecureGroupPetHeaderTemplate", "party,solo",
 				"initial-width", Settings["party-pets-width"],
 				"initial-height", (Settings["party-pets-health-height"] + Settings["party-pets-power-height"] + 3),
@@ -1127,8 +1151,8 @@ function UF:Load()
 				"showPlayer", false,
 				"showParty", true,
 				"showRaid", false,
-				"xoffset", Settings["party-x-offset"],
-				"yOffset", Settings["party-y-offset"],
+				"xOffset", XOffset,
+				"yOffset", YOffset,
 				"point", Settings["party-point"],
 				"oUF-initialConfigFunction", [[
 					local Header = self:GetParent()
@@ -1137,9 +1161,20 @@ function UF:Load()
 					self:SetHeight(Header:GetAttribute("initial-height"))
 				]]
 			)
-			
-			PartyPet:SetPoint("BOTTOMLEFT", Party, "TOPLEFT", 0, 2)
+
+			if (Settings["party-point"] == "LEFT") then
+				PartyPet:SetPoint("TOPLEFT", Party, "BOTTOMLEFT", 0, - Settings["party-spacing"])
+			elseif (Settings["party-point"] == "RIGHT") then
+				PartyPet:SetPoint("TOPRIGHT", Party, "BOTTOMRIGHT", 0, - Settings["party-spacing"])
+			elseif (Settings["party-point"] == "TOP") then
+				PartyPet:SetPoint("TOPLEFT", Party, "BOTTOMLEFT", 0, - Settings["party-spacing"])
+			elseif (Settings["party-point"] == "BOTTOM") then
+				PartyPet:SetPoint("BOTTOMLEFT", Party, "TOPLEFT", 0, Settings["party-spacing"])
+			end
+
 			PartyPet:SetParent(HydraUI.UIParent)
+
+			HydraUI.UnitFrames["party-pets"] = PartyPet
 		end
 	end
 	
@@ -1153,7 +1188,7 @@ function UF:Load()
 			"showParty", false,
 			"showRaid", true,
 			"point", Settings["raid-point"],
-			"xoffset", Settings["raid-x-offset"],
+			"xOffset", Settings["raid-x-offset"],
 			"yOffset", Settings["raid-y-offset"],
 			"maxColumns", Settings["raid-max-columns"],
 			"unitsPerColumn", Settings["raid-units-per-column"],
