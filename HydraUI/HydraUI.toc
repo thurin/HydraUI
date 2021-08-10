@@ -17,6 +17,8 @@ Elements\Libraries\AceSerializer-3.0.lua
 Elements\Libraries\LibDeflate.lua
 Elements\Libraries\LibAnim.lua
 Elements\Libraries\oUF\oUF.xml
+Elements\Libraries\LibQuestXP\LibQuestXPDB.lua
+Elements\Libraries\LibQuestXP\LibQuestXP.lua
 Elements\Libraries\LibClassicDurations\LibClassicDurations.xml
 Elements\Assets.lua
 Elements\Tools.lua

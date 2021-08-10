@@ -36,8 +36,32 @@ local UpdateXP = function(self, first)
     MaxXP = UnitXPMax("player")
     RestingText = IsResting() and ("|cFF" .. Settings["experience-rested-color"] .. "zZz|r") or ""
 	
+	local QuestLogXP = 0
+	local Zone = GetRealZoneText()
+	local ZoneName
+	
+	for i = 1, GetNumQuestLogEntries() do
+		local TitleText, _, _, IsHeader, _, IsComplete, _, QuestID = GetQuestLogTitle(i)
+		
+		if IsHeader then
+			ZoneName = TitleText
+		else
+			if (ZoneName and Zone == ZoneName and IsComplete) then
+				QuestLogXP = QuestLogXP + GetQuestLogRewardXP(QuestID)
+			end
+		end
+	end
+	
+	if (QuestLogXP > 0) then
+		self.Bar.Quest:SetValue(min(XP + QuestLogXP, MaxXP))
+		self.Bar.Quest:Show()
+	else
+		self.Bar.Quest:Hide()
+	end
+	
 	self.Bar:SetMinMaxValues(0, MaxXP)
 	self.Bar.Rested:SetMinMaxValues(0, MaxXP)
+	self.Bar.Quest:SetMinMaxValues(0, MaxXP)
 	
 	if Rested then
 		self.Bar.Rested:SetValue(XP + Rested)
@@ -366,6 +390,18 @@ ExperienceBar["PLAYER_ENTERING_WORLD"] = function(self)
 	self.Bar.Rested.Spark:SetPoint("LEFT", self.Bar.Rested:GetStatusBarTexture(), "RIGHT", 0, 0)
 	self.Bar.Rested.Spark:SetTexture(Assets:GetTexture("Blank"))
 	self.Bar.Rested.Spark:SetVertexColor(0, 0, 0)
+	
+	self.Bar.Quest = CreateFrame("StatusBar", nil, self.Bar)
+	self.Bar.Quest:SetStatusBarTexture(Assets:GetTexture(Settings["ui-widget-texture"]))
+	self.Bar.Quest:SetStatusBarColor(0.8, 0.8, 0.1)
+	self.Bar.Quest:SetFrameLevel(6)
+	self.Bar.Quest:SetAllPoints(self.Bar)
+	
+	self.Bar.Quest.Spark = self.Bar.Quest:CreateTexture(nil, "OVERLAY")
+	self.Bar.Quest.Spark:SetSize(1, Settings["experience-height"])
+	self.Bar.Quest.Spark:SetPoint("LEFT", self.Bar.Quest:GetStatusBarTexture(), "RIGHT", 0, 0)
+	self.Bar.Quest.Spark:SetTexture(Assets:GetTexture("Blank"))
+	self.Bar.Quest.Spark:SetVertexColor(0, 0, 0)
 	
 	self.Progress = self.Bar:CreateFontString(nil, "OVERLAY")
 	self.Progress:SetPoint("LEFT", self.Bar, 5, 0)
