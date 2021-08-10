@@ -2,7 +2,6 @@ local HydraUI, GUI, Language, Assets, Settings, Defaults = select(2, ...):get()
 
 local Experience = HydraUI:NewModule("Experience")
 
--- Default settings values
 Defaults["experience-enable"] = true
 Defaults["experience-width"] = 310
 Defaults["experience-height"] = 18
@@ -37,24 +36,48 @@ ExperienceBar.Elapsed = 0
 local Gained = 0
 local Seconds = 0
 
-local UpdateLevel = function(self, level)
-	if (level == MAX_PLAYER_LEVEL) then
+local QuestLogGetInfo = C_QuestLog.GetInfo
+local ReadyForTurnIn = C_QuestLog.ReadyForTurnIn
+local GetNumQuestLogEntries = C_QuestLog.GetNumQuestLogEntries
+
+local UpdateXP = function(self, first)
+	if (UnitLevel("player") == MAX_PLAYER_LEVEL) then
 		self:UnregisterAllEvents()
 		self:SetScript("OnEnter", nil)
 		self:SetScript("OnLeave", nil)
 		self:SetScript("OnEvent", nil)
 		self:Hide()
+		
+		return
 	end
-end
-
-local UpdateXP = function(self, first)
+	
 	Rested = GetXPExhaustion()
     XP = UnitXP("player")
     MaxXP = UnitXPMax("player")
     RestingText = IsResting() and ("|cFF" .. Settings["experience-rested-color"] .. "zZz|r") or ""
 	
+	local QuestLogXP = 0
+	
+	for i = 1, GetNumQuestLogEntries() do
+		local Info = C_QuestLog.GetInfo(i)
+		
+		if (not Info.isHeader) then
+			if (Info.isOnMap and ReadyForTurnIn(Info.questID)) then
+				QuestLogXP = QuestLogXP + GetQuestLogRewardXP(Info.questID)
+			end
+		end
+	end
+	
+	if (QuestLogXP > 0) then
+		self.Bar.Quest:SetValue(min(XP + QuestLogXP, MaxXP))
+		self.Bar.Quest:Show()
+	else
+		self.Bar.Quest:Hide()
+	end
+	
 	self.Bar:SetMinMaxValues(0, MaxXP)
 	self.Bar.Rested:SetMinMaxValues(0, MaxXP)
+	self.Bar.Quest:SetMinMaxValues(0, MaxXP)
 	
 	if Rested then
 		self.Bar.Rested:SetValue(XP + Rested)
@@ -265,13 +288,16 @@ local UpdatePercentVisibility = function(value)
 	end
 end
 
-ExperienceBar["PLAYER_LEVEL_UP"] = UpdateLevel
+ExperienceBar["PLAYER_LEVEL_UP"] = UpdateXP
 ExperienceBar["PLAYER_XP_UPDATE"] = UpdateXP
 ExperienceBar["PLAYER_UPDATE_RESTING"] = UpdateXP
 ExperienceBar["UPDATE_EXHAUSTION"] = UpdateXP
+ExperienceBar["QUEST_LOG_UPDATE"] = UpdateXP
+ExperienceBar["ZONE_CHANGED"] = UpdateXP
+ExperienceBar["ZONE_CHANGED_NEW_AREA"] = UpdateXP
 
 ExperienceBar["PLAYER_ENTERING_WORLD"] = function(self)
-	if (not Settings["experience-enable"]) or (UnitLevel("player") == MAX_PLAYER_LEVEL) then
+	if (not Settings["experience-enable"]) then
 		self:UnregisterAllEvents()
 		
 		return
@@ -279,7 +305,7 @@ ExperienceBar["PLAYER_ENTERING_WORLD"] = function(self)
 	
 	self:SetSize(Settings["experience-width"], Settings["experience-height"])
 	self:SetPoint("TOP", HydraUI.UIParent, 0, -13)
-	self:SetFrameStrata("HIGH")
+	self:SetFrameStrata("MEDIUM")
 	self:SetScript("OnEnter", self.OnEnter)
 	self:SetScript("OnLeave", self.OnLeave)
 	
@@ -384,6 +410,18 @@ ExperienceBar["PLAYER_ENTERING_WORLD"] = function(self)
 	self.Bar.Rested.Spark:SetTexture(Assets:GetTexture("Blank"))
 	self.Bar.Rested.Spark:SetVertexColor(0, 0, 0)
 	
+	self.Bar.Quest = CreateFrame("StatusBar", nil, self.Bar)
+	self.Bar.Quest:SetStatusBarTexture(Assets:GetTexture(Settings["ui-widget-texture"]))
+	self.Bar.Quest:SetStatusBarColor(0.8, 0.8, 0.1)
+	self.Bar.Quest:SetFrameLevel(6)
+	self.Bar.Quest:SetAllPoints(self.Bar)
+	
+	self.Bar.Quest.Spark = self.Bar.Quest:CreateTexture(nil, "OVERLAY")
+	self.Bar.Quest.Spark:SetSize(1, Settings["experience-height"])
+	self.Bar.Quest.Spark:SetPoint("LEFT", self.Bar.Quest:GetStatusBarTexture(), "RIGHT", 0, 0)
+	self.Bar.Quest.Spark:SetTexture(Assets:GetTexture("Blank"))
+	self.Bar.Quest.Spark:SetVertexColor(0, 0, 0)
+	
 	self.Progress = self.Bar:CreateFontString(nil, "OVERLAY")
 	self.Progress:SetPoint("LEFT", self.Bar, 5, 0)
 	HydraUI:SetFontInfo(self.Progress, Settings["ui-widget-font"], Settings["ui-font-size"])
@@ -407,6 +445,8 @@ ExperienceBar["PLAYER_ENTERING_WORLD"] = function(self)
 	
 	HydraUI:CreateMover(self, 6)
 	
+	UpdateXP(self)
+	
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end
 
@@ -419,11 +459,14 @@ function ExperienceBar:OnUpdate(elapsed)
 	end
 end
 
+ExperienceBar:RegisterEvent("QUEST_LOG_UPDATE")
 ExperienceBar:RegisterEvent("PLAYER_LEVEL_UP")
 ExperienceBar:RegisterEvent("PLAYER_ENTERING_WORLD")
 ExperienceBar:RegisterEvent("PLAYER_XP_UPDATE")
 ExperienceBar:RegisterEvent("PLAYER_UPDATE_RESTING")
 ExperienceBar:RegisterEvent("UPDATE_EXHAUSTION")
+ExperienceBar:RegisterEvent("ZONE_CHANGED")
+ExperienceBar:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 ExperienceBar:SetScript("OnEvent", function(self, event)
 	if self[event] then
 		self[event](self)
