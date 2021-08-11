@@ -132,7 +132,7 @@ end
 
 local SetTooltipStyle = function(self)
 	self:SetBackdrop(nil) -- To stop blue tooltips
-
+	
 	if self.Styled then
 		self.OuterBG:ClearAllPoints()
 		self.OuterBG:SetPoint("BOTTOMRIGHT", self, 3, -3)

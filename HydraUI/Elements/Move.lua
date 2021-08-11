@@ -290,7 +290,7 @@ function HydraUI:CreateMover(frame, padding)
 	
 	local Profile = self:GetActiveProfile()
 	
-	if (Profile.Move and Profile.Move[Name]) then
+	if (Profile and Profile.Move and Profile.Move[Name]) then
 		local A1, Parent, A2, X, Y = self:StringToPosition(Profile.Move[Name])
 		
 		Mover:SetPoint(A1, Parent, A2, X, Y)
