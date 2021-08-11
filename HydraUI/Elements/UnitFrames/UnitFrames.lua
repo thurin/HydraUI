@@ -6,6 +6,8 @@ local select = select
 local format = string.format
 local floor = math.floor
 local sub = string.sub
+local len = string.len
+local byte = string.byte
 local find = string.find
 local UnitName = UnitName
 local UnitPower = UnitPower
@@ -132,6 +134,46 @@ function UF:SetPowerAttributes(power, value)
 		power.colorPower = false
 		power.colorClass = true
 		power.colorReaction = true
+	end
+end
+
+local UTF8Sub = function(str, stop) -- utf8 sub derived from tukui
+	if (not str) then
+		return
+	end
+
+	local Bytes = len(str)
+
+	if (Bytes <= stop) then
+		return str
+	else
+		local Len, Pos = 0, 1
+
+		while (Pos <= Bytes) do
+			Len = Len + 1
+
+			local c = byte(str, Pos)
+
+			if (c > 0 and c <= 127) then
+				Pos = Pos + 1
+			elseif (c >= 192 and c <= 223) then
+				Pos = Pos + 2
+			elseif (c >= 224 and c <= 239) then
+				Pos = Pos + 3
+			elseif (c >= 240 and c <= 247) then
+				Pos = Pos + 4
+			end
+
+			if (Len == stop) then
+				break
+			end
+		end
+
+		if (Len == stop and Pos <= Bytes) then
+			return sub(str, 1, Pos - 1) .. ".."
+		else
+			return str
+		end
 	end
 end
 
@@ -436,7 +478,7 @@ Methods["Name4"] = function(unit)
 	local Name = UnitName(unit)
 	
 	if Name then
-		return sub(Name, 1, 4)
+		return UTF8Sub(Name, 4)
 	end
 end
 
@@ -445,7 +487,7 @@ Methods["Name5"] = function(unit)
 	local Name = UnitName(unit)
 	
 	if Name then
-		return sub(Name, 1, 5)
+		return UTF8Sub(Name, 5)
 	end
 end
 
@@ -454,7 +496,7 @@ Methods["Name8"] = function(unit)
 	local Name = UnitName(unit)
 	
 	if Name then
-		return sub(Name, 1, 8)
+		return UTF8Sub(Name, 8)
 	end
 end
 
@@ -463,7 +505,7 @@ Methods["Name10"] = function(unit)
 	local Name = UnitName(unit)
 	
 	if Name then
-		return sub(Name, 1, 10)
+		return UTF8Sub(Name, 10)
 	end
 end
 
@@ -472,7 +514,7 @@ Methods["Name14"] = function(unit)
 	local Name = UnitName(unit)
 	
 	if Name then
-		return sub(Name, 1, 14)
+		return UTF8Sub(Name, 14)
 	end
 end
 
@@ -481,7 +523,7 @@ Methods["Name15"] = function(unit)
 	local Name = UnitName(unit)
 	
 	if Name then
-		return sub(Name, 1, 15)
+		return UTF8Sub(Name, 15)
 	end
 end
 
@@ -490,7 +532,7 @@ Methods["Name20"] = function(unit)
 	local Name = UnitName(unit)
 	
 	if Name then
-		return sub(Name, 1, 20)
+		return UTF8Sub(Name, 20)
 	end
 end
 
@@ -499,7 +541,7 @@ Methods["Name30"] = function(unit)
 	local Name = UnitName(unit)
 	
 	if Name then
-		return sub(Name, 1, 30)
+		return UTF8Sub(Name, 30)
 	end
 end
 

@@ -17,6 +17,7 @@ Defaults["unitframes-target-cast-width"] = 250
 Defaults["unitframes-target-cast-height"] = 22
 Defaults["unitframes-target-enable-castbar"] = true
 Defaults["target-enable-portrait"] = false
+Defaults["target-portrait-style"] = "3D"
 Defaults["target-enable-pvp"] = true
 Defaults["target-enable"] = true
 
@@ -77,22 +78,28 @@ HydraUI.StyleFuncs["target"] = function(self, unit)
 	HealthRight:SetPoint("RIGHT", Health, -3, 0)
 	HealthRight:SetJustifyH("RIGHT")
 	
-    -- 3D Portrait
-    local Portrait = CreateFrame("PlayerModel", nil, self)
+    -- Portrait
+	local Portrait
+
+	if (Settings["target-portrait-style"] == "2D") then
+		Portrait = self:CreateTexture(nil, "OVERLAY")
+		Portrait:SetTexCoord(0.12, 0.88, 0.12, 0.88)
+	else
+		Portrait = CreateFrame("PlayerModel", nil, self)
+	end
+	
     Portrait:SetSize(55, Settings["unitframes-target-health-height"] + Settings["unitframes-target-power-height"] + 1)
     Portrait:SetPoint("LEFT", self, "RIGHT", 3, 0)
 	
-	Portrait.BG = Portrait:CreateTexture(nil, "BACKGROUND")
+	Portrait.BG = self:CreateTexture(nil, "BACKGROUND")
 	Portrait.BG:SetPoint("TOPLEFT", Portrait, -1, 1)
-	Portrait.BG:SetPoint("BOTTOMRIGHT", Portrait, 2, -1)
+	Portrait.BG:SetPoint("BOTTOMRIGHT", Portrait, 1, -1)
 	Portrait.BG:SetTexture(Assets:GetTexture(Settings["Blank"]))
 	Portrait.BG:SetVertexColor(0, 0, 0)
 	
-	--[[Portrait.BG2 = Portrait:CreateTexture(nil, "BORDER")
-	Portrait.BG2:SetPoint("TOPLEFT", Portrait, 0, 0)
-	Portrait.BG2:SetPoint("BOTTOMRIGHT", Portrait, 1, 0)
-	Portrait.BG2:SetTexture(Assets:GetTexture(Settings["ui-widget-texture"]))
-	Portrait.BG2:SetAlpha(0.2)]]
+	if (not Settings["target-enable-portrait"]) then
+		Portrait.BG:Hide()
+	end
 	
     self.Portrait = Portrait
 	
@@ -346,8 +353,10 @@ local UpdateTargetEnablePortrait = function(value)
 	if HydraUI.UnitFrames["target"] then
 		if value then
 			HydraUI.UnitFrames["target"]:EnableElement("Portrait")
+			HydraUI.UnitFrames["target"].Portrait.BG:Show()
 		else
 			HydraUI.UnitFrames["target"]:DisableElement("Portrait")
+			HydraUI.UnitFrames["target"].Portrait.BG:Hide()
 		end
 		
 		HydraUI.UnitFrames["target"].Portrait:ForceUpdate()
@@ -373,6 +382,7 @@ GUI:AddWidgets(Language["General"], Language["Target"], Language["Unit Frames"],
 	left:CreateSwitch("unitframes-only-player-debuffs", Settings["unitframes-only-player-debuffs"], Language["Only Display Player Debuffs"], Language["If enabled, only your own debuffs will be displayed on the target"], UpdateOnlyPlayerDebuffs)
 	left:CreateSwitch("target-enable-portrait", Settings["target-enable-portrait"], Language["Enable Portrait"], Language["Display the target unit portrait"], UpdateTargetEnablePortrait)
 	left:CreateSwitch("target-enable-pvp", Settings["target-enable-pvp"], Language["Enable PVP Icon"], Language["Display an icon on enemies flagged for PVP"], ReloadUI):RequiresReload(true)
+	left:CreateDropdown("target-portrait-style", Settings["target-portrait-style"], {[Language["2D"]] = "2D", [Language["3D"]] = "3D"}, Language["Set Portrait Style"], Language["Set the style of the portrait"], ReloadUI):RequiresReload(true)
 	
 	left:CreateHeader(Language["Health"])
 	left:CreateSwitch("unitframes-target-health-reverse", Settings["unitframes-target-health-reverse"], Language["Reverse Health Fill"], Language["Reverse the fill of the health bar"], UpdateTargetHealthFill)

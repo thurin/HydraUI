@@ -447,19 +447,22 @@ function GUI:ShowWindow(category, name, parent)
 							
 							self.Categories[i].Buttons[j].Window:Hide()
 							
-							self.Categories[i].Buttons[j].Children[o].FadeIn:Play()
+							--self.Categories[i].Buttons[j].Children[o].FadeIn:Play()
+							self.Categories[i].Buttons[j].Children[o].Selected:SetAlpha(SELECTED_HIGHLIGHT_ALPHA)
 							self.Categories[i].Buttons[j].Children[o].Window:Show()
 						elseif self.Categories[i].Buttons[j].Children[o].Window then
 							self.Categories[i].Buttons[j].Children[o].Window:Hide()
 							
 							if (self.Categories[i].Buttons[j].Children[o].Selected:GetAlpha() > 0) then
-								self.Categories[i].Buttons[j].Children[o].FadeOut:Play()
+								--self.Categories[i].Buttons[j].Children[o].FadeOut:Play()
+								self.Categories[i].Buttons[j].Children[o].Selected:SetAlpha(0)
 							end
 						end
 					end
 					
 					if (self.Categories[i].Buttons[j].Selected:GetAlpha() > 0) then
-						self.Categories[i].Buttons[j].FadeOut:Play()
+						--self.Categories[i].Buttons[j].FadeOut:Play()
+						self.Categories[i].Buttons[j].Selected:SetAlpha(0)
 					end
 				elseif self.Categories[i].Buttons[j].Window then
 					self.Categories[i].Buttons[j].Window:Hide()
@@ -469,7 +472,8 @@ function GUI:ShowWindow(category, name, parent)
 					self.Categories[i].Buttons[j].Window = self:CreateWidgetWindow(category, name, parent)
 				end
 				
-				self.Categories[i].Buttons[j].FadeIn:Play()
+				--self.Categories[i].Buttons[j].FadeIn:Play()
+				self.Categories[i].Buttons[j].Selected:SetAlpha(SELECTED_HIGHLIGHT_ALPHA)
 				self.Categories[i].Buttons[j].Window:Show()
 				
 				if self.Categories[i].Buttons[j].Children then
@@ -481,7 +485,8 @@ function GUI:ShowWindow(category, name, parent)
 								self.Categories[i].Buttons[j].Children[o].Window:Hide()
 								
 								if (self.Categories[i].Buttons[j].Children[o].Selected:GetAlpha() > 0) then
-									self.Categories[i].Buttons[j].Children[o].FadeOut:Play()
+									--self.Categories[i].Buttons[j].Children[o].FadeOut:Play()
+									self.Categories[i].Buttons[j].Children[o].Selected:SetAlpha(0)
 								end
 							end
 							
@@ -497,7 +502,8 @@ function GUI:ShowWindow(category, name, parent)
 								self.Categories[i].Buttons[j].Children[o].Window:Hide()
 								
 								if (self.Categories[i].Buttons[j].Children[o].Selected:GetAlpha() > 0) then
-									self.Categories[i].Buttons[j].Children[o].FadeOut:Play()
+									--self.Categories[i].Buttons[j].Children[o].FadeOut:Play()
+									self.Categories[i].Buttons[j].Children[o].Selected:SetAlpha(0)
 								end
 							end
 							
@@ -512,7 +518,8 @@ function GUI:ShowWindow(category, name, parent)
 					self.Categories[i].Buttons[j].Window:Hide()
 					
 					if (self.Categories[i].Buttons[j].Selected:GetAlpha() > 0) then
-						self.Categories[i].Buttons[j].FadeOut:Play()
+						--self.Categories[i].Buttons[j].FadeOut:Play()
+						self.Categories[i].Buttons[j].Selected:SetAlpha(0)
 					end
 					
 					if self.Categories[i].Buttons[j].Children then
