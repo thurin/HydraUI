@@ -6,7 +6,7 @@ local Patrons = {
 	{"Erieeroot", "Dragonhawk", "Halven"},
 	{},
 	{"Dillan", "deck"},
-	{"JDoubleU00", "sylvester", "Innie", "Dellamaik", "Blom", "Ryex", "protocol7", "Cyber"},
+	{"JDoubleU00", "sylvester", "Innie", "Dellamaik", "Blom", "Ryex", "protocol7", "Cyber", "thurin"},
 	{},
 }
 
