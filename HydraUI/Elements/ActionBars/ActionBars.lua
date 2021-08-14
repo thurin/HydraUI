@@ -821,7 +821,8 @@ function AB:CreateStanceBar()
 end
 
 local UpdateExtraActionPosition = function(self, anchor, parent)
-	if (not InCombatLockdown()) and (parent and parent ~= AB.ExtraBar) then
+	--if (not InCombatLockdown()) and (parent and parent ~= AB.ExtraBar) then
+	if (parent and parent ~= AB.ExtraBar) then
 		self:ClearAllPoints()
 		self:SetPoint("CENTER", AB.ExtraBar)
 	end
@@ -845,8 +846,8 @@ function AB:CreateExtraBar()
 	ZoneAbilityFrame:SetPoint("CENTER", self.ExtraBar)
 	ZoneAbilityFrame.Style:SetAlpha(0)
 	
-	ExtraActionBarFrame.IgnoreLayoutIndex = function() return true end
-	ZoneAbilityFrame.IgnoreLayoutIndex = function() return true end
+	--ExtraActionBarFrame.IgnoreLayoutIndex = function() return true end
+	--ZoneAbilityFrame.IgnoreLayoutIndex = function() return true end
 	
 	hooksecurefunc(ZoneAbilityFrame, "SetPoint", UpdateExtraActionPosition)
 end
