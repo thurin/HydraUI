@@ -828,6 +828,24 @@ local UpdateExtraActionPosition = function(self, anchor, parent)
 	end
 end
 
+local SkinZoneAbilityButtons = function()
+	for Button in ZoneAbilityFrame.SpellButtonContainer:EnumerateActive() do
+		if (not Button.Styled) then
+			Button.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+			Button.NormalTexture:SetAlpha(0)
+			
+			Button.Backdrop = CreateFrame("Frame", nil, Button, "BackdropTemplate")
+			Button.Backdrop:SetPoint("TOPLEFT", Button, -1, 1)
+			Button.Backdrop:SetPoint("BOTTOMRIGHT", Button, 1, -1)
+			Button.Backdrop:SetBackdrop(HydraUI.Backdrop)
+			Button.Backdrop:SetBackdropColor(0, 0, 0)
+			Button.Backdrop:SetFrameLevel(Button:GetFrameLevel() - 1)
+			
+			Button.Styled = true
+		end
+	end
+end
+
 -- Extra Bar
 function AB:CreateExtraBar()
 	self.ExtraBar = CreateFrame("Frame", "HydraUI Extra Action", HydraUI.UIParent, "SecureHandlerStateTemplate")
@@ -850,6 +868,7 @@ function AB:CreateExtraBar()
 	--ZoneAbilityFrame.IgnoreLayoutIndex = function() return true end
 	
 	hooksecurefunc(ZoneAbilityFrame, "SetPoint", UpdateExtraActionPosition)
+	hooksecurefunc(ZoneAbilityFrame, "UpdateDisplayedZoneAbilities", SkinZoneAbilityButtons)
 end
 
 function AB:CreateBars()
