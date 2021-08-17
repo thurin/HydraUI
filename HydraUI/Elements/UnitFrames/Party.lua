@@ -159,6 +159,15 @@ HydraUI.StyleFuncs["party"] = function(self, unit)
 	Debuffs.showType = true
 	
 	if (Settings["party-point"] == "LEFT") or (Settings["party-point"] == "RIGHT") then
+		Debuffs:SetSize(24 * 3 + (2 * 2), 24)
+		Debuffs:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 2)
+		Debuffs.size = 24
+		Debuffs.num = 3
+		Debuffs.spacing = 1
+		Debuffs.initialAnchor = "BOTTOMLEFT"
+		Debuffs.tooltipAnchor = "ANCHOR_TOP"
+		Debuffs["growth-x"] = "RIGHT"
+	else
 		Debuffs:SetSize(24 * 3 + (2 * 2), 24 * 2 + 2)
 		Debuffs:SetPoint("TOPLEFT", self, "TOPRIGHT", 2, 0)
 		Debuffs.size = 24
@@ -167,15 +176,7 @@ HydraUI.StyleFuncs["party"] = function(self, unit)
 		Debuffs.initialAnchor = "TOPLEFT"
 		Debuffs.tooltipAnchor = "ANCHOR_TOP"
 		Debuffs["growth-x"] = "RIGHT"
-	else
-		Debuffs:SetSize(24 * 3 + (2 * 3), 24)
-		Debuffs:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 2)
-		Debuffs.size = 24
-		Debuffs.num = 3
-		Debuffs.spacing = 1
-		Debuffs.initialAnchor = "BOTTOMLEFT"
-		Debuffs.tooltipAnchor = "ANCHOR_TOP"
-		Debuffs["growth-x"] = "RIGHT"
+		Debuffs["growth-y"] = "DOWN"
 	end
 	
 	if UF.BuffIDs[HydraUI.UserClass] then
