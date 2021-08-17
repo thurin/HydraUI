@@ -820,7 +820,7 @@ function AB:CreateStanceBar()
 	end
 end
 
-local UpdateExtraActionPosition = function(self, anchor, parent)
+local UpdateZoneAbilityPosition = function(self, anchor, parent)
 	--if (not InCombatLockdown()) and (parent and parent ~= AB.ExtraBar) then
 	if (parent and parent ~= AB.ExtraBar) then
 		self:ClearAllPoints()
@@ -846,6 +846,21 @@ local SkinZoneAbilityButtons = function()
 	end
 end
 
+local UpdateExtraActionParent = function(self, parent)
+	if InCombatLockdown() then
+		AB.NeedsCombatFix = true
+		
+		AB:RegisterEvent("PLAYER_REGEN_ENABLED")
+		AB:SetScript("OnEvent", AB.OnEvent)
+		
+		return
+	end
+	
+	if (parent and parent ~= AB.ExtraBar) then
+		self:SetParent(AB.ExtraBar)
+	end
+end
+
 -- Extra Bar
 function AB:CreateExtraBar()
 	self.ExtraBar = CreateFrame("Frame", "HydraUI Extra Action", HydraUI.UIParent, "SecureHandlerStateTemplate")
@@ -855,20 +870,37 @@ function AB:CreateExtraBar()
 	ExtraActionBarFrame:ClearAllPoints()
 	ExtraActionBarFrame:SetAllPoints(self.ExtraBar)
 	ExtraActionButton1.style:SetAlpha(0)
+	ExtraActionBarFrame.ignoreInLayout = true
 	
-	hooksecurefunc(ExtraActionBarFrame, "SetPoint", UpdateExtraActionPosition)
+	--hooksecurefunc(ExtraActionBarFrame, "SetPoint", UpdateExtraActionPosition)
+	hooksecurefunc(ExtraActionBarFrame, "SetParent", UpdateExtraActionParent)
 	
 	self:StyleActionButton(ExtraActionButton1)
 	
 	ZoneAbilityFrame:ClearAllPoints()
 	ZoneAbilityFrame:SetPoint("CENTER", self.ExtraBar)
 	ZoneAbilityFrame.Style:SetAlpha(0)
+	ZoneAbilityFrame.ignoreInLayout = true
 	
-	--ExtraActionBarFrame.IgnoreLayoutIndex = function() return true end
-	--ZoneAbilityFrame.IgnoreLayoutIndex = function() return true end
-	
-	hooksecurefunc(ZoneAbilityFrame, "SetPoint", UpdateExtraActionPosition)
+	hooksecurefunc(ZoneAbilityFrame, "SetPoint", UpdateZoneAbilityPosition)
 	hooksecurefunc(ZoneAbilityFrame, "UpdateDisplayedZoneAbilities", SkinZoneAbilityButtons)
+end
+
+function AB:OnEvent(event, ...)
+	if self[event] then
+		self[event](self, ...)
+	end
+end
+
+function AB:PLAYER_REGEN_ENABLED()
+	if self.NeedsCombatFix then
+		self:UnregisterEvent("PLAYER_REGEN_ENABLED")
+		self:SetScript("OnEvent", nil)
+		
+		ExtraActionBarFrame:SetParent(AB.ExtraBar)
+		
+		self.NeedsCombatFix = nil
+	end
 end
 
 function AB:CreateBars()
