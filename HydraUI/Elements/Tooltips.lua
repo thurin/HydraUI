@@ -313,7 +313,7 @@ local OnTooltipSetUnit = function(self)
 			Level = format("|cFF%s%s|r", Hex, Level)
 		end
 		
-		if CanInspect(UnitID) then
+		--[[if CanInspect(UnitID) then
 			if self.GUID then
 				if UnitGUID(UnitID) == self.GUID then
 					print(UnitName())
@@ -322,7 +322,7 @@ local OnTooltipSetUnit = function(self)
 				Tooltips.Unit = UnitID
 				NotifyInspect(UnitID)
 			end
-		end
+		end]]
 		
 		if UnitIsAFK(UnitID) then
 			Flag = "|cFFFDD835" .. CHAT_FLAG_AFK .. "|r "
