@@ -282,11 +282,7 @@ local OnTooltipSetUnit = function(self)
 			Class = ""
 		end
 		
-		if (not Realm or Realm == "") then
-			Realm = HydraUI.UserRealm
-		end
-		
-		if HydraUI.Dev[format("%s-%s", Name, Realm)] then
+		if HydraUI.Dev[format("%s-%s", Name, Realm ~= "" and Realm or HydraUI.UserRealm)] then
 			Name = "|TInterface\\AddOns\\HydraUI\\Assets\\Textures\\HydraUIBadgeCrisp.tga:16|t " .. Name
 			Title = "|TInterface\\AddOns\\HydraUI\\Assets\\Textures\\HydraUIBadgeCrisp.tga:16|t " .. Title
 		end
