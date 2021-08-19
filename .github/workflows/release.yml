@@ -2,8 +2,10 @@ name: Package and release
 
 on:
     push:
-    tags:
-        - '**'
+        branches:
+            - Live
+        tags:
+            - '**'
 jobs:
     release:
     runs-on: ubuntu-latest
