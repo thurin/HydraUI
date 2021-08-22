@@ -1138,10 +1138,18 @@ local UpdateBar1Hover = function(value)
 		AB.Bar1:SetAlpha(0)
 		AB.Bar1:SetScript("OnEnter", BarOnEnter)
 		AB.Bar1:SetScript("OnLeave", BarOnLeave)
+		
+		for i = 1, #AB.Bar1 do
+			AB.Bar1[i].cooldown:SetDrawBling(false)
+		end
 	else
 		AB.Bar1:SetAlpha(1)
 		AB.Bar1:SetScript("OnEnter", nil)
 		AB.Bar1:SetScript("OnLeave", nil)
+		
+		for i = 1, #AB.Bar1 do
+			AB.Bar1[i].cooldown:SetDrawBling(true)
+		end
 	end
 end
 
@@ -1152,10 +1160,18 @@ local UpdateBar2Hover = function(value)
 		AB.Bar2:SetAlpha(0)
 		AB.Bar2:SetScript("OnEnter", BarOnEnter)
 		AB.Bar2:SetScript("OnLeave", BarOnLeave)
+		
+		for i = 1, #AB.Bar2 do
+			AB.Bar2[i].cooldown:SetDrawBling(false)
+		end
 	else
 		AB.Bar2:SetAlpha(1)
 		AB.Bar2:SetScript("OnEnter", nil)
 		AB.Bar2:SetScript("OnLeave", nil)
+		
+		for i = 1, #AB.Bar2 do
+			AB.Bar2[i].cooldown:SetDrawBling(true)
+		end
 	end
 end
 
@@ -1166,10 +1182,18 @@ local UpdateBar3Hover = function(value)
 		AB.Bar3:SetAlpha(0)
 		AB.Bar3:SetScript("OnEnter", BarOnEnter)
 		AB.Bar3:SetScript("OnLeave", BarOnLeave)
+		
+		for i = 1, #AB.Bar3 do
+			AB.Bar3[i].cooldown:SetDrawBling(false)
+		end
 	else
 		AB.Bar3:SetAlpha(1)
 		AB.Bar3:SetScript("OnEnter", nil)
 		AB.Bar3:SetScript("OnLeave", nil)
+		
+		for i = 1, #AB.Bar3 do
+			AB.Bar3[i].cooldown:SetDrawBling(true)
+		end
 	end
 end
 
@@ -1180,10 +1204,18 @@ local UpdateBar4Hover = function(value)
 		AB.Bar4:SetAlpha(0)
 		AB.Bar4:SetScript("OnEnter", BarOnEnter)
 		AB.Bar4:SetScript("OnLeave", BarOnLeave)
+		
+		for i = 1, #AB.Bar4 do
+			AB.Bar4[i].cooldown:SetDrawBling(false)
+		end
 	else
 		AB.Bar4:SetAlpha(1)
 		AB.Bar4:SetScript("OnEnter", nil)
 		AB.Bar4:SetScript("OnLeave", nil)
+		
+		for i = 1, #AB.Bar4 do
+			AB.Bar4[i].cooldown:SetDrawBling(true)
+		end
 	end
 end
 
@@ -1194,10 +1226,18 @@ local UpdateBar5Hover = function(value)
 		AB.Bar5:SetAlpha(0)
 		AB.Bar5:SetScript("OnEnter", BarOnEnter)
 		AB.Bar5:SetScript("OnLeave", BarOnLeave)
+		
+		for i = 1, #AB.Bar5 do
+			AB.Bar5[i].cooldown:SetDrawBling(false)
+		end
 	else
 		AB.Bar5:SetAlpha(1)
 		AB.Bar5:SetScript("OnEnter", nil)
 		AB.Bar5:SetScript("OnLeave", nil)
+		
+		for i = 1, #AB.Bar5 do
+			AB.Bar5[i].cooldown:SetDrawBling(true)
+		end
 	end
 end
 
@@ -1208,10 +1248,18 @@ local UpdatePetHover = function(value)
 		AB.PetBar:SetAlpha(0)
 		AB.PetBar:SetScript("OnEnter", BarOnEnter)
 		AB.PetBar:SetScript("OnLeave", BarOnLeave)
+		
+		for i = 1, #AB.PetBar do
+			AB.PetBar[i].cooldown:SetDrawBling(false)
+		end
 	else
 		AB.PetBar:SetAlpha(1)
 		AB.PetBar:SetScript("OnEnter", nil)
 		AB.PetBar:SetScript("OnLeave", nil)
+		
+		for i = 1, #AB.PetBar do
+			AB.PetBar[i].cooldown:SetDrawBling(true)
+		end
 	end
 end
 
@@ -1222,10 +1270,18 @@ local UpdateStanceHover = function(value)
 		AB.StanceBar:SetAlpha(0)
 		AB.StanceBar:SetScript("OnEnter", BarOnEnter)
 		AB.StanceBar:SetScript("OnLeave", BarOnLeave)
+		
+		for i = 1, #AB.StanceBar do
+			AB.StanceBar[i].cooldown:SetDrawBling(false)
+		end
 	else
 		AB.StanceBar:SetAlpha(1)
 		AB.StanceBar:SetScript("OnEnter", nil)
 		AB.StanceBar:SetScript("OnLeave", nil)
+		
+		for i = 1, #AB.StanceBar do
+			AB.StanceBar[i].cooldown:SetDrawBling(true)
+		end
 	end
 end
 
