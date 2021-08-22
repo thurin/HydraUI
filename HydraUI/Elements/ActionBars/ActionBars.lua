@@ -296,8 +296,12 @@ function AB:StylePetActionButton(button)
 	button:SetSize(Settings["ab-pet-button-size"], Settings["ab-pet-button-size"])
 	
 	local Name = button:GetName()
-	local Shine = _G[Name .. "Shine"]
 	
+	if _G[Name .. "AutoCastable"] then
+		_G[Name .. "AutoCastable"]:SetSize(Settings["ab-pet-button-size"] * 2 - 4, Settings["ab-pet-button-size"] * 2 - 4)
+	end
+	
+	local Shine = _G[Name .. "Shine"]
 	Shine:SetSize(Settings["ab-pet-button-size"] - 6, Settings["ab-pet-button-size"] - 6)
 	Shine:ClearAllPoints()
 	Shine:SetPoint("CENTER", button, 0, 0)
@@ -1089,6 +1093,14 @@ end
 
 local UpdatePetBar = function()
 	AB:PositionButtons(AB.PetBar, NUM_PET_ACTION_SLOTS, Settings["ab-pet-per-row"], Settings["ab-pet-button-size"], Settings["ab-pet-button-gap"])
+	
+	for i = 1, #AB.PetBar do
+		local Name = AB.PetBar[i]:GetName()
+		
+		if _G[Name .. "AutoCastable"] then
+			_G[Name .. "AutoCastable"]:SetSize(Settings["ab-pet-button-size"] * 2 - 4, Settings["ab-pet-button-size"] * 2 - 4)
+		end
+	end
 end
 
 local UpdateStanceBar = function()
