@@ -521,12 +521,6 @@ function AB:CreateBar1()
 	self.Bar1.Fader:SetDuration(0.15)
 	self.Bar1.Fader:SetEasing("inout")
 	
-	if Settings["ab-bar1-hover"] then
-		self.Bar1:SetAlpha(0)
-		self.Bar1:SetScript("OnEnter", BarOnEnter)
-		self.Bar1:SetScript("OnLeave", BarOnLeave)
-	end
-	
 	for i = 1, 12 do
 		local Button = _G["ActionButton" .. i]
 		
@@ -541,6 +535,16 @@ function AB:CreateBar1()
 		self.Bar1:SetFrameRef("Button" .. i, Button)
 		
 		self.Bar1[i] = Button
+	end
+	
+	if Settings["ab-bar1-hover"] then
+		self.Bar1:SetAlpha(0)
+		self.Bar1:SetScript("OnEnter", BarOnEnter)
+		self.Bar1:SetScript("OnLeave", BarOnLeave)
+		
+		for i = 1, #self.Bar1 do
+			self.Bar1[i].cooldown:SetDrawBling(false)
+		end
 	end
 	
 	self.Bar1:Execute([[
@@ -585,12 +589,6 @@ function AB:CreateBar2()
 	self.Bar2.Fader:SetDuration(0.15)
 	self.Bar2.Fader:SetEasing("inout")
 	
-	if Settings["ab-bar2-hover"] then
-		self.Bar2:SetAlpha(0)
-		self.Bar2:SetScript("OnEnter", BarOnEnter)
-		self.Bar2:SetScript("OnLeave", BarOnLeave)
-	end
-	
 	MultiBarBottomLeft:SetParent(self.Bar2)
 	
 	for i = 1, 12 do
@@ -604,6 +602,16 @@ function AB:CreateBar2()
 		Button:HookScript("OnLeave", BarButtonOnLeave)
 		
 		self.Bar2[i] = Button
+	end
+	
+	if Settings["ab-bar2-hover"] then
+		self.Bar2:SetAlpha(0)
+		self.Bar2:SetScript("OnEnter", BarOnEnter)
+		self.Bar2:SetScript("OnLeave", BarOnLeave)
+		
+		for i = 1, #self.Bar2 do
+			self.Bar2[i].cooldown:SetDrawBling(false)
+		end
 	end
 	
 	self:PositionButtons(self.Bar2, Settings["ab-bar2-button-max"], Settings["ab-bar2-per-row"], Settings["ab-bar2-button-size"], Settings["ab-bar2-button-gap"])
@@ -628,12 +636,6 @@ function AB:CreateBar3()
 	self.Bar3.Fader:SetDuration(0.15)
 	self.Bar3.Fader:SetEasing("inout")
 	
-	if Settings["ab-bar3-hover"] then
-		self.Bar3:SetAlpha(0)
-		self.Bar3:SetScript("OnEnter", BarOnEnter)
-		self.Bar3:SetScript("OnLeave", BarOnLeave)
-	end
-	
 	MultiBarBottomRight:SetParent(self.Bar3)
 	
 	for i = 1, 12 do
@@ -647,6 +649,16 @@ function AB:CreateBar3()
 		Button:HookScript("OnLeave", BarButtonOnLeave)
 		
 		self.Bar3[i] = Button
+	end
+	
+	if Settings["ab-bar3-hover"] then
+		self.Bar3:SetAlpha(0)
+		self.Bar3:SetScript("OnEnter", BarOnEnter)
+		self.Bar3:SetScript("OnLeave", BarOnLeave)
+		
+		for i = 1, #self.Bar3 do
+			self.Bar3[i].cooldown:SetDrawBling(false)
+		end
 	end
 	
 	self:PositionButtons(self.Bar3, Settings["ab-bar3-button-max"], Settings["ab-bar3-per-row"], Settings["ab-bar3-button-size"], Settings["ab-bar3-button-gap"])
@@ -671,12 +683,6 @@ function AB:CreateBar4()
 	self.Bar4.Fader:SetDuration(0.15)
 	self.Bar4.Fader:SetEasing("inout")
 	
-	if Settings["ab-bar4-hover"] then
-		self.Bar4:SetAlpha(0)
-		self.Bar4:SetScript("OnEnter", BarOnEnter)
-		self.Bar4:SetScript("OnLeave", BarOnLeave)
-	end
-	
 	MultiBarRight:SetParent(self.Bar4)
 	
 	for i = 1, 12 do
@@ -690,6 +696,16 @@ function AB:CreateBar4()
 		Button:HookScript("OnLeave", BarButtonOnLeave)
 		
 		self.Bar4[i] = Button
+	end
+	
+	if Settings["ab-bar4-hover"] then
+		self.Bar4:SetAlpha(0)
+		self.Bar4:SetScript("OnEnter", BarOnEnter)
+		self.Bar4:SetScript("OnLeave", BarOnLeave)
+		
+		for i = 1, #self.Bar4 do
+			self.Bar4[i].cooldown:SetDrawBling(false)
+		end
 	end
 	
 	self:PositionButtons(self.Bar4, Settings["ab-bar4-button-max"], Settings["ab-bar4-per-row"], Settings["ab-bar4-button-size"], Settings["ab-bar4-button-gap"])
@@ -714,12 +730,6 @@ function AB:CreateBar5()
 	self.Bar5.Fader:SetDuration(0.15)
 	self.Bar5.Fader:SetEasing("inout")
 	
-	if Settings["ab-bar5-hover"] then
-		self.Bar5:SetAlpha(0)
-		self.Bar5:SetScript("OnEnter", BarOnEnter)
-		self.Bar5:SetScript("OnLeave", BarOnLeave)
-	end
-	
 	MultiBarLeft:SetParent(self.Bar5)
 	
 	for i = 1, 12 do
@@ -733,6 +743,16 @@ function AB:CreateBar5()
 		Button:HookScript("OnLeave", BarButtonOnLeave)
 		
 		self.Bar5[i] = Button
+	end
+	
+	if Settings["ab-bar5-hover"] then
+		self.Bar5:SetAlpha(0)
+		self.Bar5:SetScript("OnEnter", BarOnEnter)
+		self.Bar5:SetScript("OnLeave", BarOnLeave)
+		
+		for i = 1, #self.Bar5 do
+			self.Bar5[i].cooldown:SetDrawBling(false)
+		end
 	end
 	
 	self:PositionButtons(self.Bar5, Settings["ab-bar5-button-max"], Settings["ab-bar5-per-row"], Settings["ab-bar5-button-size"], Settings["ab-bar5-button-gap"])
@@ -757,12 +777,6 @@ function AB:CreatePetBar()
 	self.PetBar.Fader:SetDuration(0.15)
 	self.PetBar.Fader:SetEasing("inout")
 	
-	if Settings["ab-pet-hover"] then
-		self.PetBar:SetAlpha(0)
-		self.PetBar:SetScript("OnEnter", BarOnEnter)
-		self.PetBar:SetScript("OnLeave", BarOnLeave)
-	end
-	
 	PetActionBarFrame:SetParent(self.PetBar)
 	
 	for i = 1, NUM_PET_ACTION_SLOTS do
@@ -776,6 +790,16 @@ function AB:CreatePetBar()
 		Button:HookScript("OnLeave", BarButtonOnLeave)
 		
 		self.PetBar[i] = Button
+	end
+	
+	if Settings["ab-pet-hover"] then
+		self.PetBar:SetAlpha(0)
+		self.PetBar:SetScript("OnEnter", BarOnEnter)
+		self.PetBar:SetScript("OnLeave", BarOnLeave)
+		
+		for i = 1, #self.PetBar do
+			self.PetBar[i].cooldown:SetDrawBling(false)
+		end
 	end
 	
 	self:PositionButtons(self.PetBar, NUM_PET_ACTION_SLOTS, Settings["ab-pet-per-row"], Settings["ab-pet-button-size"], Settings["ab-pet-button-gap"])
@@ -802,12 +826,6 @@ function AB:CreateStanceBar()
 	self.StanceBar.Fader:SetDuration(0.15)
 	self.StanceBar.Fader:SetEasing("inout")
 	
-	if Settings["ab-stance-hover"] then
-		self.StanceBar:SetAlpha(0)
-		self.StanceBar:SetScript("OnEnter", BarOnEnter)
-		self.StanceBar:SetScript("OnLeave", BarOnLeave)
-	end
-	
 	StanceBarFrame:SetParent(self.StanceBar)
 	
 	if (StanceBarFrame and StanceBarFrame.StanceButtons) then
@@ -822,6 +840,16 @@ function AB:CreateStanceBar()
 			Button:HookScript("OnLeave", BarButtonOnLeave)
 			
 			self.StanceBar[i] = Button
+		end
+		
+		if Settings["ab-stance-hover"] then
+			self.StanceBar:SetAlpha(0)
+			self.StanceBar:SetScript("OnEnter", BarOnEnter)
+			self.StanceBar:SetScript("OnLeave", BarOnLeave)
+			
+			for i = 1, #self.StanceBar do
+				self.StanceBar[i].cooldown:SetDrawBling(false)
+			end
 		end
 		
 		self:PositionButtons(self.StanceBar, NUM_STANCE_SLOTS, Settings["ab-stance-per-row"], Settings["ab-stance-button-size"], Settings["ab-stance-button-gap"])
