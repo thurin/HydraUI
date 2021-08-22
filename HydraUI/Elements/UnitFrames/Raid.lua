@@ -511,6 +511,30 @@ local UpdateRaidPoint = function(value)
 	UpdateRaidAnchorSize()
 end
 
+local UpdateRaidSortingMethod = function(value)
+	if (value == "CLASS") then
+		HydraUI.UnitFrames["raid"]:SetAttribute("groupingOrder", "DEATHKNIGHT,DEMONHUNTER,DRUID,HUNTER,MAGE,MONK,PALADIN,PRIEST,SHAMAN,WARLOCK,WARRIOR")
+		HydraUI.UnitFrames["raid"]:SetAttribute("sortMethod", "NAME")
+		HydraUI.UnitFrames["raid"]:SetAttribute("groupBy", "CLASS")
+	elseif (value == "ROLE") then
+		HydraUI.UnitFrames["raid"]:SetAttribute("groupingOrder", "TANK,HEALER,DAMAGER,NONE")
+		HydraUI.UnitFrames["raid"]:SetAttribute("sortMethod", "NAME")
+		HydraUI.UnitFrames["raid"]:SetAttribute("groupBy", "ASSIGNEDROLE")
+	elseif (value == "NAME") then
+		HydraUI.UnitFrames["raid"]:SetAttribute("groupingOrder", "1,2,3,4,5,6,7,8")
+		HydraUI.UnitFrames["raid"]:SetAttribute("sortMethod", "NAME")
+		HydraUI.UnitFrames["raid"]:SetAttribute("groupBy", nil)
+	elseif (value == "MTMA") then
+		HydraUI.UnitFrames["raid"]:SetAttribute("groupingOrder", "MAINTANK,MAINASSIST,NONE")
+		HydraUI.UnitFrames["raid"]:SetAttribute("sortMethod", "NAME")
+		HydraUI.UnitFrames["raid"]:SetAttribute("groupBy", "ROLE")
+	else -- GROUP
+		HydraUI.UnitFrames["raid"]:SetAttribute("groupingOrder", "1,2,3,4,5,6,7,8")
+		HydraUI.UnitFrames["raid"]:SetAttribute("sortMethod", "INDEX")
+		HydraUI.UnitFrames["raid"]:SetAttribute("groupBy", "GROUP")
+	end
+end
+
 local Testing = false
 
 local TestRaid = function()

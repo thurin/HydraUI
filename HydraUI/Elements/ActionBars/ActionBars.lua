@@ -880,7 +880,7 @@ function AB:CreateExtraBar()
 	ZoneAbilityFrame:ClearAllPoints()
 	ZoneAbilityFrame:SetPoint("CENTER", self.ExtraBar)
 	ZoneAbilityFrame.Style:SetAlpha(0)
-	ZoneAbilityFrame.ignoreInLayout = true
+	--ZoneAbilityFrame.ignoreInLayout = true
 	
 	hooksecurefunc(ZoneAbilityFrame, "SetPoint", UpdateZoneAbilityPosition)
 	hooksecurefunc(ZoneAbilityFrame, "UpdateDisplayedZoneAbilities", SkinZoneAbilityButtons)
