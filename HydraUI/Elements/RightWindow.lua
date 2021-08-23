@@ -8,7 +8,7 @@ function Window:CreateSingleWindow()
 	
 	self.Bottom = CreateFrame("Frame", nil, HydraUI.UIParent, "BackdropTemplate")
 	self.Bottom:SetSize(Settings["right-window-width"], 28)
-	self.Bottom:SetPoint("BOTTOMRIGHT", HydraUI.UIParent, -13, 13)
+	self.Bottom:SetPoint("BOTTOMRIGHT", self, 0, 0)
 	self.Bottom:SetBackdrop(HydraUI.Backdrop)
 	self.Bottom:SetBackdropColor(HydraUI:HexToRGB(Settings["ui-window-bg-color"]))
 	self.Bottom:SetBackdropBorderColor(0, 0, 0)
@@ -94,7 +94,7 @@ function Window:CreateDoubleWindow()
 	
 	self.Bottom = CreateFrame("Frame", nil, HydraUI.UIParent, "BackdropTemplate")
 	self.Bottom:SetSize(Settings["right-window-width"], 28)
-	self.Bottom:SetPoint("BOTTOMRIGHT", HydraUI.UIParent, -13, 13)
+	self.Bottom:SetPoint("BOTTOMRIGHT", self, 0, 0)
 	self.Bottom:SetBackdrop(HydraUI.Backdrop)
 	self.Bottom:SetBackdropColor(HydraUI:HexToRGB(Settings["ui-window-bg-color"]))
 	self.Bottom:SetBackdropBorderColor(0, 0, 0)
@@ -255,6 +255,9 @@ function Window:Load()
 		return
 	end
 	
+	self:SetSize(Settings["right-window-width"], Settings["right-window-height"] + 26)
+	self:SetPoint("BOTTOMRIGHT", HydraUI.UIParent, -13, 13)
+	
 	if (Settings["right-window-size"] == "SINGLE") then
 		self:CreateSingleWindow()
 	else
@@ -262,6 +265,8 @@ function Window:Load()
 	end
 	
 	self:AddDataTexts()
+	
+	HydraUI:CreateMover(self)
 end
 
 local UpdateLeftText = function(value)
