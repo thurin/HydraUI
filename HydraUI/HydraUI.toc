@@ -4,6 +4,9 @@
 ## Title: |cFFFFC44DHydra|r|cFFFFFFFFUI|r
 ## Notes: An interface replacement for Burning Crusade
 ## SavedVariables: HydraUIProfileData, HydraUIProfiles, HydraUIData, HydraUIGold
+## X-Curse-Project-ID: 338631
+## X-WoWI-ID: 25990
+## X-Wago-ID: baNDEr6o
 
 Initialize.lua
 Elements\Libraries\LibStub.lua
