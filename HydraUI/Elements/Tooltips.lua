@@ -468,25 +468,11 @@ local OnTooltipSetSpell = function(self)
 	self:AddDoubleLine(Language["Spell ID:"], ID, 1, 1, 1, 1, 1, 1)
 end
 
-Tooltips.GameTooltip_SetDefaultAnchor = function(self, parent)
+local SetDefaultAnchor = function(self, parent)
 	if Settings["tooltips-on-cursor"] then
 		self:SetOwner(parent, Settings["tooltips-cursor-anchor"], Settings["tooltips-cursor-anchor-x"], Settings["tooltips-cursor-anchor-y"])
 		
 		return
-	end
-	
-	local Unit, UnitID = self:GetUnit()
-	
-	if (not UnitID) then
-		local MouseFocus = GetMouseFocus()
-		
-		if (MouseFocus and MouseFocus.GetAttribute and MouseFocus:GetAttribute("unit")) then
-			UnitID = MouseFocus:GetAttribute("unit")
-		end
-	end
-	
-	if (not UnitID and UnitExists("mouseover")) then
-		UnitID = "mouseover"
 	end
 	
 	self:ClearAllPoints()
@@ -494,8 +480,12 @@ Tooltips.GameTooltip_SetDefaultAnchor = function(self, parent)
 	if Settings["right-window-enable"] then
 		self:SetPoint("BOTTOMLEFT", Tooltips, 3, 3)
 	else
-		self:SetPoint("BOTTOMRIGHT", Tooltips, 3, 3)
+		self:SetPoint("BOTTOMRIGHT", Tooltips, -3, 3)
 	end
+end
+
+local SetBackdropStyle = function(self)
+	self:SetBackdrop(nil)
 end
 
 function Tooltips:AddHooks()
@@ -508,7 +498,8 @@ function Tooltips:AddHooks()
 	GameTooltip:HookScript("OnTooltipSetSpell", OnTooltipSetSpell)
 	ItemRefTooltip:HookScript("OnTooltipSetItem", OnItemRefTooltipSetItem)
 	
-	self:Hook("GameTooltip_SetDefaultAnchor")
+	hooksecurefunc("GameTooltip_SetDefaultAnchor", SetDefaultAnchor)
+	hooksecurefunc("SharedTooltip_SetBackdropStyle", SetBackdropStyle)
 end
 
 local GetColor = function(p, r1, g1, b1, r2, g2, b2)
@@ -676,9 +667,8 @@ function Tooltips:Load()
 	self:SetSize(200, 26)
 	
 	if Settings["right-window-enable"] then
-		local Window = HydraUI:GetModule("Right Window")
-		
-		self:SetPoint("BOTTOMLEFT", Window.Top, "TOPLEFT", 0, 3)
+		--self:SetPoint("BOTTOMLEFT", HydraUI:GetModule("Right Window"), "TOPLEFT", 0, 3)
+		self:SetPoint("BOTTOMLEFT", HydraUI.UIParent, "BOTTOMRIGHT", -(13 + Settings["right-window-width"]), 170)
 	else
 		self:SetPoint("BOTTOMRIGHT", HydraUI.UIParent, -13, 101)
 	end
