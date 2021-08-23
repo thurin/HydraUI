@@ -110,7 +110,7 @@ function MicroButtons:Load()
 	self.Panel:SetFrameStrata("LOW")
 	
 	if Settings["right-window-enable"] then
-		self.Panel:SetPoint("BOTTOMRIGHT", HydraUI:GetModule("Right Window").Top, "TOPRIGHT", 0, 3)
+		self.Panel:SetPoint("BOTTOMRIGHT", HydraUI:GetModule("Right Window"), "TOPRIGHT", 0, 3)
 	else
 		self.Panel:SetPoint("BOTTOMRIGHT", HydraUI.UIParent, -10, 10)
 	end
