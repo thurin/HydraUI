@@ -24,7 +24,7 @@ local ScaleOnAccept = function()
 end
 
 local SetSuggestedScale = function()
-	HydraUI:DisplayPopup(Language["Attention"], format(Language["Are you sure you would like to change your UI scale to the suggested setting of %s?"], HydraUI:GetSuggestedScale()), Language["Accept"], ScaleOnAccept, Language["Cancel"])
+	HydraUI:DisplayPopup(Language["Attention"], format(Language["Are you sure you would like to change your UI scale to the suggested setting of %s?"], HydraUI:GetSuggestedScale()), ACCEPT, ScaleOnAccept, CANCEL)
 end
 
 GUI:AddWidgets(Language["General"], Language["General"], function(left, right)

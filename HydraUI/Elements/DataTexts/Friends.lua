@@ -7,8 +7,8 @@ local GetFriendInfoByIndex = C_FriendList.GetFriendInfoByIndex
 local GetFriendAccountInfo = C_BattleNet.GetFriendAccountInfo
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 local GetQuestDifficultyColor = GetQuestDifficultyColor
-local pairs = pairs
-local Label = Language["Friends"]
+local next = next
+local Label = TUTORIAL_TITLE22
 
 local PresenceID, AccountName, BattleTag, IsBattleTagPresence, CharacterName, BNetIDGameAccount, Client, IsOnline, LastOnline, IsAFK, IsDND
 
@@ -23,7 +23,7 @@ local ClientToName = {
 	["S2"] = Language["StarCraft 2"],
 	["VIPR"] = Language["Call of Duty: Black Ops 4"],
 	["ODIN"] = Language["Call of Duty: Modern Warfare"],
-	["WoW"] = Language["World of Warcraft"],
+	["WoW"] = CINEMATIC_NAME_1,
 	["WTCG"] = Language["Hearthstone"],
 }
 
@@ -34,7 +34,7 @@ local ProjectIDToName = {
 }
 
 local GetClass = function(class)
-	for Token, Localized in pairs(LOCALIZED_CLASS_NAMES_MALE) do
+	for Token, Localized in next, LOCALIZED_CLASS_NAMES_MALE do
 		if (Localized == class) then
 			return Token
 		end

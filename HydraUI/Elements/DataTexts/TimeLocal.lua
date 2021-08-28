@@ -23,7 +23,7 @@ local OnEnter = function(self)
 	local Framerate = floor(GetFramerate())
 	local ServerTime = GameTime_GetGameTime(true)
 	
-	GameTooltip:AddLine(Language["Realm Time:"], 1, 0.7, 0)
+	GameTooltip:AddLine(TIMEMANAGER_TOOLTIP_REALMTIME, 1, 0.7, 0)
 	GameTooltip:AddLine(ServerTime, 1, 1, 1)
 	GameTooltip:AddLine(" ")
 	GameTooltip:AddLine(Language["Latency:"], 1, 0.7, 0)
@@ -31,7 +31,7 @@ local OnEnter = function(self)
 	GameTooltip:AddLine(format(Language["%s ms (world)"], WorldLatency), 1, 1, 1)
 	GameTooltip:AddLine(" ")
 	GameTooltip:AddLine(Language["Framerate:"], 1, 0.7, 0)
-	GameTooltip:AddLine(Framerate .. " fps", 1, 1, 1)
+	GameTooltip:AddLine(Framerate .. " " .. FPS_ABBR, 1, 1, 1)
 
 	GameTooltip:Show()
 end
