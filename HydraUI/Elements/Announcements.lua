@@ -5,8 +5,6 @@ local EventType, SourceGUID, DestName, SpellID, SpellName
 local InterruptMessage = ACTION_SPELL_INTERRUPT .. " %s's %s"
 local DispelledMessage = ACTION_SPELL_DISPEL .. " %s's %s"
 local StolenMessage = ACTION_SPELL_STOLEN .. " %s's %s"
-local CastMessage = Language["casts %s on %s."]
-local CastingMessage = Language["casting %s on %s."]
 local UNKNOWN = UNKNOWN
 local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo
 local UnitInBattleground = UnitInBattleground
@@ -26,10 +24,6 @@ local Channel
 
 Defaults["announcements-enable"] = true
 Defaults["announcements-channel"] = "SELF"
-
-Announcements.Spells = {
-	
-}
 
 function Announcements:GetChannelToSend()
 	if (Settings["announcements-channel"] == "SELF" or UnitInBattleground("player")) then

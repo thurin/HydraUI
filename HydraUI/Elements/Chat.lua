@@ -329,7 +329,7 @@ local OnMouseWheel = function(self, delta)
 	end
 end
 
-Chat.ChatEdit_UpdateHeader = function(editbox)
+local UpdateHeader = function(editbox)
 	local ChatType = editbox:GetAttribute("chatType")
 	local Backdrop = editbox.Backdrop
 	
@@ -839,7 +839,7 @@ function Chat:StyleChatFrame(frame)
 	frame.Styled = true
 end
 
-Chat.FCF_OpenTemporaryWindow = function()
+local OpenTemporaryWindow = function()
 	local Frame = FCF_GetCurrentChatFrame()
 	
 	if (not Frame.Styled) then
@@ -857,6 +857,7 @@ function Chat:MoveChatFrames()
 		Frame:SetJustifyH("LEFT")
 		
 		if (Frame:GetID() == 1) then
+			Frame:SetUserPlaced(true)
 			Frame:ClearAllPoints()
 			Frame:SetPoint("TOPLEFT", self.Anchor, 4, -3)
 			Frame:SetPoint("BOTTOMRIGHT", self.Anchor, -4, 3)
@@ -887,8 +888,6 @@ function Chat:MoveChatFrames()
 	
 	GeneralDockManagerOverflowButton:ClearAllPoints()
 	GeneralDockManagerOverflowButton:SetPoint("RIGHT", self.TopBar, -2, 0)
-	
-	DEFAULT_CHAT_FRAME:SetUserPlaced(true)
 end
 
 function Chat:StyleChatFrames()
@@ -1028,6 +1027,7 @@ function Chat:Install()
 	--SetCVar("BnWhisperMode", "inline")
 	SetCVar("removeChatDelay", 1)
 	SetCVar("colorChatNamesByClass", 1) -- Temp, remove me (Added 2021-05-20)
+	SetCVar("chatClassColorOverride", "0")
 	
 	--Chat:MoveChatFrames()
 	FCF_SelectDockFrame(ChatFrame1)
@@ -1107,7 +1107,12 @@ function Chat:SetChatTypeInfo()
 	
 	if (GetCVar("colorChatNamesByClass") ~= 1) then
 		SetCVar("colorChatNamesByClass", 1)
+		SetCVar("chatClassColorOverride", "0")
 	end
+end
+
+local MoveChatFrames = function()
+	Chat:MoveChatFrames()
 end
 
 function Chat:Load()
@@ -1134,8 +1139,12 @@ function Chat:Load()
 	self:MoveChatFrames()
 	self:SetChatTypeInfo()
 	
-	self:Hook("ChatEdit_UpdateHeader")
-	self:Hook("FCF_OpenTemporaryWindow")
+	DEFAULT_CHAT_FRAME:SetUserPlaced(true)
+	
+	hooksecurefunc("ChatEdit_UpdateHeader", UpdateHeader)
+	hooksecurefunc("FCF_OpenTemporaryWindow", OpenTemporaryWindow)
+	hooksecurefunc("FCF_RestorePositionAndDimensions", MoveChatFrames)
+	hooksecurefunc("FCF_SavePositionAndDimensions", MoveChatFrames)
 	
 	self:RegisterEvent("UI_SCALE_CHANGED")
 	self:SetScript("OnEvent", self.MoveChatFrames)
@@ -1280,14 +1289,14 @@ GUI:AddWidgets(Language["General"], Language["Chat"], function(left, right)
 	left:CreateSwitch("chat-enable-friend-links", Settings["chat-enable-friend-links"], Language["Enable Friend Tag Links"], "Enable friend tag links in the chat frame")
 	
 	right:CreateHeader(Language["Chat Frame Font"])
-	right:CreateDropdown("chat-font", Settings["chat-font"], Assets:GetFontList(), Language["Font"], "Set the font of the chat frame", UpdateChatFont, "Font")
-	right:CreateSlider("chat-font-size", Settings["chat-font-size"], 8, 32, 1, "Font Size", "Set the font size of the chat frame", UpdateChatFont)
-	right:CreateDropdown("chat-font-flags", Settings["chat-font-flags"], Assets:GetFlagsList(), Language["Font Flags"], "Set the font flags of the chat frame", UpdateChatFont)
+	right:CreateDropdown("chat-font", Settings["chat-font"], Assets:GetFontList(), Language["Font"], Language["Set the font of the chat frame"], UpdateChatFont, "Font")
+	right:CreateSlider("chat-font-size", Settings["chat-font-size"], 8, 32, 1, Language["Font Size"], Language["Set the font size of the chat frame"], UpdateChatFont)
+	right:CreateDropdown("chat-font-flags", Settings["chat-font-flags"], Assets:GetFlagsList(), Language["Font Flags"], Language["Set the font flags of the chat frame"], UpdateChatFont)
 	
 	right:CreateHeader(Language["Tab Font"])
-	right:CreateDropdown("chat-tab-font", Settings["chat-tab-font"], Assets:GetFontList(), Language["Font"], "Set the font of the chat frame tabs", UpdateChatTabFont, "Font")
-	right:CreateSlider("chat-tab-font-size", Settings["chat-tab-font-size"], 8, 32, 1, "Font Size", "Set the font size of the chat frame tabs", UpdateChatTabFont)
-	right:CreateDropdown("chat-tab-font-flags", Settings["chat-tab-font-flags"], Assets:GetFlagsList(), Language["Font Flags"], "Set the font flags of the chat frame tabs", UpdateChatTabFont)
-	right:CreateColorSelection("chat-tab-font-color", Settings["chat-tab-font-color"], Language["Font Color"], "Set the color of the chat frame tabs", UpdateChatTabFont)
-	right:CreateColorSelection("chat-tab-font-color-mouseover", Settings["chat-tab-font-color-mouseover"], Language["Font Color Mouseover"], "Set the color of the chat frame tab while mousing over it")
+	right:CreateDropdown("chat-tab-font", Settings["chat-tab-font"], Assets:GetFontList(), Language["Font"], Language["Set the font of the chat frame tabs"], UpdateChatTabFont, "Font")
+	right:CreateSlider("chat-tab-font-size", Settings["chat-tab-font-size"], 8, 32, 1, Language["Font Size"], Language["Set the font size of the chat frame tabs"], UpdateChatTabFont)
+	right:CreateDropdown("chat-tab-font-flags", Settings["chat-tab-font-flags"], Assets:GetFlagsList(), Language["Font Flags"], Language["Set the font flags of the chat frame tabs"], UpdateChatTabFont)
+	right:CreateColorSelection("chat-tab-font-color", Settings["chat-tab-font-color"], Language["Font Color"], Language["Set the color of the chat frame tabs"], UpdateChatTabFont)
+	right:CreateColorSelection("chat-tab-font-color-mouseover", Settings["chat-tab-font-color-mouseover"], Language["Font Color Mouseover"], Language["Set the color of the chat frame tab while mousing over it"])
 end)

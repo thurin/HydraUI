@@ -3,7 +3,7 @@ local HydraUI, GUI, Language, Assets, Settings = select(2, ...):get()
 local GetRangedCritChance = GetRangedCritChance
 local GetSpellCritChance = GetSpellCritChance
 local GetCritChance = GetCritChance
-local Label = Language["Crit"]
+local Label = CRIT_ABBR
 
 local OnMouseUp = function()
 	ToggleCharacter("PaperDollFrame")

@@ -86,7 +86,7 @@ function HydraUI:ToggleMovers()
 		end
 		
 		if (GUI.Loaded and GUI:IsShown()) then
-			HydraUI:DisplayPopup(Language["Attention"], Language["Would you like to reopen the settings window?"], Language["Accept"], OnAccept, Language["Cancel"], OnCancel) -- PopupOnCancel
+			HydraUI:DisplayPopup(Language["Attention"], Language["Would you like to reopen the settings window?"], ACCEPT, OnAccept, CANCEL, OnCancel) -- PopupOnCancel
 			GUI:Toggle()
 		end
 		
@@ -125,7 +125,7 @@ function HydraUI:ResetMover(name)
 end
 
 function HydraUI:ResetAllMovers()
-	self:DisplayPopup(Language["Attention"], Language["Are you sure you want to reset the position of all moved frames?"], Language["Accept"], self.ResetMovers, Language["Cancel"])
+	self:DisplayPopup(Language["Attention"], Language["Are you sure you want to reset the position of all moved frames?"], ACCEPT, self.ResetMovers, CANCEL)
 end
 
 function HydraUI:IsMoved(frame)

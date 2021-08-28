@@ -169,7 +169,7 @@ local ResetOnAccept = function()
 end
 
 function HydraUI:Reset()
-	HydraUI:DisplayPopup(Language["Attention"], Language["This action will delete ALL saved UI information. Are you sure you wish to continue?"], Language["Accept"], ResetOnAccept, Language["Cancel"])
+	HydraUI:DisplayPopup(Language["Attention"], Language["This action will delete ALL saved UI information. Are you sure you wish to continue?"], ACCEPT, ResetOnAccept, CANCEL)
 end
 
 local DEFAULT_CHAT_FRAME = DEFAULT_CHAT_FRAME

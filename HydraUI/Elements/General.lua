@@ -3,7 +3,7 @@ local HydraUI, GUI, Language, Assets, Settings = select(2, ...):get()
 local Throttle = HydraUI:GetModule("Throttle")
 
 local HasPrinted = false
-local DevTools = Language["|Hcommand:/reload|h|cFF%s[Reload UI]|r|h |Hcommand:/eventtrace|h|cFF%s[Event Trace]|r|h |Hplayer:%s|h|cFF%s[Whisper Self]|r|h |Hcommand:/framestack|h|cFF%s[Frame Stack]|r|h"]
+local DevTools = "|Hcommand:/reload|h|cFF%s[Reload UI]|r|h |Hcommand:/eventtrace|h|cFF%s[Event Trace]|r|h |Hplayer:%s|h|cFF%s[Whisper Self]|r|h |Hcommand:/framestack|h|cFF%s[Frame Stack]|r|h"
 
 local UpdateDisplayDevTools = function()
 	if (not HasPrinted) then
@@ -116,7 +116,7 @@ local UpdateStyle = function(value)
 		Label = format("|cFF%s%s|r", Assets.Styles[value]["ui-widget-color"], value)
 	end
 	
-	HydraUI:DisplayPopup(Language["Attention"], format(Language['Are you sure you would like to change to the current style to "%s"?'], Label), Language["Accept"], AcceptNewStyle, Language["Cancel"], nil, value)
+	HydraUI:DisplayPopup(Language["Attention"], format(Language['Are you sure you would like to change to the current style to "%s"?'], Label), ACCEPT, AcceptNewStyle, CANCEL, nil, value)
 end
 
 GUI:AddWidgets(Language["General"], Language["Styles"], function(left, right)

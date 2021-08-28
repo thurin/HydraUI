@@ -395,10 +395,10 @@ local OnTooltipSetItem = function(self)
 	end
 	
 	if Settings["tooltips-show-id"] then
-		local ID = match(Link, ":(%w+)")
+		local id = match(Link, ":(%w+)")
 		
 		self:AddLine(" ")
-		self:AddDoubleLine(Language["Item ID:"], ID, 1, 1, 1, 1, 1, 1)
+		self:AddLine(format("%s |cFFFFFFFF%d|r", ID, id))
 	end
 end
 
@@ -410,10 +410,10 @@ local OnItemRefTooltipSetItem = function(self)
 	end
 	
 	if Settings["tooltips-show-id"] then
-		local ID = match(Link, ":(%w+)")
+		local id = match(Link, ":(%w+)")
 		
 		self:AddLine(" ")
-		self:AddDoubleLine(Language["Item ID:"], ID, 1, 1, 1, 1, 1, 1)
+		self:AddLine(format("%s |cFFFFFFFF%d|r", ID, id))
 	end
 end
 
@@ -428,10 +428,36 @@ local OnTooltipSetSpell = function(self)
 		return
 	end
 	
-	local ID = select(2, self:GetSpell())
+	local id = select(2, self:GetSpell())
 	
 	self:AddLine(" ")
-	self:AddDoubleLine(Language["Spell ID:"], ID, 1, 1, 1, 1, 1, 1)
+	self:AddLine(format("%s |cFFFFFFFF%d|r", ID, id))
+end
+
+local OnTooltipSetAura = function(self, unit, index, filter)
+	if (not Settings["tooltips-show-id"]) then
+		return
+	end
+
+	local _, _, _, _, _, _, Caster, _, _, id = UnitAura(unit, index, filter)
+
+	if (not id) then
+		return
+	end
+
+	if Caster then
+		local Name = UnitName(Caster)
+		local _, Class = UnitClass(Caster)
+		local Color = RAID_CLASS_COLORS[Class]
+
+		self:AddLine(" ")
+		self:AddDoubleLine(format("%s |cFFFFFFFF%d|r", ID, id), format("|c%s%s|r", Color.colorStr, Name))
+	else
+		self:AddLine(" ")
+		self:AddLine(format("%s |cFFFFFFFF%d|r", ID, id))
+	end
+
+	self:Show()
 end
 
 local SetDefaultAnchor = function(self, parent)
@@ -461,6 +487,9 @@ function Tooltips:AddHooks()
 	ItemRefTooltip:HookScript("OnTooltipSetItem", OnItemRefTooltipSetItem)
 	
 	hooksecurefunc("GameTooltip_SetDefaultAnchor", SetDefaultAnchor)
+	hooksecurefunc(GameTooltip, "SetUnitAura", OnTooltipSetAura)
+	hooksecurefunc(GameTooltip, "SetUnitBuff", OnTooltipSetAura)
+	hooksecurefunc(GameTooltip, "SetUnitDebuff", OnTooltipSetAura)
 end
 
 local GetColor = function(p, r1, g1, b1, r2, g2, b2)
@@ -654,17 +683,17 @@ GUI:AddWidgets(Language["General"], Language["Tooltips"], function(left, right)
 	left:CreateSwitch("tooltips-enable", Settings["tooltips-enable"], Language["Enable Tooltips Module"], Language["Enable the HydraUI tooltips module"], ReloadUI):RequiresReload(true)
 	
 	left:CreateHeader(Language["Health Bar"])
-	left:CreateSwitch("tooltips-show-health", Settings["tooltips-show-health"], Language["Display Health Bar"], Language["Dislay the tooltip health bar"])
-	left:CreateSwitch("tooltips-show-health-text", Settings["tooltips-show-health-text"], Language["Display Health Text"], Language["Dislay health information on the tooltip health bar"], UpdateShowHealthText)
+	left:CreateSwitch("tooltips-show-health", Settings["tooltips-show-health"], Language["Display Health Bar"], Language["Display the tooltip health bar"])
+	left:CreateSwitch("tooltips-show-health-text", Settings["tooltips-show-health-text"], Language["Display Health Text"], Language["Display health information on the tooltip health bar"], UpdateShowHealthText)
 	left:CreateSlider("tooltips-health-bar-height", Settings["tooltips-health-bar-height"], 2, 30, 1, Language["Health Bar Height"], Language["Set the height of the tooltip health bar"], UpdateHealthBarHeight)
 	
 	left:CreateHeader(Language["Information"])
-	left:CreateSwitch("tooltips-show-target", Settings["tooltips-show-target"], Language["Display Target"], Language["Dislay the units current target"])
-	left:CreateSwitch("tooltips-show-id", Settings["tooltips-show-id"], Language["Display ID's"], Language["Dislay item and spell ID's in the tooltip"])
+	left:CreateSwitch("tooltips-show-target", Settings["tooltips-show-target"], Language["Display Target"], Language["Display the units current target"])
+	left:CreateSwitch("tooltips-show-id", Settings["tooltips-show-id"], Language["Display ID's"], Language["Display item and spell ID's in the tooltip"])
 	left:CreateSwitch("tooltips-display-realm", Settings["tooltips-display-realm"], Language["Display Realm"], Language["Display character realms"])
 	left:CreateSwitch("tooltips-display-title", Settings["tooltips-display-title"], Language["Display Title"], Language["Display character titles"])
 	left:CreateSwitch("tooltips-display-rank", Settings["tooltips-display-rank"], Language["Display Guild Rank"], Language["Display character guild ranks"])
-	left:CreateSwitch("tooltips-show-price", Settings["tooltips-show-price"], Language["Display Vendor Price"], Language["Dislay the vendor price of an item"])
+	left:CreateSwitch("tooltips-show-price", Settings["tooltips-show-price"], Language["Display Vendor Price"], Language["Display the vendor price of an item"])
 	
 	right:CreateHeader(Language["Font"])
 	right:CreateDropdown("tooltips-font", Settings["tooltips-font"], Assets:GetFontList(), Language["Font"], Language["Set the font of the tooltip text"], nil, "Font")
