@@ -185,8 +185,8 @@ function KeyBinding:Enable()
 	self:SetScript("OnEvent", self.OnEvent)
 	self.Active = true
 	
-	--HydraUI:DisplayPopup(Language["Attention"], Language["Key binding mode is currently active. Would you like to exit key binding mode?"], Language["Accept"], PopupOnAccept, Language["Cancel"]) -- PopupOnCancel
-	HydraUI:DisplayPopup(Language["Attention"], Language["Key binding mode is active. Would you like to save your changes?"], Language["Save"], OnAccept, Language["Cancel"], OnCancel) -- PopupOnCancel
+	--HydraUI:DisplayPopup(Language["Attention"], Language["Key binding mode is currently active. Would you like to exit key binding mode?"], Language["Accept"], PopupOnAccept, CANCEL) -- PopupOnCancel
+	HydraUI:DisplayPopup(Language["Attention"], Language["Key binding mode is active. Would you like to save your changes?"], ACCEPT, OnAccept, CANCEL, OnCancel) -- PopupOnCancel
 end
 
 function KeyBinding:Disable()
@@ -227,11 +227,11 @@ local ToggleBindingMode = function()
 end
 
 local SaveChanges = function()
-	HydraUI:DisplayPopup(Language["Attention"], Language["Are you sure you would like to save these key binding changes?"], Language["Accept"], OnAccept, Language["Cancel"], OnCancel)
+	HydraUI:DisplayPopup(Language["Attention"], Language["Are you sure you would like to save these key binding changes?"], ACCEPT, OnAccept, CANCEL, OnCancel)
 end
 
 local DiscardChanges = function()
-	HydraUI:DisplayPopup(Language["Attention"], Language["Are you sure you would like to discard these key binding changes?"], Language["Accept"], ReloadUI, Language["Cancel"])
+	HydraUI:DisplayPopup(Language["Attention"], Language["Are you sure you would like to discard these key binding changes?"], ACCEPT, ReloadUI, CANCEL)
 end
 
 GUI:AddWidgets(Language["General"], Language["Action Bars"], function(left, right)

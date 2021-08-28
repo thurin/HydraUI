@@ -12,7 +12,7 @@ local OnEnter = function(self)
 	
 	local HomeLatency, WorldLatency = select(3, GetNetStats())
 	
-	GameTooltip:AddLine(Language["Latency:"], 1, 0.7, 0)
+	GameTooltip:AddLine(MAINMENUBAR_LATENCY_LABEL, 1, 0.7, 0)
 	GameTooltip:AddLine(format(Language["%s ms (home)"], HomeLatency), 1, 1, 1)
 	GameTooltip:AddLine(format(Language["%s ms (world)"], WorldLatency), 1, 1, 1)
 	

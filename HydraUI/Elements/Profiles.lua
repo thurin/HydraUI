@@ -134,19 +134,6 @@ function HydraUI:AddProfile(profile)
 	
 	self:print(format(Language['Added profile: "%s".'], Name))
 	
-	--[[if (Name and not self.Profiles[Name]) then
-		self.Profiles[Name] = profile
-		self.ProfileList[Name] = Name
-		
-		local Widget = GUI:GetWidget("ui-profile")
-		Widget.Dropdown:CreateSelection(Name, Name)
-		Widget.Dropdown:Sort()
-		
-		self:print(format(Language['Added profile: "%s."'], Name))
-	else
-		self:print(format(Language['A profile already exists with the name "%s".'], Name))
-	end]]
-	
 	self:UpdateProfileInfo()
 end
 
@@ -446,7 +433,7 @@ function HydraUI:RenameProfile(from, to)
 	if (not self.Profiles[from]) then
 		return
 	elseif self.Profiles[to] then
-		self:print(format('A profile already exists with the name "%s".', to))
+		self:print(format(Language['A profile already exists with the name "%s".'], to))
 		
 		return
 	end
@@ -467,7 +454,7 @@ function HydraUI:RenameProfile(from, to)
 	
 	-- Update dropdown menu if needed
 	
-	self:print(format('Profile "%s" has been renamed to "%s".', from, to))
+	self:print(format(Language['Profile "%s" has been renamed to "%s".'], from, to))
 end
 
 function HydraUI:CopyProfile(from, to)
@@ -478,7 +465,7 @@ function HydraUI:CopyProfile(from, to)
 	self.Profiles[to] = self:GetProfile(from)
 	self.Profiles[to]["profile-last-modified"] = self:GetCurrentDate()
 	
-	self:print(format('Profile "%s" has been copied from "%s".', to, from))
+	self:print(format(Language['Profile "%s" has been copied from "%s".'], to, from))
 	
 	C_UI.Reload()
 end
@@ -680,13 +667,13 @@ end
 
 local UpdateActiveProfile = function(value)
 	if (value ~= HydraUI:GetActiveProfileName()) then
-		HydraUI:DisplayPopup(Language["Attention"], format(Language['Are you sure you would like to change to the current profile to "%s"?'], value), Language["Accept"], AcceptNewProfile, Language["Cancel"], nil, value)
+		HydraUI:DisplayPopup(Language["Attention"], format(Language['Are you sure you would like to change to the current profile to "%s"?'], value), ACCEPT, AcceptNewProfile, CANCEL, nil, value)
 	end
 end
 
 local CreateProfile = function(value)
 	if HydraUI.Profiles[value] then
-		return HydraUI:print(format('A profile already exists with the name "%s".', value))
+		return HydraUI:print(format(Language['A profile already exists with the name "%s".'], value))
 	end
 	
 	HydraUI:CreateProfile(value)

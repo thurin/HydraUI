@@ -96,7 +96,7 @@ function DT:SetDataText(anchor, name)
 end
 
 function DT:SetTooltipsEnabled(value)
-	for Name, Anchor in pairs(self.Anchors) do
+	for Name, Anchor in next, self.Anchors do
 		if (Anchor:HasScript("OnEnter")) then
 			Anchor:EnableMouse(value)
 		end
@@ -104,7 +104,7 @@ function DT:SetTooltipsEnabled(value)
 end
 
 function DT:UpdateAllAnchors()
-	for Name, Anchor in pairs(self.Anchors) do
+	for Name, Anchor in next, self.Anchors do
 		Anchor:Update(999, "player")
 	end
 end
@@ -183,7 +183,7 @@ local UpdateMinimapBottomText = function(value)
 end
 
 local UpdateFont = function()
-	for Name, Anchor in pairs(DT.Anchors) do
+	for Name, Anchor in next, DT.Anchors do
 		HydraUI:SetFontInfo(Anchor.Text, Settings["data-text-font"], Settings["data-text-font-size"], Settings["data-text-font-flags"])
 	end
 end
@@ -197,7 +197,7 @@ local ResetOnAccept = function()
 end
 
 local ResetGold = function()
-	HydraUI:DisplayPopup(Language["Attention"], Language["Are you sure you would like to reset all stored gold information?"], Language["Accept"], ResetOnAccept, Language["Cancel"])
+	HydraUI:DisplayPopup(Language["Attention"], Language["Are you sure you would like to reset all stored gold information?"], ACCEPT, ResetOnAccept, CANCEL)
 end
 
 local UpdateTimeFormat = function(value)
@@ -207,7 +207,7 @@ end
 
 local DeleteGoldData = function(value)
 	if HydraUI.GoldData[HydraUI.UserRealm] then
-		for name, money in pairs(HydraUI.GoldData[HydraUI.UserRealm]) do
+		for name, money in next, HydraUI.GoldData[HydraUI.UserRealm] do
 			if (string.match(name, "|cff%x%x%x%x%x%x(.*)|r") == value) then
 				HydraUI.GoldData[HydraUI.UserRealm][name] = nil
 				

@@ -6,7 +6,7 @@ local GetInventoryItemID = GetInventoryItemID
 local GetInventoryItemLink = GetInventoryItemLink
 local GetInventoryItemCount = GetInventoryItemCount
 
-local Label = Language["Ammo"]
+local Label = AMMOSLOT
 local ThrownSubType = LE_ITEM_WEAPON_THROWN
 
 local OnEnter = function(self)

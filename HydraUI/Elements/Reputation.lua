@@ -314,8 +314,8 @@ GUI:AddWidgets(Language["General"], Language["Reputation"], function(left, right
 	left:CreateSwitch("reputation-enable", true, Language["Enable Reputation Module"], Language["Enable the HydraUI reputation module"], ReloadUI):RequiresReload(true)
 	
 	left:CreateHeader(Language["Styling"])
-	left:CreateSwitch("reputation-display-progress", Settings["reputation-display-progress"], Language["Display Progress Value"], Language["Display your current progressinformation in the reputation bar"], UpdateDisplayProgress)
-	left:CreateSwitch("reputation-display-percent", Settings["reputation-display-percent"], Language["Display Percent Value"], Language["Display your current percentinformation in the reputation bar"], UpdateDisplayPercent)
+	left:CreateSwitch("reputation-display-progress", Settings["reputation-display-progress"], Language["Display Progress Value"], Language["Display your current progress information in the reputation bar"], UpdateDisplayProgress)
+	left:CreateSwitch("reputation-display-percent", Settings["reputation-display-percent"], Language["Display Percent Value"], Language["Display your current percent information in the reputation bar"], UpdateDisplayPercent)
 	left:CreateSwitch("reputation-show-tooltip", Settings["reputation-show-tooltip"], Language["Enable Tooltip"], Language["Display a tooltip when mousing over the reputation bar"])
 	left:CreateSwitch("reputation-animate", Settings["reputation-animate"], Language["Animate Reputation Changes"], Language["Smoothly animate changes to the reputation bar"])
 	

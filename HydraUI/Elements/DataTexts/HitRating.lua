@@ -1,7 +1,7 @@
 local HydraUI, GUI, Language, Assets, Settings = select(2, ...):get()
 
 local GetCombatRatingBonus = GetCombatRatingBonus
-local Label = Language["Hit"]
+local Label = HIT
 
 local OnMouseUp = function()
 	ToggleCharacter("PaperDollFrame")

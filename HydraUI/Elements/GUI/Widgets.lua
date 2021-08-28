@@ -481,7 +481,7 @@ local ButtonOnMouseUp = function(self)
 	self.Texture:SetVertexColor(HydraUI:HexToRGB(Settings["ui-widget-bright-color"]))
 	
 	if self.ReloadFlag then
-		HydraUI:DisplayPopup(Language["Attention"], Language["You have changed a setting that requires a UI reload. Would you like to reload the UI now?"], Language["Accept"], self.Hook, Language["Cancel"])
+		HydraUI:DisplayPopup(Language["Attention"], Language["You have changed a setting that requires a UI reload. Would you like to reload the UI now?"], ACCEPT, self.Hook, CANCEL)
 	elseif self.Hook then
 		self.Hook()
 	end
@@ -667,7 +667,7 @@ local CheckboxOnMouseUp = function(self)
 	SetVariable(self.ID, self.Value)
 	
 	if (self.ReloadFlag) then
-		HydraUI:DisplayPopup(Language["Attention"], Language["You have changed a setting that requires a UI reload. Would you like to reload the UI now?"], "Accept", self.Hook, "Cancel", nil, self.Value, self.ID)
+		HydraUI:DisplayPopup(Language["Attention"], Language["You have changed a setting that requires a UI reload. Would you like to reload the UI now?"], ACCEPT, self.Hook, CANCEL, nil, self.Value, self.ID)
 	elseif self.Hook then
 		self.Hook(self.Value, self.ID)
 	end
@@ -802,7 +802,7 @@ local SwitchOnMouseUp = function(self)
 	SetVariable(self.ID, self.Value)
 	
 	if self.ReloadFlag then
-		HydraUI:DisplayPopup(Language["Attention"], Language["You have changed a setting that requires a UI reload. Would you like to reload the UI now?"], "Accept", self.Hook, "Cancel", nil, self.Value, self.ID)
+		HydraUI:DisplayPopup(Language["Attention"], Language["You have changed a setting that requires a UI reload. Would you like to reload the UI now?"], ACCEPT, self.Hook, CANCEL, nil, self.Value, self.ID)
 	elseif self.Hook then
 		self.Hook(self.Value, self.ID)
 	end
@@ -993,7 +993,7 @@ local InputWindowOnEnterPressed = function(self)
 		end
 		
 		if Input.ReloadFlag then
-			HydraUI:DisplayPopup(Language["Attention"], Language["You have changed a setting that requires a UI reload. Would you like to reload the UI now?"], "Accept", Input.Hook, "Cancel", nil, Text, Input.ID)
+			HydraUI:DisplayPopup(Language["Attention"], Language["You have changed a setting that requires a UI reload. Would you like to reload the UI now?"], ACCEPT, Input.Hook, CANCEL, nil, Text, Input.ID)
 		elseif Input.Hook then
 			Input.Hook(Text, Input.ID)
 		end
@@ -1718,7 +1718,7 @@ local MenuItemOnMouseUp = function(self)
 		self.GrandParent.Value = self.Key
 		
 		if self.GrandParent.ReloadFlag then
-			HydraUI:DisplayPopup(Language["Attention"], Language["You have changed a setting that requires a UI reload. Would you like to reload the UI now?"], "Accept", self.GrandParent.Hook, "Cancel", nil, self.Key, self.ID)
+			HydraUI:DisplayPopup(Language["Attention"], Language["You have changed a setting that requires a UI reload. Would you like to reload the UI now?"], ACCEPT, self.GrandParent.Hook, CANCEL, nil, self.Key, self.ID)
 		elseif self.GrandParent.Hook then
 			self.GrandParent.Hook(self.Key, self.ID)
 		end
@@ -1728,7 +1728,7 @@ local MenuItemOnMouseUp = function(self)
 		self.GrandParent.Value = self.Value
 		
 		if self.GrandParent.ReloadFlag then
-			HydraUI:DisplayPopup(Language["Attention"], Language["You have changed a setting that requires a UI reload. Would you like to reload the UI now?"], "Accept", self.GrandParent.Hook, "Cancel", nil, self.Value, self.ID)
+			HydraUI:DisplayPopup(Language["Attention"], Language["You have changed a setting that requires a UI reload. Would you like to reload the UI now?"], ACCEPT, self.GrandParent.Hook, CANCEL, nil, self.Value, self.ID)
 		elseif self.GrandParent.Hook then
 			self.GrandParent.Hook(self.Value, self.ID)
 		end
@@ -2199,7 +2199,7 @@ local SliderOnValueChanged = function(self)
 	SetVariable(self.ID, Value)
 	
 	if self.ReloadFlag then
-		HydraUI:DisplayPopup(Language["Attention"], Language["You have changed a setting that requires a UI reload. Would you like to reload the UI now?"], "Accept", self.Hook, "Cancel", nil, Value, self.ID)
+		HydraUI:DisplayPopup(Language["Attention"], Language["You have changed a setting that requires a UI reload. Would you like to reload the UI now?"], ACCEPT, self.Hook, CANCEL, nil, Value, self.ID)
 	elseif self.Hook then
 		self.Hook(Value, self.ID)
 	end
@@ -2556,7 +2556,7 @@ local ColorPickerAccept = function(self)
 		SetVariable(Active.ID, Active.Value)
 		
 		if Active.ReloadFlag then
-			HydraUI:DisplayPopup(Language["Attention"], Language["You have changed a setting that requires a UI reload. Would you like to reload the UI now?"], "Accept", Active.Hook, "Cancel", nil, Active.Value, Active.ID)
+			HydraUI:DisplayPopup(Language["Attention"], Language["You have changed a setting that requires a UI reload. Would you like to reload the UI now?"], ACCEPT, Active.Hook, CANCEL, nil, Active.Value, Active.ID)
 		elseif Active.Hook then
 			Active.Hook(Active.Value, Active.ID)
 		end
@@ -2900,7 +2900,7 @@ local CreateColorPicker = function()
 	ColorPicker.AcceptText:SetPoint("CENTER", ColorPicker.Accept, 0, 0)
 	HydraUI:SetFontInfo(ColorPicker.AcceptText, Settings["ui-button-font"], Settings["ui-font-size"])
 	ColorPicker.AcceptText:SetJustifyH("CENTER")
-	ColorPicker.AcceptText:SetText("|cFF"..Settings["ui-button-font-color"]..Language["Accept"].."|r")
+	ColorPicker.AcceptText:SetText("|cFF"..Settings["ui-button-font-color"]..ACCEPT.."|r")
 	
 	-- Cancel
 	ColorPicker.Cancel = CreateFrame("Frame", nil, ColorPicker, "BackdropTemplate")
@@ -2931,7 +2931,7 @@ local CreateColorPicker = function()
 	ColorPicker.CancelText:SetPoint("CENTER", ColorPicker.Cancel, 0, 0)
 	HydraUI:SetFontInfo(ColorPicker.CancelText, Settings["ui-button-font"], Settings["ui-font-size"])
 	ColorPicker.CancelText:SetJustifyH("CENTER")
-	ColorPicker.CancelText:SetText("|cFF"..Settings["ui-button-font-color"]..Language["Cancel"].."|r")
+	ColorPicker.CancelText:SetText("|cFF"..Settings["ui-button-font-color"]..CANCEL.."|r")
 	
 	ColorPicker.BG = CreateFrame("Frame", nil, ColorPicker, "BackdropTemplate")
 	ColorPicker.BG:SetPoint("TOPLEFT", ColorPicker.Header, -3, 3)

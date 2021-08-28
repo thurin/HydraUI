@@ -4,7 +4,7 @@ local GetRangedCritChance = GetRangedCritChance
 local GetSpellCritChance = GetSpellCritChance
 local GetCritChance = GetCritChance
 local max = max
-local Label = Language["Crit"]
+local Label = CRIT_ABBR
 
 local GetSpellCrit = function()
 	local Max = GetSpellCritChance(2)

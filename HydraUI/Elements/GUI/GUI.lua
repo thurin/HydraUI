@@ -944,8 +944,6 @@ function GUI:CreateGUI()
 	HydraUI:SetFontInfo(self.Header.Text, Settings["ui-header-font"], Settings["ui-title-font-size"])
 	self.Header.Text:SetJustifyH("CENTER")
 	self.Header.Text:SetTextColor(HydraUI:HexToRGB(Settings["ui-widget-color"]))
-	--self.Header.Text:SetText(format(Language["- Hydra|cFFEAEAUI|r version %s -"], HydraUI.UIVersion))
-	--self.Header.Text:SetText(Language["- Hydra|cFFEAEAEAUI|r -"])
 	self.Header.Text:SetText("Hydra|cFFEAEAEAUI|r")
 	
 	-- Menu parent
@@ -1172,7 +1170,7 @@ end
 
 function GUI:PLAYER_REGEN_ENABLED()
 	if (Settings["gui-hide-in-combat"] and self.WasCombatClosed) then
-		HydraUI:DisplayPopup(Language["Attention"], Language["The settings window was automatically closed due to combat. Would you like to open it again?"], Language["Accept"], ReopenWindow, Language["Decline"])
+		HydraUI:DisplayPopup(Language["Attention"], Language["The settings window was automatically closed due to combat. Would you like to open it again?"], ACCEPT, ReopenWindow, CANCEL)
 	end
 	
 	self.WasCombatClosed = false

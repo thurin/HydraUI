@@ -86,6 +86,6 @@ local UpdateFastLoot = function(value)
 end
 
 GUI:AddWidgets(Language["General"], Language["General"], function(left, right)
-	right:CreateHeader("Loot")
+	right:CreateHeader(Language["Loot"])
 	right:CreateSwitch("fast-loot", Settings["fast-loot"], Language["Enable Fast Loot"], Language["Speed up auto looting"], UpdateFastLoot)
 end)

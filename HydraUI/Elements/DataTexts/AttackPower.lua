@@ -2,7 +2,7 @@ local HydraUI, GUI, Language, Assets, Settings = select(2, ...):get()
 
 local UnitAttackPower = UnitAttackPower
 local UnitRangedAttackPower = UnitRangedAttackPower
-local Label = Language["Power"]
+local Label = ATTACK_POWER
 
 local OnMouseUp = function()
 	ToggleCharacter("PaperDollFrame")

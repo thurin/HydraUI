@@ -3,7 +3,7 @@ local HydraUI, GUI, Language, Assets, Settings = select(2, ...):get()
 local GetContainerNumSlots = GetContainerNumSlots
 local GetContainerNumFreeSlots = GetContainerNumFreeSlots
 local NUM_BAG_SLOTS = NUM_BAG_SLOTS
-local Label = Language["Bags"]
+local Label = TUTORIAL_TITLE10
 
 local OnEnter = function(self)
 	self:SetTooltip()

@@ -250,8 +250,8 @@ end
 
 GUI:AddWidgets(Language["General"], Language["Minimap"], function(left, right)
 	right:CreateHeader(Language["Minimap Buttons"])
-	right:CreateSwitch("minimap-buttons-enable", Settings["minimap-buttons-enable"], "Enable Minimap Button Bar", "", ReloadUI):RequiresReload(true)
-	right:CreateSlider("minimap-buttons-size", Settings["minimap-buttons-size"], 16, 44, 1, "Button Size", "", UpdateBar)
-	right:CreateSlider("minimap-buttons-spacing", Settings["minimap-buttons-spacing"], 1, 5, 1, "Button Spacing", "", UpdateBar)
-	right:CreateSlider("minimap-buttons-perrow", Settings["minimap-buttons-perrow"], 1, 20, 1, "Per Row", "", UpdateBar)
+	right:CreateSwitch("minimap-buttons-enable", Settings["minimap-buttons-enable"], Language["Enable Minimap Button Bar"], "", ReloadUI):RequiresReload(true)
+	right:CreateSlider("minimap-buttons-size", Settings["minimap-buttons-size"], 16, 44, 1, Language["Button Size"], "", UpdateBar)
+	right:CreateSlider("minimap-buttons-spacing", Settings["minimap-buttons-spacing"], 1, 5, 1, Language["Button Spacing"], "", UpdateBar)
+	right:CreateSlider("minimap-buttons-perrow", Settings["minimap-buttons-perrow"], 1, 20, 1, Language["Buttons Per Row"], Language["Set the number of buttons per row"], UpdateBar)
 end)

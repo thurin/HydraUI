@@ -4,7 +4,7 @@ local GetContainerNumSlots = GetContainerNumSlots
 local GetContainerNumFreeSlots = GetContainerNumFreeSlots
 local NUM_BAG_SLOTS = NUM_BAG_SLOTS
 local select = select
-local Label = Language["Soul Shards"]
+local Label = SOUL_SHARDS_POWER
 
 local Update = function(self)
 	local ShardCount = 0

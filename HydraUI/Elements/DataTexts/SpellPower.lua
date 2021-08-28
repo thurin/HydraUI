@@ -4,8 +4,8 @@ local GetSpellBonusDamage = GetSpellBonusDamage
 local GetSpellBonusHealing = GetSpellBonusHealing
 local GetTalentTabInfo = GetTalentTabInfo
 
-local HealingLabel = Language["Spell Healing"]
-local SpellLabel = Language["Spell Damage"]
+local HealingLabel = STAT_SPELLHEALING
+local SpellLabel = STAT_SPELLDAMAGE
 
 local GetHighestSpellPower = function()
 	local Power = 0

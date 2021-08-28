@@ -5,8 +5,8 @@ local Tiers = {"FF8000", "A335EE", "0070DD", "1EFF00", "FFFFFF"}
 local Patrons = {
 	{"Erieeroot", "Dragonhawk", "Halven"},
 	{},
-	{"Dillan", "deck"},
-	{"JDoubleU00", "sylvester", "Innie", "Dellamaik", "Blom", "Ryex", "protocol7", "Cyber", "thurin"},
+	{"Dillan", "deck", "Cyber"},
+	{"JDoubleU00", "sylvester", "Innie", "Dellamaik", "Blom", "Ryex", "protocol7", "thurin"},
 	{},
 }
 
