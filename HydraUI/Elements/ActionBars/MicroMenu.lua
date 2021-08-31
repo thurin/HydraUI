@@ -8,7 +8,7 @@ MicroButtons.Buttons = {
 	TalentMicroButton,
 	QuestLogMicroButton,
 	SocialsMicroButton,
-	WorldMapMicroButton,
+	LFGMicroButton,
 	MainMenuMicroButton,
 	HelpMicroButton,
 }
