@@ -186,7 +186,7 @@ function KeyBinding:Enable()
 	self.Active = true
 	
 	--HydraUI:DisplayPopup(Language["Attention"], Language["Key binding mode is currently active. Would you like to exit key binding mode?"], ACCEPT, PopupOnAccept, CANCEL) -- PopupOnCancel
-	HydraUI:DisplayPopup(Language["Attention"], Language["Key binding mode is active. Would you like to save your changes?"], Language["Save"], OnAccept, CANCEL, OnCancel) -- PopupOnCancel
+	HydraUI:DisplayPopup(Language["Attention"], Language["Key binding mode is active. Would you like to save your changes?"], ACCEPT, OnAccept, CANCEL, OnCancel) -- PopupOnCancel
 end
 
 function KeyBinding:Disable()
@@ -237,7 +237,7 @@ end
 GUI:AddWidgets(Language["General"], Language["Action Bars"], function(left, right)
 	right:CreateHeader(Language["Key Binding"])
 	right:CreateButton("kb-toggle", Language["Toggle"], Language["Key Bind Mode"], Language["While toggled, you can hover over action buttons and press a key combination to rebind them"], ToggleBindingMode)
-	right:CreateButton("kb-save", Language["Save"], Language["Save Changes"], Language["Save key binding changes"], SaveChanges):Disable()
+	right:CreateButton("kb-save", ACCEPT, Language["Save Changes"], Language["Save key binding changes"], SaveChanges):Disable()
 	right:CreateButton("kb-discard", Language["Discard"], Language["Discard Changes"], Language["Discard key binding changes"], DiscardChanges):Disable()
 	
 	--self:GetWidget("kb-save"):Disable()

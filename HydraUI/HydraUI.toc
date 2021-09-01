@@ -1,12 +1,9 @@
 ## Interface: 90100
 ## Author: Hydra
-## Version: 1.30
+## Version: 1.31
 ## Title: |cFFFFC44DHydra|r|cFFFFFFFFUI|r
 ## Notes: An interface replacement for Shadowlands
 ## SavedVariables: HydraUIProfileData, HydraUIProfiles, HydraUIData, HydraUIGold
-## X-Curse-Project-ID: 338631
-## X-WoWI-ID: 25529
-## X-Wago-ID: baNDEr6o
 
 Initialize.lua
 Elements\Libraries\LibStub.lua
