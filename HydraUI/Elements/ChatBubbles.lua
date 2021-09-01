@@ -2,7 +2,7 @@ local HydraUI, GUI, Language, Assets, Settings = select(2, ...):get()
 
 local Bubbles = HydraUI:NewModule("Chat Bubbles")
 
-local pairs = pairs
+local next = next
 local select = select
 local GetAllChatBubbles = C_ChatBubbles.GetAllChatBubbles
 
@@ -77,7 +77,7 @@ end
 function Bubbles:ScanForBubbles()
 	local Bubble
 	
-	for Index, Bubble in pairs(GetAllChatBubbles()) do
+	for Index, Bubble in next, GetAllChatBubbles() do
 		if self.NeedsRefresh then
 			self:RefreshBubble(Bubble)
 		elseif (not Bubble.Skinned) then

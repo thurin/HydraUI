@@ -40,26 +40,18 @@ local UpdateUIScale = function(value)
 end
 
 local GetDiscordLink = function()
-	if (not Throttle:Exists("discord-request")) then
-		Throttle:Create("discord-request", 10)
-	end
-	
 	if (not Throttle:IsThrottled("discord-request")) then
 		HydraUI:print(Language["Join the Discord community for support and feedback https://discord.gg/XefDFa6nJR"])
 		
-		Throttle:Start("discord-request")
+		Throttle:Start("discord-request", 10)
 	end
 end
 
 local GetYouTubeLink = function()
-	if (not Throttle:Exists("yt-request")) then
-		Throttle:Create("yt-request", 10)
-	end
-	
 	if (not Throttle:IsThrottled("yt-request")) then
 		HydraUI:print(Language["Subscribe to YouTube to see new features https://www.youtube.com/c/HydraMods"])
 		
-		Throttle:Start("yt-request")
+		Throttle:Start("yt-request", 10)
 	end
 end
 

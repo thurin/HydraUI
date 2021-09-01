@@ -41,10 +41,10 @@ Elements\GUI\GUI.lua
 Elements\GUI\Widgets.lua
 Elements\Profiles.lua
 Elements\Colors.lua
-Elements\General.lua
-Elements\Fonts.lua
 Elements\Throttle.lua
 Elements\Move.lua
+Elements\General.lua
+Elements\Fonts.lua
 Elements\Alerts.lua
 Elements\Popup.lua
 Elements\Gold.lua
