@@ -492,7 +492,7 @@ function Tooltips:AddHooks()
 	ItemRefTooltip:HookScript("OnTooltipSetItem", OnItemRefTooltipSetItem)
 	
 	hooksecurefunc("GameTooltip_SetDefaultAnchor", SetDefaultAnchor)
-	hooksecurefunc("SharedTooltip_SetBackdropStyle", SetTooltipStyle)
+	--hooksecurefunc("SharedTooltip_SetBackdropStyle", SetTooltipStyle)
 	
 	hooksecurefunc(GameTooltip, "SetUnitAura", OnTooltipSetAura)
 	hooksecurefunc(GameTooltip, "SetUnitBuff", OnTooltipSetAura)
