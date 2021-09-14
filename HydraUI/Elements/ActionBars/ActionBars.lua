@@ -5,6 +5,9 @@ local AB = HydraUI:NewModule("Action Bars")
 local IsUsableAction = IsUsableAction
 local IsActionInRange = IsActionInRange
 local NUM_PET_ACTION_SLOTS = NUM_PET_ACTION_SLOTS
+local AB_OnUpdate = ActionButton_OnUpdate
+local ButtonList = {}
+local ListButton
 
 local NumPad = KEY_NUMPAD1:gsub("%s%S$", "")
 local WheelUp = KEY_MOUSEWHEELUP
@@ -84,10 +87,6 @@ function AB:Disable(object)
 	end
 	
 	object:SetParent(self.Hide)
-end
-
-function AB:DisableBar(bar)
-	bar:Hide()
 end
 
 function AB:PositionButtons(bar, numbuttons, perrow, size, spacing)
@@ -301,6 +300,11 @@ function AB:StyleActionButton(button)
 	
 	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	
+	if button.action then
+		ButtonList[#ButtonList + 1] = button
+		button:SetScript("OnUpdate", nil)
+	end
+	
 	button.Styled = true
 end
 
@@ -420,6 +424,9 @@ function AB:StylePetActionButton(button)
 	button.Backdrop.Texture:SetTexture(Assets:GetTexture(Settings["ui-header-texture"]))
 	button.Backdrop.Texture:SetVertexColor(HydraUI:HexToRGB(Settings["ui-window-main-color"]))
 	
+	ButtonList[#ButtonList + 1] = button
+	button:SetScript("OnUpdate", nil)
+	
 	button.Styled = true
 end
 
@@ -439,19 +446,19 @@ function AB:StanceBar_UpdateState()
 	end
 end
 
-function AB:UpdateButtonStatus()
-	local IsUsable, NoMana = IsUsableAction(self.action)
+local UpdateButtonStatus = function(button)
+	local IsUsable, NoMana = IsUsableAction(button.action)
 	
 	if IsUsable then
-		if (IsActionInRange(self.action) == false) then
-			self.icon:SetVertexColor(HydraUI:HexToRGB("FF4C19"))
+		if (IsActionInRange(button.action) == false) then
+			button.icon:SetVertexColor(HydraUI:HexToRGB("FF4C19"))
 		else
-			self.icon:SetVertexColor(HydraUI:HexToRGB("FFFFFF"))
+			button.icon:SetVertexColor(HydraUI:HexToRGB("FFFFFF"))
 		end
 	elseif NoMana then
-		self.icon:SetVertexColor(HydraUI:HexToRGB("3498D8"))
+		button.icon:SetVertexColor(HydraUI:HexToRGB("3498D8"))
 	else
-		self.icon:SetVertexColor(HydraUI:HexToRGB("4C4C4C"))
+		button.icon:SetVertexColor(HydraUI:HexToRGB("4C4C4C"))
 	end
 end
 
@@ -906,6 +913,17 @@ function AB:CreateMovers()
 	self.Bar1Mover.PostMove = Bar1PostMove
 end
 
+function AB:OnUpdate(elapsed)
+	for i = 1, #ButtonList do
+		ListButton = ButtonList[i]
+		
+		if ListButton:IsShown() then
+			AB_OnUpdate(ListButton, elapsed)
+			UpdateButtonStatus(ListButton)
+		end
+	end
+end
+
 function AB:Load()
 	if (not Settings["ab-enable"]) then
 		return
@@ -919,10 +937,11 @@ function AB:Load()
 	self:Disable(MainMenuBar)
 	self:CreateBars()
 	self:CreateMovers()
-
-	self:Hook("ActionButton_Update", "UpdateButtonStatus")
-	self:Hook("ActionButton_OnUpdate", "UpdateButtonStatus")
-	self:Hook("ActionButton_UpdateUsable", "UpdateButtonStatus")
+	
+	hooksecurefunc("ActionButton_Update", UpdateButtonStatus)
+	hooksecurefunc("ActionButton_UpdateUsable", UpdateButtonStatus)
+	
+	self:SetScript("OnUpdate", self.OnUpdate)
 end
 
 local UpdateBar1 = function()
