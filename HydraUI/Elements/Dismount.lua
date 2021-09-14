@@ -30,7 +30,7 @@ function AutoDismount:UI_ERROR_MESSAGE(id, message)
 	if self.Mount[message] then
 		Dismount()
 		UIErrorsFrame:Clear()
-	elseif self.Shapeshift[message] then
+	elseif (self.Shapeshift[message] and not InCombatLockdown()) then
 		local ID
 		
 		for i = 1, 40 do

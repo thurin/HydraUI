@@ -77,34 +77,37 @@ local Hook = function(self, global, hook)
 end
 
 function HydraUI:NewModule(name)
-	if self.Modules[name] then
-		return self.Modules[name]
+	local Module = self:GetModule(name)
+	
+	if Module then
+		return Module
 	end
 	
-	local Module = CreateFrame("Frame", "HydraUI " .. name, self.UIParent)
+	Module = CreateFrame("Frame", "HydraUI " .. name, self.UIParent)
 	
 	Module.Name = name
 	Module.Loaded = false
 	Module.Hook = Hook
 	
-	self.Modules[name] = Module
 	self.Modules[#self.Modules + 1] = Module
 	
 	return Module
 end
 
 function HydraUI:GetModule(name)
-	if self.Modules[name] then
-		return self.Modules[name]
+	for i = 1, #self.Modules do
+		if (self.Modules[i].Name == name) then
+			return self.Modules[i]
+		end
 	end
 end
 
 function HydraUI:LoadModule(name)
-	if (not self.Modules[name]) then
+	local Module = self:GetModule(name)
+	
+	if (not Module) then
 		return
 	end
-	
-	local Module = self.Modules[name]
 	
 	if ((not Module.Loaded) and Module.Load) then
 		Module:Load()
@@ -122,11 +125,13 @@ function HydraUI:LoadModules()
 end
 
 function HydraUI:NewPlugin(name)
-	if self.Plugins[name] then
-		return self.Plugins[name]
+	local Plugin = self:GetPlugin(name)
+	
+	if Plugin then
+		return Plugin
 	end
 	
-	local Plugin = CreateFrame("Frame", name, self.UIParent)
+	Plugin = CreateFrame("Frame", name, self.UIParent)
 	local Name, Title, Notes = GetAddOnInfo(name)
 	local Author = GetAddOnMetadata(name, "Author")
 	local Version = GetAddOnMetadata(name, "Version")
@@ -139,24 +144,25 @@ function HydraUI:NewPlugin(name)
 	Plugin.Loaded = false
 	Plugin.Hook = Hook
 	
-	self.Plugins[name] = Plugin
 	self.Plugins[#self.Plugins + 1] = Plugin
 	
 	return Plugin
 end
 
 function HydraUI:GetPlugin(name)
-	if self.Plugins[name] then
-		return self.Plugins[name]
+	for i = 1, #self.Plugins do
+		if (self.Plugins[i].Name == name) then
+			return self.Plugins[i]
+		end
 	end
 end
 
 function HydraUI:LoadPlugin(name)
-	if (not self.Plugins[name]) then
+	local Plugin = self:GetPlugin(name)
+	
+	if (not Plugin) then
 		return
 	end
-	
-	local Plugin = self.Plugins[name]
 	
 	if ((not Plugin.Loaded) and Plugin.Load) then
 		Plugin:Load()
@@ -165,15 +171,17 @@ function HydraUI:LoadPlugin(name)
 end
 
 function HydraUI:LoadPlugins()
-	if (#self.Plugins > 0) then
-		for i = 1, #self.Plugins do
-			if self.Plugins[i].Load then
-				self.Plugins[i]:Load()
-			end
-		end
-		
-		self:CreatePluginWindow()
+	if (#self.Plugins == 0) then
+		return
 	end
+	
+	for i = 1, #self.Plugins do
+		if self.Plugins[i].Load then
+			self.Plugins[i]:Load()
+		end
+	end
+	
+	self:CreatePluginWindow()
 end
 
 function HydraUI:NewDB(name) -- for profiles, languages, settings, assets, etc. instead of creating a module which doesn't fit the bare minimum needs of these

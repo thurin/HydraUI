@@ -17,6 +17,7 @@ local ClientToName = {
 	["DST2"] = Language["Destiny 2"],
 	["D3"] = Language["Diablo 3"],
 	["Hero"] = Language["Heroes of the Storm"],
+	["OSI"] = "Diablo II: Resurrected",
 	["Pro"] = Language["Overwatch"],
 	["S1"] = Language["StarCraft: Remastered"],
 	["S2"] = Language["StarCraft 2"],

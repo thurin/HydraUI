@@ -2,6 +2,8 @@ local HydraUI, GUI, Language, Assets, Settings, Defaults = select(2, ...):get()
 
 local Auras = HydraUI:NewModule("Auras")
 
+-- Big thank you to Tukz for allowing me to derive my aura code from Tukui
+
 local select = select
 local unpack = unpack
 local UnitAura = UnitAura
@@ -72,7 +74,7 @@ local UpdateTempEnchant = function(button, slot)
 	local Enchant = (slot == 16 and 2) or 6
 	local Expiration = select(Enchant, GetWeaponEnchantInfo())
 	local Icon = GetInventoryItemTexture("player", slot)
-	local Quality = GetInventoryItemQuality("player", slot)
+	--[[local Quality = GetInventoryItemQuality("player", slot)
 	
 	if Quality then
 		local Color = ITEM_QUALITY_COLORS[Quality]
@@ -80,7 +82,9 @@ local UpdateTempEnchant = function(button, slot)
 		button.Backdrop:SetBackdropBorderColor(Color.r, Color.g, Color.b)
 	else
 		button.Backdrop:SetBackdropBorderColor(0, 0, 0)
-	end
+	end]]
+	
+	button.Backdrop:SetBackdropBorderColor(0, 0, 0)
 	
 	if Expiration then
 		if (not button.Dur) then
