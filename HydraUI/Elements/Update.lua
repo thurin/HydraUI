@@ -83,13 +83,17 @@ function Update:PLAYER_ENTERING_WORLD()
 	C_FriendList.ShowFriends()
 end
 
-function Update:CHAT_MSG_CHANNEL_NOTICE(event, action, name, language, channel, name2, flags, id)
+function Update:CHAT_MSG_CHANNEL_NOTICE(action, name, language, channel, name2, flags, id)
 	if (action == "YOU_CHANGED" and id == 1) then
 		SendAddonMessage("HydraUI-Version", AddOnVersion, "YELL")
 	end
 end
 
-function Update:GUILD_ROSTER_UPDATE()
+function Update:GUILD_ROSTER_UPDATE(update)
+	if (not update) then -- We don't need an update yet :) This is really spammy if not filtered
+		return
+	end
+	
 	if IsInGuild() then
 		SendAddonMessage("HydraUI-Version", AddOnVersion, "GUILD")
 	end
@@ -105,7 +109,7 @@ function Update:GROUP_ROSTER_UPDATE()
 	end
 end
 
-function Update:VARIABLES_LOADED(event)
+function Update:VARIABLES_LOADED()
 	HydraUI:BindSavedVariable("HydraUIData", "Data")
 	
 	if (not HydraUI.Data.Version) then
@@ -126,10 +130,10 @@ function Update:VARIABLES_LOADED(event)
 		HydraUI.Data.Version = AddOnVersion
 	end
 	
-	self:UnregisterEvent(event)
+	self:UnregisterEvent("VARIABLES_LOADED")
 end
 
-function Update:BN_CHAT_MSG_ADDON(event, prefix, message, channel, sender)
+function Update:BN_CHAT_MSG_ADDON(prefix, message, channel, sender)
 	if (prefix ~= "HydraUI-Version") then
 		return
 	end
@@ -141,15 +145,14 @@ function Update:BN_CHAT_MSG_ADDON(event, prefix, message, channel, sender)
 	elseif (message > AddOnVersion) then -- We're behind!
 		HydraUI:SendAlert(Language["New Version!"], format(Language["Update to version |cFF%s%s|r"], Settings["ui-header-font-color"], message), nil, UpdateOnMouseUp, true)
 		
-		-- Store this higher version and tell anyone else who asks
-		AddOnVersion = message
+		AddOnVersion = message -- Store this higher version and tell anyone else who asks
 		
 		self:RegisterEvent("FRIENDLIST_UPDATE")
 		self:PLAYER_ENTERING_WORLD() -- Tell others that we found a new version
 	end
 end
 
-function Update:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
+function Update:CHAT_MSG_ADDON(prefix, message, channel, sender)
 	sender = match(sender, "(%S+)-%S+")
 	
 	if (sender == HydraUI.UserName or prefix ~= "HydraUI-Version") then
@@ -162,8 +165,7 @@ function Update:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
 		if (message > AddOnVersion) then
 			HydraUI:SendAlert(Language["New Version!"], format(Language["Update to version |cFF%s%s|r"], Settings["ui-header-font-color"], message), nil, UpdateOnMouseUp, true)
 			
-			-- Store this higher version and tell anyone else who asks
-			AddOnVersion = message
+			AddOnVersion = message -- Store this higher version and tell anyone else who asks
 			
 			self:RegisterEvent("FRIENDLIST_UPDATE")
 			self:PLAYER_ENTERING_WORLD() -- Tell others that we found a new version
@@ -174,8 +176,7 @@ function Update:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
 		elseif (message > AddOnVersion) then -- We're behind!
 			HydraUI:SendAlert(Language["New Version!"], format(Language["Update to version |cFF%s%s|r"], Settings["ui-header-font-color"], message), nil, UpdateOnMouseUp, true)
 			
-			-- Store this higher version and tell anyone else who asks
-			AddOnVersion = message
+			AddOnVersion = message -- Store this higher version and tell anyone else who asks
 			
 			self:RegisterEvent("FRIENDLIST_UPDATE")
 			self:PLAYER_ENTERING_WORLD() -- Tell others that we found a new version
@@ -185,7 +186,7 @@ end
 
 function Update:OnEvent(event, ...)
 	if self[event] then
-		self[event](self, event, ...)
+		self[event](self, ...)
 	end
 end
 

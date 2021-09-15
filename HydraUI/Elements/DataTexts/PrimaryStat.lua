@@ -18,7 +18,7 @@ local Update = function(self, event, unit)
 	end
 	
 	local Stat, StatEffective, PositiveBuffs, NegativeBuffs
-	local Highest = 0
+	local Highest = 1
 	local HighestStat = 0
 	
 	for i = 1, 4 do
