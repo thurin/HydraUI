@@ -123,7 +123,7 @@ local OnMouseUp = function()
 		return print(ERR_NOT_IN_COMBAT)
 	end
 	
-	ToggleCommunitiesFrame()
+	ToggleFriendsFrame(3)
 end
 
 local OnEnable = function(self)

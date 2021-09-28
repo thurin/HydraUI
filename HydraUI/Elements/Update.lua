@@ -8,23 +8,9 @@ local IsInGuild = IsInGuild
 local IsInGroup = IsInGroup
 local IsInRaid = IsInRaid
 local MyFaction = UnitFactionGroup("player")
-
 local AddOnVersion = tonumber(HydraUI.UIVersion)
 
 local Update = HydraUI:NewModule("Update")
-
---[[local WhatsNew = {
-	[1.01] = {
-		"Alert frames",
-		"Version check module",
-	},
-}
-]]
-
--- display a simple "What's new" list.
-local WhatsNewOnMouseUp = function()
-	
-end
 
 local UpdateOnMouseUp = function()
 	HydraUI:print(Language["You can get an updated version of HydraUI at https://www.curseforge.com/wow/addons/hydraui"])
@@ -60,12 +46,6 @@ function Update:FRIENDLIST_UPDATE()
 end
 
 function Update:PLAYER_ENTERING_WORLD()
-	--[[if self.NewVersion then
-		HydraUI:SendAlert("What's new?", "Click here to learn more", nil, WhatsNewOnMouseUp, true)
-		
-		self.NewVersion = false
-	end]]
-	
 	if IsInGuild() then
 		SendAddonMessage("HydraUI-Version", AddOnVersion, "GUILD")
 	end
@@ -81,6 +61,8 @@ function Update:PLAYER_ENTERING_WORLD()
 	SendAddonMessage("HydraUI-Version", AddOnVersion, "YELL")
 	
 	C_FriendList.ShowFriends()
+	
+	self:GUILD_ROSTER_UPDATE(true)
 end
 
 function Update:CHAT_MSG_CHANNEL_NOTICE(action, name, language, channel, name2, flags, id)
@@ -90,7 +72,7 @@ function Update:CHAT_MSG_CHANNEL_NOTICE(action, name, language, channel, name2, 
 end
 
 function Update:GUILD_ROSTER_UPDATE(update)
-	if (not update) then -- We don't need an update yet :) This is really spammy if not filtered
+	if (not update) then
 		return
 	end
 	

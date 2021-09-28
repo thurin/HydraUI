@@ -331,7 +331,7 @@ local OnTooltipSetUnit = function(self)
 		for i = 2, self:NumLines() do
 			Line = _G["GameTooltipTextLeft" .. i]
 			
-			if (Line and Line.GetText and find(Line:GetText(), "^" .. LEVEL)) then
+			if (Line and Line.GetText and Line:GetText() and find(Line:GetText(), "^" .. LEVEL)) then
 				if Race then
 					Line:SetText(format("%s %s|r %s %s", LEVEL, Level, Race, Class))
 				elseif CreatureType then

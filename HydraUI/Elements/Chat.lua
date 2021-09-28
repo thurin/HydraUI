@@ -21,6 +21,7 @@ Defaults["chat-enable-fading"] = false
 Defaults["chat-fade-time"] = 15
 Defaults["chat-link-tooltip"] = true
 Defaults["chat-shorten-channels"] = true
+Defaults["chat-right-frame"] = "Loot"
 
 local select = select
 local tostring = tostring
@@ -887,6 +888,8 @@ function Chat:MoveChatFrames()
 			Frame:ClearAllPoints()
 			Frame:SetPoint("TOPLEFT", self.Anchor, 4, -3)
 			Frame:SetPoint("BOTTOMRIGHT", self.Anchor, -4, 3)
+		elseif (Settings["right-window-enable"] and Frame.name and Frame.name == Defaults["chat-right-frame"]) then
+			--print(HydraUI:GetModule("Right Window").Backdrop)
 		end
 		
 		if (not Frame.isLocked) then
