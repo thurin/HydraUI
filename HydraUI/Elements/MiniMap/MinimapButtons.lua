@@ -165,7 +165,7 @@ function MinimapButtons:SkinButtons()
 				end
 			end
 			
-			Child.Backdrop = CreateFrame("Frame", nil, Child)
+			Child.Backdrop = CreateFrame("Frame", nil, Child, "BackdropTemplate")
 			Child.Backdrop:SetPoint("TOPLEFT", Child, 0, 0)
 			Child.Backdrop:SetPoint("BOTTOMRIGHT", Child, 0, 0)
 			Child.Backdrop:SetBackdrop(HydraUI.Backdrop)
@@ -211,7 +211,7 @@ function MinimapButtons:SkinButtons()
 end
 
 function MinimapButtons:CreatePanel()
-	local Frame = CreateFrame("Frame", "HydraUI Minimap Buttons", HydraUI.UIParent)
+	local Frame = CreateFrame("Frame", "HydraUI Minimap Buttons", HydraUI.UIParent, "BackdropTemplate")
 	Frame:SetBackdrop(HydraUI.BackdropAndBorder)
 	Frame:SetBackdropColor(HydraUI:HexToRGB(Settings["ui-window-bg-color"]))
 	Frame:SetBackdropBorderColor(0, 0, 0)

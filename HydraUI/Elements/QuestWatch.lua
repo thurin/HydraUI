@@ -16,7 +16,7 @@ function Quest:StyleFrame()
 	Title:SetJustifyH("LEFT")
 	Title:SetText(QUESTS_LABEL)
 	
-	local TitleDiv = CreateFrame("Frame", nil, QuestWatchFrame)
+	local TitleDiv = CreateFrame("Frame", nil, QuestWatchFrame, "BackdropTemplate")
 	TitleDiv:SetSize(156, 4)
 	TitleDiv:SetPoint("BOTTOMLEFT", QuestWatchFrame, "TOPLEFT", 0, -6)
 	TitleDiv:SetBackdrop(HydraUI.BackdropAndBorder)

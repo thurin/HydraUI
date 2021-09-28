@@ -32,7 +32,7 @@ function Map:Style()
 	self:SetBackdropBorderColor(0, 0, 0)
 	
 	-- Top Info
-	self.TopFrame = CreateFrame("Frame", "HydraUIMinimapTop", self)
+	self.TopFrame = CreateFrame("Frame", "HydraUIMinimapTop", self, "BackdropTemplate")
 	self.TopFrame:SetHeight(20)
 	self.TopFrame:SetPoint("TOPLEFT", self, 3, -3)
 	self.TopFrame:SetPoint("TOPRIGHT", self, -3, -3)
@@ -47,7 +47,7 @@ function Map:Style()
 	self.TopFrame.Tex:SetVertexColor(HydraUI:HexToRGB(Settings["ui-window-main-color"]))
 	
 	-- Bottom Info
-	self.BottomFrame = CreateFrame("Frame", "HydraUIMinimapBottom", self)
+	self.BottomFrame = CreateFrame("Frame", "HydraUIMinimapBottom", self, "BackdropTemplate")
 	self.BottomFrame:SetHeight(20)
 	self.BottomFrame:SetPoint("BOTTOMLEFT", self, 3, 3)
 	self.BottomFrame:SetPoint("BOTTOMRIGHT", self, -3, 3)

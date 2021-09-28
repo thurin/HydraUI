@@ -129,7 +129,7 @@ local SetTooltipStyle = function(self)
 		self:SetFrameLevel(10)
 		self.SetFrameLevel = function() end
 		
-		self.Backdrop = CreateFrame("Frame", nil, self)
+		self.Backdrop = CreateFrame("Frame", nil, self, "BackdropTemplate")
 		self.Backdrop:SetAllPoints(self)
 		self.Backdrop:SetBackdrop(HydraUI.BackdropAndBorder)
 		self.Backdrop:SetBackdropBorderColor(0, 0, 0)
@@ -137,7 +137,7 @@ local SetTooltipStyle = function(self)
 		self.Backdrop:SetFrameStrata("TOOLTIP")
 		self.Backdrop:SetFrameLevel(2)
 		
-		self.OuterBG = CreateFrame("Frame", nil, self)
+		self.OuterBG = CreateFrame("Frame", nil, self, "BackdropTemplate")
 		--self.OuterBG:SetPoint("TOPLEFT", self, -3, 3)
 		self.OuterBG:SetPoint("BOTTOMRIGHT", self, 3, -3)
 		self.OuterBG:SetBackdrop(HydraUI.BackdropAndBorder)
@@ -302,7 +302,7 @@ local OnTooltipSetUnit = function(self)
 		for i = 2, self:NumLines() do
 			Line = _G["GameTooltipTextLeft" .. i]
 			
-			if Level and (Line and Line.GetText and find(Line:GetText(), "^" .. LEVEL)) then
+			if (Line and Line.GetText and Line:GetText() and find(Line:GetText(), "^" .. LEVEL)) then
 				local LevelColor = GetQuestDifficultyColor(Level)
 				LevelColor = HydraUI:RGBToHex(LevelColor.r, LevelColor.g, LevelColor.b)
 				
@@ -570,7 +570,7 @@ function Tooltips:StyleStatusBar()
 	GameTooltipStatusBar.BG:SetTexture(Assets:GetTexture(Settings["ui-widget-texture"]))
 	GameTooltipStatusBar.BG:SetAlpha(0.2)
 	
-	GameTooltipStatusBar.Backdrop = CreateFrame("Frame", nil, GameTooltipStatusBar)
+	GameTooltipStatusBar.Backdrop = CreateFrame("Frame", nil, GameTooltipStatusBar, "BackdropTemplate")
 	GameTooltipStatusBar.Backdrop:SetPoint("TOPLEFT", GameTooltipStatusBar, -1, 1)
 	GameTooltipStatusBar.Backdrop:SetPoint("BOTTOMRIGHT", GameTooltipStatusBar, 1, -1)
 	GameTooltipStatusBar.Backdrop:SetBackdrop(HydraUI.BackdropAndBorder)
@@ -616,7 +616,7 @@ function Tooltips:SkinItemRef()
 	ItemRefCloseButton:Hide()
 	
 	-- Close button
-	local CloseButton = CreateFrame("Frame", nil, ItemRefTooltip)
+	local CloseButton = CreateFrame("Frame", nil, ItemRefTooltip, "BackdropTemplate")
 	CloseButton:SetSize(20, 20)
 	CloseButton:SetPoint("TOPRIGHT", ItemRefTooltip, -3, -3)
 	CloseButton:SetBackdrop(HydraUI.BackdropAndBorder)

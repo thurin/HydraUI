@@ -11,32 +11,12 @@ local AddOnVersion = tonumber(HydraUI.UIVersion)
 
 local Update = HydraUI:NewModule("Update")
 
---[[local WhatsNew = {
-	[1.01] = {
-		"Alert frames",
-		"Version check module",
-	},
-}
-]]
-
--- display a simple "What's new" list.
-local WhatsNewOnMouseUp = function()
-	
-end
-
--- To be implemented. Add something here like a link or whatever to update.
 local UpdateOnMouseUp = function()
 	HydraUI:print(Language["You can get an updated version of HydraUI at https://www.curseforge.com/wow/addons/hydraui"])
 	print(Language["Join the Discord community for support and feedback https://discord.gg/XefDFa6nJR"])
 end
 
 function Update:PLAYER_ENTERING_WORLD()
-	--[[if self.NewVersion then
-		HydraUI:SendAlert("What's new?", "Click here to learn more", nil, WhatsNewOnMouseUp, true)
-		
-		self.NewVersion = false
-	end]]
-	
 	if IsInGuild() then
 		SendAddonMessage("HydraUI-Version", AddOnVersion, "GUILD")
 	end
@@ -50,6 +30,8 @@ function Update:PLAYER_ENTERING_WORLD()
 	end
 	
 	SendAddonMessage("HydraUI-Version", AddOnVersion, "YELL")
+	
+	self:GUILD_ROSTER_UPDATE(true)
 end
 
 function Update:CHAT_MSG_CHANNEL_NOTICE(event, action, name, language, channel, name2, flags, id)
@@ -58,7 +40,11 @@ function Update:CHAT_MSG_CHANNEL_NOTICE(event, action, name, language, channel, 
 	end
 end
 
-function Update:GUILD_ROSTER_UPDATE()
+function Update:GUILD_ROSTER_UPDATE(update)
+	if (not update) then
+		return
+	end
+	
 	if IsInGuild() then
 		SendAddonMessage("HydraUI-Version", AddOnVersion, "GUILD")
 	end
@@ -74,7 +60,7 @@ function Update:GROUP_ROSTER_UPDATE()
 	end
 end
 
-function Update:VARIABLES_LOADED(event)
+function Update:VARIABLES_LOADED()
 	HydraUI:BindSavedVariable("HydraUIData", "Data")
 	
 	if (not HydraUI.Data.Version) then
@@ -95,10 +81,10 @@ function Update:VARIABLES_LOADED(event)
 		HydraUI.Data.Version = AddOnVersion
 	end
 	
-	self:UnregisterEvent(event)
+	self:UnregisterEvent("VARIABLES_LOADED")
 end
 
-function Update:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
+function Update:CHAT_MSG_ADDON(prefix, message, channel, sender)
 	if (sender == HydraUI.UserName or prefix ~= "HydraUI-Version") then
 		return
 	end
@@ -134,7 +120,7 @@ end
 
 function Update:OnEvent(event, ...)
 	if self[event] then
-		self[event](self, event, ...)
+		self[event](self, ...)
 	end
 end
 

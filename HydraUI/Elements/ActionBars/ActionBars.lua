@@ -240,7 +240,7 @@ function AB:StyleActionButton(button)
 		end
 	end
 	
-	button.Backdrop = CreateFrame("Frame", nil, button)
+	button.Backdrop = CreateFrame("Frame", nil, button, "BackdropTemplate")
 	button.Backdrop:SetPoint("TOPLEFT", button, 0, 0)
 	button.Backdrop:SetPoint("BOTTOMRIGHT", button, 0, 0)
 	button.Backdrop:SetBackdrop(HydraUI.Backdrop)
@@ -421,7 +421,7 @@ function AB:StylePetActionButton(button)
 	Highlight:SetPoint("TOPLEFT", button, 1, -1)
 	Highlight:SetPoint("BOTTOMRIGHT", button, -1, 1)
 	
-	button.Backdrop = CreateFrame("Frame", nil, button)
+	button.Backdrop = CreateFrame("Frame", nil, button, "BackdropTemplate")
 	button.Backdrop:SetPoint("TOPLEFT", button, 0, 0)
 	button.Backdrop:SetPoint("BOTTOMRIGHT", button, 0, 0)
 	button.Backdrop:SetBackdrop(HydraUI.Backdrop)

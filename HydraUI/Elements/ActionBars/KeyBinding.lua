@@ -212,7 +212,7 @@ end
 function KeyBinding:Load()
 	self.Elapsed = 0
 	
-	self.Hover = CreateFrame("Frame", nil, self)
+	self.Hover = CreateFrame("Frame", nil, self, "BackdropTemplate")
 	self.Hover:SetFrameLevel(50)
 	self.Hover:SetFrameStrata("DIALOG")
 	self.Hover:SetBackdrop(HydraUI.BackdropAndBorder)

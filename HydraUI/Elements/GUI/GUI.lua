@@ -153,7 +153,7 @@ end
 
 local AddWindowScrollBar = function(self)
 	-- Scroll up
-	self.ScrollUp = CreateFrame("Frame", nil, self)
+	self.ScrollUp = CreateFrame("Frame", nil, self, "BackdropTemplate")
 	self.ScrollUp:SetSize(16, WIDGET_HEIGHT)
 	self.ScrollUp:SetPoint("TOPRIGHT", GUI, -SPACING, -((SPACING * 2) + HEADER_HEIGHT - 1))
 	self.ScrollUp:SetBackdrop(HydraUI.BackdropAndBorder)
@@ -182,7 +182,7 @@ local AddWindowScrollBar = function(self)
 	self.ScrollUp.Arrow:SetVertexColor(0.65, 0.65, 0.65)
 	
 	-- Scroll down
-	self.ScrollDown = CreateFrame("Frame", nil, self)
+	self.ScrollDown = CreateFrame("Frame", nil, self, "BackdropTemplate")
 	self.ScrollDown:SetSize(16, WIDGET_HEIGHT)
 	self.ScrollDown:SetPoint("BOTTOMRIGHT", GUI, -SPACING, SPACING)
 	self.ScrollDown:SetBackdrop(HydraUI.BackdropAndBorder)
@@ -219,7 +219,7 @@ local AddWindowScrollBar = function(self)
 	self.ScrollDown.Arrow:SetTexture(Assets:GetTexture("Arrow Down"))
 	self.ScrollDown.Arrow:SetVertexColor(HydraUI:HexToRGB(Settings["ui-widget-color"]))
 	
-	local ScrollBar = CreateFrame("Slider", nil, self)
+	local ScrollBar = CreateFrame("Slider", nil, self, "BackdropTemplate")
 	ScrollBar:SetPoint("TOPLEFT", self.ScrollUp, "BOTTOMLEFT", 0, -2)
 	ScrollBar:SetPoint("BOTTOMRIGHT", self.ScrollDown, "TOPRIGHT", 0, 2)
 	ScrollBar:SetThumbTexture(Assets:GetTexture(Settings["ui-widget-texture"]))
@@ -353,7 +353,7 @@ function GUI:CreateWidgetWindow(category, name, parent)
 	Window.LeftWidgetsBG:SetPoint("TOPLEFT", Window, 0, 0)
 	Window.LeftWidgetsBG:SetPoint("BOTTOMLEFT", Window, 0, 0)
 	
-	Window.LeftWidgetsBG.Backdrop = CreateFrame("Frame", nil, Window)
+	Window.LeftWidgetsBG.Backdrop = CreateFrame("Frame", nil, Window, "BackdropTemplate")
 	Window.LeftWidgetsBG.Backdrop:SetWidth(GROUP_WIDTH + (SPACING * 2))
 	Window.LeftWidgetsBG.Backdrop:SetPoint("TOPLEFT", Window.LeftWidgetsBG, 0, 0)
 	Window.LeftWidgetsBG.Backdrop:SetPoint("BOTTOMLEFT", Window.LeftWidgetsBG, 0, 0)
@@ -366,7 +366,7 @@ function GUI:CreateWidgetWindow(category, name, parent)
 	Window.RightWidgetsBG:SetPoint("TOPLEFT", Window.LeftWidgetsBG, "TOPRIGHT", 2, 0)
 	Window.RightWidgetsBG:SetPoint("BOTTOMLEFT", Window.LeftWidgetsBG, "BOTTOMRIGHT", 2, 0)
 	
-	Window.RightWidgetsBG.Backdrop = CreateFrame("Frame", nil, Window)
+	Window.RightWidgetsBG.Backdrop = CreateFrame("Frame", nil, Window, "BackdropTemplate")
 	Window.RightWidgetsBG.Backdrop:SetWidth(GROUP_WIDTH + (SPACING * 2))
 	Window.RightWidgetsBG.Backdrop:SetPoint("TOPLEFT", Window.RightWidgetsBG, 0, 0)
 	Window.RightWidgetsBG.Backdrop:SetPoint("BOTTOMLEFT", Window.RightWidgetsBG, 0, 0)
@@ -418,7 +418,7 @@ function GUI:CreateWidgetWindow(category, name, parent)
 	if (Window.MaxScroll > 1) then
 		AddWindowScrollBar(Window)
 	else
-		Window.ScrollFiller = CreateFrame("Frame", nil, Window)
+		Window.ScrollFiller = CreateFrame("Frame", nil, Window, "BackdropTemplate")
 		Window.ScrollFiller:SetPoint("TOPRIGHT", Window, 0, 0)
 		Window.ScrollFiller:SetPoint("BOTTOMRIGHT", Window, 0, 0)
 		Window.ScrollFiller:SetWidth(16)
@@ -925,7 +925,7 @@ function GUI:CreateGUI()
 	self.Fader:SetDuration(0.15)
 	
 	-- Header
-	self.Header = CreateFrame("Frame", nil, self)
+	self.Header = CreateFrame("Frame", nil, self, "BackdropTemplate")
 	self.Header:SetSize(HEADER_WIDTH, HEADER_HEIGHT)
 	self.Header:SetPoint("TOPLEFT", self, SPACING, -SPACING)
 	self.Header:SetBackdrop(HydraUI.BackdropAndBorder)
@@ -947,7 +947,7 @@ function GUI:CreateGUI()
 	self.Header.Text:SetText("Hydra|cFFEAEAEAUI|r")
 	
 	-- Menu parent
-	self.MenuParent = CreateFrame("Frame", nil, self)
+	self.MenuParent = CreateFrame("Frame", nil, self, "BackdropTemplate")
 	self.MenuParent:SetWidth(BUTTON_LIST_WIDTH)
 	self.MenuParent:SetPoint("BOTTOMLEFT", self, SPACING, SPACING)
 	self.MenuParent:SetPoint("TOPLEFT", self.Header, "BOTTOMLEFT", 0, -2)
@@ -957,7 +957,7 @@ function GUI:CreateGUI()
 	self.MenuParent:SetScript("OnMouseWheel", MenuParentOnMouseWheel)
 	
 	-- Scroll up
-	self.ScrollUp = CreateFrame("Frame", nil, self)
+	self.ScrollUp = CreateFrame("Frame", nil, self, "BackdropTemplate")
 	self.ScrollUp:SetSize(16, WIDGET_HEIGHT)
 	self.ScrollUp:SetPoint("TOPLEFT", self.MenuParent, "TOPRIGHT", 2, 0)
 	self.ScrollUp:SetBackdrop(HydraUI.BackdropAndBorder)
@@ -995,7 +995,7 @@ function GUI:CreateGUI()
 	self.ScrollUp.Arrow:SetVertexColor(0.65, 0.65, 0.65)
 	
 	-- Scroll down
-	self.ScrollDown = CreateFrame("Frame", nil, self)
+	self.ScrollDown = CreateFrame("Frame", nil, self, "BackdropTemplate")
 	self.ScrollDown:SetSize(16, WIDGET_HEIGHT)
 	self.ScrollDown:SetPoint("BOTTOMLEFT", self.MenuParent, "BOTTOMRIGHT", 2, 0)
 	self.ScrollDown:SetBackdrop(HydraUI.BackdropAndBorder)
@@ -1033,7 +1033,7 @@ function GUI:CreateGUI()
 	self.ScrollDown.Arrow:SetVertexColor(HydraUI:HexToRGB(Settings["ui-widget-color"]))
 	
 	-- Selection scrollbar
-	local ScrollBar = CreateFrame("Slider", nil, self.MenuParent)
+	local ScrollBar = CreateFrame("Slider", nil, self.MenuParent, "BackdropTemplate")
 	ScrollBar:SetPoint("TOPLEFT", self.ScrollUp, "BOTTOMLEFT", 0, -2)
 	ScrollBar:SetPoint("BOTTOMRIGHT", self.ScrollDown, "TOPRIGHT", 0, 2)
 	ScrollBar:SetThumbTexture(Assets:GetTexture(Settings["ui-widget-texture"]))

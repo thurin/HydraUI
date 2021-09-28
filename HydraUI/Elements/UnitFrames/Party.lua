@@ -276,7 +276,7 @@ HydraUI.StyleFuncs["party"] = function(self, unit)
 	end
 	
 	-- Dispels
-	local Dispel = CreateFrame("Frame", nil, Health)
+	local Dispel = CreateFrame("Frame", nil, Health, "BackdropTemplate")
 	Dispel:SetSize(20, 20)
 	Dispel:SetPoint("CENTER", Health, 0, 0)
 	Dispel:SetFrameLevel(Health:GetFrameLevel() + 20)

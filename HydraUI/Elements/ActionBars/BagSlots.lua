@@ -55,7 +55,7 @@ function BagsFrame:Load()
 		return
 	end
 	
-	self.Panel = CreateFrame("Frame", "HydraUI Bags Window", HydraUI.UIParent)
+	self.Panel = CreateFrame("Frame", "HydraUI Bags Window", HydraUI.UIParent, "BackdropTemplate")
 	self.Panel:SetSize(((Settings["bags-frame-size"] + 4) * (#self.Objects - 1)) + 8 + (Settings["bags-frame-size"] / 2), Settings["bags-frame-size"] + 8) -- 206, 40
 	self.Panel:SetPoint("BOTTOMRIGHT", HydraUI:GetModule("Micro Buttons").Panel, "TOPRIGHT", 0, 3)
 	self.Panel:SetBackdrop(HydraUI.BackdropAndBorder)

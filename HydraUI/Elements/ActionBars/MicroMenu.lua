@@ -98,7 +98,7 @@ function MicroButtons:Load()
 		return
 	end
 	
-	self.Panel = CreateFrame("Frame", "HydraUI Micro Buttons", HydraUI.UIParent)
+	self.Panel = CreateFrame("Frame", "HydraUI Micro Buttons", HydraUI.UIParent, "BackdropTemplate")
 	self.Panel:SetSize(228, 40)
 	self.Panel:SetBackdrop(HydraUI.BackdropAndBorder)
 	self.Panel:SetBackdropColor(HydraUI:HexToRGB(Settings["ui-window-bg-color"]))

@@ -48,7 +48,7 @@ HydraUI.Outline = {
 }
 
 -- GUI
-local GUI = CreateFrame("Frame", nil, HydraUI.UIParent)
+local GUI = CreateFrame("Frame", nil, HydraUI.UIParent, "BackdropTemplate")
 
 -- Language
 local Language = {}
@@ -83,7 +83,7 @@ function HydraUI:NewModule(name)
 		return Module
 	end
 	
-	Module = CreateFrame("Frame", "HydraUI " .. name, self.UIParent)
+	Module = CreateFrame("Frame", "HydraUI " .. name, self.UIParent, "BackdropTemplate")
 	
 	Module.Name = name
 	Module.Loaded = false
