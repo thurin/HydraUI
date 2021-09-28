@@ -22,6 +22,29 @@ Commands["reset"] = function()
 	HydraUI:Reset()
 end
 
+Commands["texel"] = function()
+	IsGMClient = function()
+		return true
+	end
+	
+	LoadAddOn("Blizzard_DebugTools")
+	
+	TexelSnappingVisualizer:Show()
+	
+	--[[
+	local PIXEL_SNAPPING_OPTIONS = {
+		{ text = "Default", cvarValue = "-1" },
+		{ text = "Override On", cvarValue = "1" },
+		{ text = "Override Off", cvarValue = "0" },
+	}
+
+	SetCVar("overrideTexelSnappingBias", "1")
+	
+	SetCVar("overridePixelGridSnapping", "-1")
+	
+	--]]
+end
+
 Commands["help"] = function()
 	print(format(Language["|cFF%sHydraUI|r Commands"], Settings["ui-widget-color"]))
 	print(" ")

@@ -59,30 +59,16 @@ function Update:PLAYER_ENTERING_WORLD()
 		end
 	end
 	
-	--[[JoinTemporaryChannel("HydraUI", "version", ChatFrame10:GetID())
-	
-	local Name, ChannelID, _
-	
-	for i = 1, GetNumDisplayChannels() do
-		Name, _, _, ChannelID = GetChannelDisplayInfo(i)
-		
-		if (Name == "HydraUI") then
-			break
-		end
-	end
-	
-	if ChannelID then
-		SendAddonMessage("HydraUI-Version", AddOnVersion, "CHANNEL", ChannelID)
-		
-		C_ChatInfo.SwapChatChannelsByChannelIndex(ChannelID, 10)
-		
-		ChatFrame_RemoveChannel(ChatFrame1, "HydraUI")
-	end]]
-	
 	C_FriendList.ShowFriends()
+	
+	self:GUILD_ROSTER_UPDATE(true)
 end
 
-function Update:GUILD_ROSTER_UPDATE()
+function Update:GUILD_ROSTER_UPDATE(update)
+	if (not update) then
+		return
+	end
+
 	if IsInGuild() then
 		SendAddonMessage("HydraUI-Version", AddOnVersion, "GUILD")
 	end
@@ -106,7 +92,7 @@ function Update:GROUP_ROSTER_UPDATE()
 	end
 end
 
-function Update:VARIABLES_LOADED(event)
+function Update:VARIABLES_LOADED()
 	HydraUI:BindSavedVariable("HydraUIData", "Data")
 	
 	if (not HydraUI.Data.Version) then
@@ -127,10 +113,10 @@ function Update:VARIABLES_LOADED(event)
 		HydraUI.Data.Version = AddOnVersion
 	end
 	
-	self:UnregisterEvent(event)
+	self:UnregisterEvent("VARIABLES_LOADED")
 end
 
-function Update:BN_CHAT_MSG_ADDON(event, prefix, message, channel, sender)
+function Update:BN_CHAT_MSG_ADDON(prefix, message, channel, sender)
 	if (prefix ~= "HydraUI-Version") then
 		return
 	end
@@ -162,7 +148,7 @@ function Update:BN_CHAT_MSG_ADDON(event, prefix, message, channel, sender)
 	end
 end
 
-function Update:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
+function Update:CHAT_MSG_ADDON(prefix, message, channel, sender)
 	if (sender == HydraUI.UserName or prefix ~= "HydraUI-Version") then
 		return
 	end
@@ -184,7 +170,7 @@ end
 
 function Update:OnEvent(event, ...)
 	if self[event] then
-		self[event](self, event, ...)
+		self[event](self, ...)
 	end
 end
 

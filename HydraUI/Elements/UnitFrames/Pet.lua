@@ -12,6 +12,9 @@ Defaults["unitframes-pet-power-color"] = "POWER"
 Defaults["unitframes-pet-power-smooth"] = true
 Defaults["unitframes-pet-health-left"] = "[Name10]"
 Defaults["unitframes-pet-health-right"] = "[HealthPercent]"
+Defaults["unitframes-pet-buffs"] = true
+Defaults["unitframes-pet-buff-size"] = 20
+Defaults["unitframes-pet-buff-pos"] = "BOTTOM"
 Defaults["unitframes-pet-debuffs"] = true
 Defaults["unitframes-pet-debuff-size"] = 20
 Defaults["unitframes-pet-debuff-pos"] = "BOTTOM"
@@ -109,6 +112,32 @@ HydraUI.StyleFuncs["pet"] = function(self, unit)
 	
 	UF:SetPowerAttributes(Power, Settings["unitframes-pet-power-color"])
 	
+	if Settings["unitframes-pet-buffs"] then
+		local Buffs = CreateFrame("Frame", self:GetName() .. "Buffs", self)
+		Buffs:SetSize(Settings["unitframes-pet-width"], Settings["unitframes-pet-buff-size"])
+		Buffs.size = Settings["unitframes-pet-buff-size"]
+		Buffs.spacing = 2
+		Buffs.num = 5
+		Buffs.tooltipAnchor = "ANCHOR_TOP"
+		Buffs.PostCreateIcon = UF.PostCreateIcon
+		Buffs.PostUpdateIcon = UF.PostUpdateIcon
+		Buffs.showType = true
+		
+		if (Settings["unitframes-pet-buff-pos"] == "TOP") then
+			Buffs:SetPoint("BOTTOM", self, "TOP", 0, 2)
+			Buffs.initialAnchor = "TOPLEFT"
+			Buffs["growth-x"] = "LEFT"
+			Buffs["growth-y"] = "UP"
+		else
+			Buffs:SetPoint("TOP", self, "BOTTOM", 0, -2)
+			Buffs.initialAnchor = "TOPLEFT"
+			Buffs["growth-x"] = "LEFT"
+			Buffs["growth-y"] = "DOWN"
+		end
+		
+		self.Buffs = Buffs
+	end
+	
 	if Settings["unitframes-pet-debuffs"] then
 		local Debuffs = CreateFrame("Frame", self:GetName() .. "Debuffs", self)
 		Debuffs:SetSize(Settings["unitframes-pet-width"], Settings["unitframes-pet-debuff-size"])
@@ -121,15 +150,30 @@ HydraUI.StyleFuncs["pet"] = function(self, unit)
 		Debuffs.showType = true
 		
 		if (Settings["unitframes-pet-debuff-pos"] == "TOP") then
-			Debuffs:SetPoint("BOTTOM", self, "TOP", 0, 2)
+			if self.Buffs then
+				if (Settings["unitframes-pet-buff-pos"] == "TOP") then
+					Debuffs:SetPoint("BOTTOM", self.Buffs or self, "TOP", 0, 2)
+				else
+					Debuffs:SetPoint("BOTTOM", self, "TOP", 0, 2)
+				end
+			else
+				Debuffs:SetPoint("BOTTOM", self, "TOP", 0, 2)
+			end
+			
 			Debuffs.initialAnchor = "TOPRIGHT"
 			Debuffs["growth-x"] = "LEFT"
 			Debuffs["growth-y"] = "DOWN"
+			Debuffs["growth-y"] = "UP"
 		else
-			Debuffs:SetPoint("TOP", self, "BOTTOM", 0, -2)
-			Debuffs.initialAnchor = "TOPRIGHT"
-			Debuffs["growth-x"] = "LEFT"
-			Debuffs["growth-y"] = "DOWN"
+			if self.Buffs then
+				if (Settings["unitframes-pet-buff-pos"] == "BOTTOM") then
+					Debuffs:SetPoint("TOP", self.Buffs or self, "BOTTOM", 0, -2)
+				else
+					Debuffs:SetPoint("TOP", self, "BOTTOM", 0, -2)
+				end
+			else
+				Debuffs:SetPoint("TOP", self, "BOTTOM", 0, -2)
+			end
 		end
 		
 		self.Debuffs = Debuffs
@@ -221,6 +265,42 @@ local UpdatePetPowerFill = function(value)
 	end
 end
 
+local UpdateEnableBuffs = function(value)
+	if HydraUI.UnitFrames["pet"] then
+		if value then
+			HydraUI.UnitFrames["pet"]:EnableElement("Buffs")
+		else
+			HydraUI.UnitFrames["pet"]:DisableElement("Buffs")
+		end
+	end
+end
+
+local UpdateBuffSize = function(value)
+	if HydraUI.UnitFrames["pet"] then
+		HydraUI.UnitFrames["pet"].Buffs.size = value
+		HydraUI.UnitFrames["pet"].Buffs:SetSize(Settings["unitframes-pet-width"], value)
+		HydraUI.UnitFrames["pet"].Buffs:ForceUpdate()
+	end
+end
+
+local UpdateBuffPosition = function(value)
+	if HydraUI.UnitFrames["pet"] then
+		local Unit = HydraUI.UnitFrames["pet"]
+
+		Unit.Buffs:ClearAllPoints()
+
+		if (value == "TOP") then
+			Unit.Buffs:SetPoint("BOTTOM", Unit, "TOP", 0, 2)
+			Unit.Buffs["growth-x"] = "LEFT"
+			Unit.Buffs["growth-y"] = "UP"
+		else
+			Unit.Buffs:SetPoint("TOP", Unit, "BOTTOM", 0, -2)
+			Unit.Buffs["growth-x"] = "LEFT"
+			Unit.Buffs["growth-y"] = "DOWN"
+		end
+	end
+end
+
 local UpdateEnableDebuffs = function(value)
 	if HydraUI.UnitFrames["pet"] then
 		if value then
@@ -242,15 +322,34 @@ end
 local UpdateDebuffPosition = function(value)
 	if HydraUI.UnitFrames["pet"] then
 		local Unit = HydraUI.UnitFrames["pet"]
-		
+
 		Unit.Debuffs:ClearAllPoints()
-		
+
 		if (value == "TOP") then
-			Unit.Debuffs:SetPoint("BOTTOM", self, "TOP", 0, 2)
+			if Unit.Buffs then
+				if (Settings["unitframes-pet-buff-pos"] == "TOP") then
+					Unit.Debuffs:SetPoint("BOTTOM", Unit.Buffs or Unit, "TOP", 0, 2)
+				else
+					Unit.Debuffs:SetPoint("BOTTOM", Unit, "TOP", 0, 2)
+				end
+			else
+				Unit.Debuffs:SetPoint("BOTTOM", Unit, "TOP", 0, 2)
+			end
+			
 			Unit.Debuffs["growth-x"] = "LEFT"
 			Unit.Debuffs["growth-y"] = "UP"
 		else
-			Unit.Debuffs:SetPoint("TOP", self, "BOTTOM", 0, -2)
+			if Unit.Buffs then
+				if (Settings["unitframes-pet-buff-pos"] == "BOTTOM") then
+					Unit.Debuffs:SetPoint("TOP", Unit.Buffs or Unit, "BOTTOM", 0, -2)
+				else
+					Unit.Debuffs:SetPoint("TOP", Unit, "BOTTOM", 0, -2)
+				end
+			else
+				Unit.Debuffs:SetPoint("TOP", Unit, "BOTTOM", 0, -2)
+			end
+			
+			Unit.Debuffs:SetPoint("TOP", Unit.Buffs or Unit, "BOTTOM", 0, -2)
 			Unit.Debuffs["growth-x"] = "LEFT"
 			Unit.Debuffs["growth-y"] = "DOWN"
 		end
@@ -273,6 +372,11 @@ GUI:AddWidgets(Language["General"], Language["Pet"], Language["Unit Frames"], fu
 	right:CreateSwitch("unitframes-pet-power-reverse", Settings["unitframes-pet-power-reverse"], Language["Reverse Power Fill"], Language["Reverse the fill of the power bar"], UpdatePetPowerFill)
 	right:CreateSlider("unitframes-pet-power-height", Settings["unitframes-pet-power-height"], 1, 30, 1, "Power Bar Height", "Set the height of the pet power bar", UpdatePetPowerHeight)
 	right:CreateDropdown("unitframes-pet-power-color", Settings["unitframes-pet-power-color"], {[Language["Class"]] = "CLASS", [Language["Reaction"]] = "REACTION", [Language["Power Type"]] = "POWER"}, Language["Power Bar Color"], Language["Set the color of the power bar"], UpdatePetPowerColor)
+	
+	right:CreateHeader(Language["Buffs"])
+	right:CreateSwitch("unitframes-pet-buffs", Settings["unitframes-pet-buffs"], Language["Enable buffs"], Language["Enable debuffs on the unit frame"], UpdateEnableBuffs)
+	right:CreateSlider("unitframes-pet-buff-size", Settings["unitframes-pet-buff-size"], 10, 30, 1, "Buff Size", "Set the size of the debuff icons", UpdateBuffSize)
+	right:CreateDropdown("unitframes-pet-buff-pos", Settings["unitframes-pet-buff-pos"], {[Language["Bottom"]] = "BOTTOM", [Language["Top"]] = "TOP"}, Language["Set Position"], Language["Set the position of the buffs"], UpdateBuffPosition)
 	
 	right:CreateHeader(Language["Debuffs"])
 	right:CreateSwitch("unitframes-pet-debuffs", Settings["unitframes-pet-debuffs"], Language["Enable Debuffs"], Language["Enable debuffs on the unit frame"], UpdateEnableDebuffs)
