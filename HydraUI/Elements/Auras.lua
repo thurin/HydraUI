@@ -130,7 +130,7 @@ end
 HydraUISkinAura = function(button)
 	button:RegisterForClicks("RightButtonUp")
 	
-	local Backdrop = CreateFrame("Frame", nil, button)
+	local Backdrop = CreateFrame("Frame", nil, button, "BackdropTemplate")
 	Backdrop:SetAllPoints(button)
 	Backdrop:SetFrameLevel(button:GetFrameLevel() - 2)
 	Backdrop:SetBackdrop(HydraUI.BackdropAndBorder)

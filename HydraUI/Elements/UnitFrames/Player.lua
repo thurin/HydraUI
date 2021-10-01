@@ -304,7 +304,7 @@ HydraUI.StyleFuncs["player"] = function(self, unit)
 		end
 		
 		if (HydraUI.UserClass == "ROGUE" or HydraUI.UserClass == "DRUID") then
-			local ComboPoints = CreateFrame("Frame", self:GetName() .. "ComboPoints", self)
+			local ComboPoints = CreateFrame("Frame", self:GetName() .. "ComboPoints", self, "BackdropTemplate")
 			ComboPoints:SetSize(Settings["unitframes-player-width"], 10)
 			ComboPoints:SetBackdrop(HydraUI.Backdrop)
 			ComboPoints:SetBackdropColor(0, 0, 0)

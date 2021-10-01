@@ -16,60 +16,33 @@ function Bubbles:RefreshBubble(bubble)
 end
 
 function Bubbles:SkinBubble(bubble)
-	for i = 1, bubble:GetNumRegions() do
-		local Region = select(i, bubble:GetRegions())
-		
-		if Region:IsObjectType("Texture") then
-			Region:SetTexture(nil)
-		elseif Region:IsObjectType("FontString") then
-			HydraUI:SetFontInfo(Region, Settings["chat-bubbles-font"], Settings["chat-bubbles-font-size"], Settings["chat-bubbles-font-flags"])
-			
-			bubble.Text = Region
-		end
+	local Child = bubble:GetChildren()
+	
+	if (Child and Child:IsForbidden()) then
+		return
 	end
+	
+	Child.Tail:Hide()
+	Child:DisableDrawLayer("BORDER")
+	
+	if Child.SetBackdrop then
+		Child:SetBackdrop(nil)
+	end
+	
+	HydraUI:SetFontInfo(Child.String, Settings["chat-bubbles-font"], Settings["chat-bubbles-font-size"], Settings["chat-bubbles-font-flags"])
 	
 	local R, G, B = HydraUI:HexToRGB(Settings["ui-window-main-color"])
 	local Scale = HydraUI:GetSuggestedScale()
 	
-	bubble:SetBackdrop(HydraUI.BackdropAndBorder)
-	bubble:SetBackdropColor(R, G, B, Settings["chat-bubbles-opacity"] / 100)
-	bubble:SetBackdropBorderColor(0, 0, 0)
+	bubble.Backdrop = CreateFrame("Frame", nil, Child, "BackdropTemplate")
+	bubble.Backdrop:SetPoint("TOPLEFT", Child, 4, -4)
+	bubble.Backdrop:SetPoint("BOTTOMRIGHT", Child, -4, 4)
+	bubble.Backdrop:SetBackdrop(HydraUI.BackdropAndBorder)
+	bubble.Backdrop:SetBackdropColor(R, G, B, Settings["chat-bubbles-opacity"] / 100)
+	bubble.Backdrop:SetBackdropBorderColor(0, 0, 0)
+	bubble.Backdrop:SetFrameStrata("LOW")
 	
 	bubble:SetScale(Scale)
-	
-	bubble.Top = bubble:CreateTexture(nil, "OVERLAY")
-	bubble.Top:SetHeight(2)
-	bubble.Top:SetTexture(Assets:GetTexture("Blank"))
-	bubble.Top:SetVertexColor(HydraUI:HexToRGB(Settings["ui-window-bg-color"]))
-	bubble.Top:SetPoint("TOPLEFT", bubble, 1, -1)
-	bubble.Top:SetPoint("TOPRIGHT", bubble, -1, -1)
-	
-	bubble.Bottom = bubble:CreateTexture(nil, "OVERLAY")
-	bubble.Bottom:SetHeight(2)
-	bubble.Bottom:SetTexture(Assets:GetTexture("Blank"))
-	bubble.Bottom:SetVertexColor(HydraUI:HexToRGB(Settings["ui-window-bg-color"]))
-	bubble.Bottom:SetPoint("BOTTOMLEFT", bubble, 1, 1)
-	bubble.Bottom:SetPoint("BOTTOMRIGHT", bubble, -1, 1)
-	
-	bubble.Left = bubble:CreateTexture(nil, "OVERLAY")
-	bubble.Left:SetWidth(2)
-	bubble.Left:SetTexture(Assets:GetTexture("Blank"))
-	bubble.Left:SetVertexColor(HydraUI:HexToRGB(Settings["ui-window-bg-color"]))
-	bubble.Left:SetPoint("BOTTOMLEFT", bubble, 1, 1)
-	bubble.Left:SetPoint("TOPLEFT", bubble, 1, -1)
-	
-	bubble.Right = bubble:CreateTexture(nil, "OVERLAY")
-	bubble.Right:SetWidth(2)
-	bubble.Right:SetTexture(Assets:GetTexture("Blank"))
-	bubble.Right:SetVertexColor(HydraUI:HexToRGB(Settings["ui-window-bg-color"]))
-	bubble.Right:SetPoint("BOTTOMRIGHT", bubble, -1, 1)
-	bubble.Right:SetPoint("TOPRIGHT", bubble, -1, -1)
-	
-	bubble.InnerBorder = CreateFrame("Frame", nil, bubble)
-	bubble.InnerBorder:SetPoint("TOPLEFT", bubble, 3, -3)
-	bubble.InnerBorder:SetPoint("BOTTOMRIGHT", bubble, -3, 3)
-	bubble.InnerBorder:SetBackdrop(HydraUI.Outline)
-	bubble.InnerBorder:SetBackdropBorderColor(0, 0, 0)
 	
 	bubble.Skinned = true
 end

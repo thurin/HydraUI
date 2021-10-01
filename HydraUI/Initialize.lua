@@ -255,4 +255,3 @@ end
 
 -- Global access
 _G["HydraUIGlobal"] = Namespace
-_G["vUIGlobal"] = Namespace -- Temporary, from May 2021
