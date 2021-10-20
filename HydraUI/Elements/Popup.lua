@@ -1,6 +1,6 @@
 local HydraUI, GUI, Language, Assets, Settings = select(2, ...):get()
 
-local Popup = CreateFrame("Frame", "HydraUIPopupFrame", HydraUI.UIParent)
+local Popup = CreateFrame("Frame", "HydraUIPopupFrame", HydraUI.UIParent, "BackdropTemplate")
 
 local POPUP_WIDTH = 320
 local POPUP_HEIGHT = 100
@@ -48,7 +48,7 @@ Popup.CreatePopupFrame = function(self)
 	self:SetClampedToScreen(true)
 	
 	-- Header
-	self.Header = CreateFrame("Frame", nil, self)
+	self.Header = CreateFrame("Frame", nil, self, "BackdropTemplate")
 	self.Header:SetSize(POPUP_WIDTH - 6, 20)
 	self.Header:SetPoint("TOP", self, 0, -3)
 	self.Header:SetBackdrop(HydraUI.BackdropAndBorder)
@@ -70,7 +70,7 @@ Popup.CreatePopupFrame = function(self)
 	self.Header.Text:SetTextColor(HydraUI:HexToRGB(Settings["ui-header-font-color"]))
 	
 	-- Body
-	self.Body = CreateFrame("Frame", nil, self)
+	self.Body = CreateFrame("Frame", nil, self, "BackdropTemplate")
 	self.Body:SetSize(POPUP_WIDTH - 6, POPUP_HEIGHT - 50)
 	self.Body:SetPoint("TOP", self.Header, "BOTTOM", 0, -2)
 	self.Body:SetBackdrop(HydraUI.BackdropAndBorder)
@@ -90,7 +90,7 @@ Popup.CreatePopupFrame = function(self)
 	self.Body.Text:SetText(value)
 	
 	-- Button1
-	self.Button1 = CreateFrame("Frame", nil, self)
+	self.Button1 = CreateFrame("Frame", nil, self, "BackdropTemplate")
 	self.Button1:SetSize(BUTTON_WIDTH, 20)
 	self.Button1:SetPoint("BOTTOMLEFT", self, 3, 3)
 	self.Button1:SetBackdrop(HydraUI.BackdropAndBorder)
@@ -124,7 +124,7 @@ Popup.CreatePopupFrame = function(self)
 	self.Button1.Text:SetText(value)
 	
 	-- Button2
-	self.Button2 = CreateFrame("Frame", nil, self)
+	self.Button2 = CreateFrame("Frame", nil, self, "BackdropTemplate")
 	self.Button2:SetSize(BUTTON_WIDTH, 20)
 	self.Button2:SetPoint("BOTTOMRIGHT", self, -3, 3)
 	self.Button2:SetBackdrop(HydraUI.BackdropAndBorder)
