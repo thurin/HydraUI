@@ -25,6 +25,14 @@ local OnUpdate = function(self)
 	LastPower = Power
 end
 
+local OnEvent = function(self)
+	if (UnitPowerType("player") ~= 3) then
+		self:Hide()
+	else
+		self:Show()
+	end
+end
+
 local ForceUpdate = function(element)
 	return OnUpdate(element)
 end
@@ -42,7 +50,13 @@ local Enable = function(self)
 		
 		element:SetMinMaxValues(0, 2)
 		element:SetScript("OnUpdate", OnUpdate)
-		element:Show()
+		
+		if (select(2, UnitClass("player")) == "DRUID") then
+			element:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
+			element:SetScript("OnEvent", OnEvent)
+		end
+		
+		OnEvent(element)
 	end
 end
 
@@ -52,6 +66,7 @@ local Disable = function(self)
 	if element then
 		element:Hide()
 		element:SetScript("OnUpdate", nil)
+		element:SetScript("OnEvent", nil)
 	end
 end
 

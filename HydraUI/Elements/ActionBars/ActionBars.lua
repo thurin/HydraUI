@@ -434,8 +434,10 @@ function AB:StylePetActionButton(button)
 	button.Backdrop.Texture:SetTexture(Assets:GetTexture(Settings["ui-header-texture"]))
 	button.Backdrop.Texture:SetVertexColor(HydraUI:HexToRGB(Settings["ui-window-main-color"]))
 	
-	ButtonList[#ButtonList + 1] = button
-	button:SetScript("OnUpdate", nil)
+	if button.action then
+		ButtonList[#ButtonList + 1] = button
+		button:SetScript("OnUpdate", nil)
+	end
 	
 	button.Styled = true
 end

@@ -97,11 +97,12 @@ end
 function DruidMana:Enable()
 	self:RegisterEvent("UNIT_POWER_UPDATE")
 	self:RegisterEvent("UNIT_POWER_FREQUENT")
+	self:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 	self:SetScript("OnEvent", self.OnEvent)
 	
+	self:UPDATE_SHAPESHIFT_FORM()
 	self:UNIT_POWER_UPDATE()
-	self:Show()
 end
 
 function DruidMana:Disable()
