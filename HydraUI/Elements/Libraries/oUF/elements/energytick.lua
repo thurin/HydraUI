@@ -1,4 +1,6 @@
-if (select(2, UnitClass("player")) ~= ("ROGUE" or "DRUID")) then
+local Class = select(2, UnitClass("player"))
+
+if (Class ~= "DRUID" and Class ~= "ROGUE") then
 	return
 end
 
@@ -51,7 +53,7 @@ local Enable = function(self)
 		element:SetMinMaxValues(0, 2)
 		element:SetScript("OnUpdate", OnUpdate)
 		
-		if (select(2, UnitClass("player")) == "DRUID") then
+		if (Class == "DRUID") then
 			element:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
 			element:SetScript("OnEvent", OnEvent)
 		end

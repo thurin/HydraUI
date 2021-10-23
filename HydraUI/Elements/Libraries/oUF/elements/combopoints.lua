@@ -2,10 +2,7 @@ local _, ns = ...
 local oUF = ns.oUF
 local HydraUI = ns:get()
 
-local GetShapeshiftFormID = GetShapeshiftFormID
 local GetComboPoints = GetComboPoints
-local CAT_FORM = CAT_FORM
-local FormID
 
 local Update = function(self, event, unit, power)
 	if ((unit ~= self.unit) or (unit == "player" and power ~= "COMBO_POINTS")) then
@@ -46,16 +43,10 @@ local ForceUpdate = function(element)
 end
 
 local UpdateForm = function(self)
-	FormID = GetShapeshiftFormID()
-	
-	if (FormID == CAT_FORM) then
+	if (UnitPowerType("player") == 3) then
 		self.ComboPoints:Show()
 	else
 		self.ComboPoints:Hide()
-	end
-	
-	if self.ComboPoints.UpdateShapeshiftForm then
-		self.ComboPoints:UpdateShapeshiftForm(FormID)
 	end
 end
 
@@ -71,7 +62,6 @@ local Enable = function(self)
 
 		if (HydraUI.UserClass == "DRUID") then
 			self:RegisterEvent("UPDATE_SHAPESHIFT_FORM", UpdateForm, true)
-			self:RegisterEvent("PLAYER_ENTERING_WORLD", UpdateForm, true)
 		end
 		
 		for i = 1, 5 do
@@ -81,6 +71,8 @@ local Enable = function(self)
 			
 			element[i]:SetAlpha(0.3)
 		end
+		
+		UpdateForm(self)
 		
 		return true
 	end
@@ -97,7 +89,6 @@ local Disable = function(self)
 		
 		if self:IsEventRegistered("UPDATE_SHAPESHIFT_FORM") then
 			self:UnregisterEvent("UPDATE_SHAPESHIFT_FORM", UpdateForm)
-			self:UnregisterEvent("PLAYER_ENTERING_WORLD", UpdateForm)
 		end
 	end
 end
