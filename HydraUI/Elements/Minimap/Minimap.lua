@@ -7,7 +7,14 @@ Defaults["minimap-enable"] = true
 Defaults["minimap-size"] = 140
 Defaults["minimap-show-top"] = true
 Defaults["minimap-show-bottom"] = true
-Defaults["minimap-show-tracking"] = true
+Defaults["minimap-buttons-enable"] = true
+Defaults["minimap-buttons-size"] = 22
+Defaults["minimap-buttons-spacing"] = 2
+Defaults["minimap-buttons-perrow"] = 5
+Defaults["minimap-top-height"] = 28
+Defaults["minimap-bottom-height"] = 28
+Defaults["minimap-top-fill"] = 100
+Defaults["minimap-bottom-fill"] = 100
 
 function Map:Disable(object)
 	if object.UnregisterAllEvents then
@@ -31,58 +38,42 @@ local OnMouseWheel = function(self, delta)
 end
 
 function Map:Style()
+	local R, G, B = HydraUI:HexToRGB(Settings["ui-window-main-color"])
+	local Border = Settings["ui-border-thickness"]
+	local Width = Settings["minimap-size"] + (Border * 2)
+	
 	-- Backdrop
 	self:SetPoint("TOPRIGHT", HydraUI.UIParent, -12, -12)
 	self:SetSize((Settings["minimap-size"] + 8), ((Settings["minimap-show-top"] == true and 22 or 0) + (Settings["minimap-show-bottom"] == true and 22 or 0) + 8 + Settings["minimap-size"]))
-	self:SetBackdrop(HydraUI.BackdropAndBorder)
-	self:SetBackdropColor(HydraUI:HexToRGB(Settings["ui-window-bg-color"]))
-	self:SetBackdropBorderColor(0, 0, 0)
 	
-	-- Top Info
 	self.TopFrame = CreateFrame("Frame", "HydraUIMinimapTop", self, "BackdropTemplate")
-	self.TopFrame:SetHeight(20)
-	self.TopFrame:SetPoint("TOPLEFT", self, 3, -3)
-	self.TopFrame:SetPoint("TOPRIGHT", self, -3, -3)
-	self.TopFrame:SetBackdrop(HydraUI.BackdropAndBorder)
-	self.TopFrame:SetBackdropColor(0, 0, 0, 0)
-	self.TopFrame:SetBackdropBorderColor(0, 0, 0)
+	self.TopFrame:SetSize(Width, Settings["minimap-top-height"])
+	self.TopFrame:SetPoint("TOP", self, 0, 0)
+	HydraUI:AddBackdrop(self.TopFrame, Assets:GetTexture("HydraUI 4"))
+	self.TopFrame.Outside:SetBackdropColor(R, G, B, (Settings["minimap-top-fill"] / 100))
 	
-	self.TopFrame.Tex = self.TopFrame:CreateTexture(nil, "ARTWORK")
-	self.TopFrame.Tex:SetPoint("TOPLEFT", self.TopFrame, 1, -1)
-	self.TopFrame.Tex:SetPoint("BOTTOMRIGHT", self.TopFrame, -1, 1)
-	self.TopFrame.Tex:SetTexture(Assets:GetTexture(Settings["ui-header-texture"]))
-	self.TopFrame.Tex:SetVertexColor(HydraUI:HexToRGB(Settings["ui-window-main-color"]))
+	self.Middle = CreateFrame("Frame", nil, self, "BackdropTemplate")
+	self.Middle:SetSize(Width, Settings["minimap-size"])
+	self.Middle:SetPoint("TOP", self.TopFrame, "BOTTOM", 0, 1 > Border and 1 or (Border + 2))
+	HydraUI:AddBackdrop(self.Middle)
+	self.Middle.Outside:SetBackdropColor(R, G, B, 0)
 	
-	-- Bottom Info
 	self.BottomFrame = CreateFrame("Frame", "HydraUIMinimapBottom", self, "BackdropTemplate")
-	self.BottomFrame:SetHeight(20)
-	self.BottomFrame:SetPoint("BOTTOMLEFT", self, 3, 3)
-	self.BottomFrame:SetPoint("BOTTOMRIGHT", self, -3, 3)
-	self.BottomFrame:SetBackdrop(HydraUI.BackdropAndBorder)
-	self.BottomFrame:SetBackdropColor(0, 0, 0, 0)
-	self.BottomFrame:SetBackdropBorderColor(0, 0, 0)
-	
-	self.BottomFrame.Tex = self.BottomFrame:CreateTexture(nil, "ARTWORK")
-	self.BottomFrame.Tex:SetPoint("TOPLEFT", self.BottomFrame, 1, -1)
-	self.BottomFrame.Tex:SetPoint("BOTTOMRIGHT", self.BottomFrame, -1, 1)
-	self.BottomFrame.Tex:SetTexture(Assets:GetTexture(Settings["ui-header-texture"]))
-	self.BottomFrame.Tex:SetVertexColor(HydraUI:HexToRGB(Settings["ui-window-main-color"]))
+	self.BottomFrame:SetSize(Width, Settings["minimap-bottom-height"])
+	self.BottomFrame:SetPoint("TOP", self.Middle, "BOTTOM", 0, 1 > Border and 1 or (Border + 2))
+	HydraUI:AddBackdrop(self.BottomFrame, Assets:GetTexture("HydraUI 4"))
+	self.BottomFrame.Outside:SetBackdropColor(R, G, B, (Settings["minimap-bottom-fill"] / 100))
 	
 	-- Style minimap
 	Minimap:SetMaskTexture(Assets:GetTexture("Blank"))
 	Minimap:SetParent(self)
 	Minimap:ClearAllPoints()
-	Minimap:SetSize(Settings["minimap-size"], Settings["minimap-size"])
+	Minimap:SetPoint("TOPLEFT", self.Middle, Border + 1, -(Border + 1))
+	Minimap:SetPoint("BOTTOMRIGHT", self.Middle, -(Border + 1), Border + 1)
     Minimap:SetArchBlobRingScalar(0)
     Minimap:SetQuestBlobRingScalar(0)
 	Minimap:EnableMouseWheel(true)
 	Minimap:SetScript("OnMouseWheel", OnMouseWheel)
-	
-	Minimap.BG = Minimap:CreateTexture(nil, "BACKGROUND")
-	Minimap.BG:SetTexture(Assets:GetTexture("Blank"))
-	Minimap.BG:SetVertexColor(0, 0, 0)
-	Minimap.BG:SetPoint("TOPLEFT", Minimap, -1, 1)
-	Minimap.BG:SetPoint("BOTTOMRIGHT", Minimap, 1, -1)
 	
 	MiniMapMailFrame:ClearAllPoints()
 	MiniMapMailFrame:SetPoint("TOPRIGHT", -4, 12)
@@ -161,21 +152,16 @@ function Map:Style()
 end
 
 local UpdateMinimapSize = function(value)
-	Map:SetSize((value + 8), ((Settings["minimap-show-top"] == true and 22 or 0) + (Settings["minimap-show-bottom"] == true and 22 or 0) + 8 + value))
+	Map:SetSize((value + 8), ((Settings["minimap-show-top"] == true and Settings["minimap-top-height"] or 0) + (Settings["minimap-show-bottom"] == true and Settings["minimap-bottom-height"] or 0) + 8 + value))
 	
 	Minimap:SetSize(value, value)
 	Minimap:SetZoom(Minimap:GetZoom() + 1)
 	Minimap:SetZoom(Minimap:GetZoom() - 1)
 	Minimap:UpdateBlips()
-	Minimap:ClearAllPoints()
 	
-	if Settings["minimap-show-top"] and not Settings["minimap-show-bottom"] then
-		Minimap:SetPoint("BOTTOM", Map, 0, 4)
-	elseif Settings["minimap-show-bottom"] and not Settings["minimap-show-top"] then
-		Minimap:SetPoint("TOP", Map, 0, -4)
-	else
-		Minimap:SetPoint("CENTER", Map, 0, 0)
-	end
+	Map.Middle:SetSize(value, value)
+	Map.TopFrame:SetWidth(value)
+	Map.BottomFrame:SetWidth(value)
 end
 
 local UpdateShowTopBar = function(value)
@@ -218,6 +204,26 @@ local UpdateShowBottomBar = function(value)
 	UpdateMinimapSize(Settings["minimap-size"])
 end
 
+local UpdateTopHeight = function(value)
+	Map.TopFrame:SetHeight(value)
+end
+
+local UpdateBottomHeight = function(value)
+	Map.BottomFrame:SetHeight(value)
+end
+
+local UpdateTopFill = function(value)
+	local R, G, B = HydraUI:HexToRGB(Settings["ui-window-main-color"])
+	
+	Map.TopFrame.Outside:SetBackdropColor(R, G, B, (value / 100))
+end
+
+local UpdateBottomFill = function(value)
+	local R, G, B = HydraUI:HexToRGB(Settings["ui-window-main-color"])
+	
+	Map.BottomFrame.Outside:SetBackdropColor(R, G, B, (value / 100))
+end
+
 local UpdateShowTracking = function(value)
 	if value then
 		Map.Tracking:Show()
@@ -243,8 +249,11 @@ GUI:AddWidgets(Language["General"], Language["Minimap"], function(left, right)
 	left:CreateSwitch("minimap-enable", Settings["minimap-enable"], Language["Enable Minimap Module"], Language["Enable the HydraUI mini map module"], ReloadUI):RequiresReload(true)
 	
 	left:CreateHeader(Language["Styling"])
-	left:CreateSlider("minimap-size", Settings["minimap-size"], 100, 250, 10, Language["Minimap Size"], Language["Set the size of the mini map"], UpdateMinimapSize)
 	left:CreateSwitch("minimap-show-top", Settings["minimap-show-top"], Language["Enable Top Bar"], Language["Enable the data text bar on top of the mini map"], UpdateShowTopBar)
 	left:CreateSwitch("minimap-show-bottom", Settings["minimap-show-bottom"], Language["Enable Bottom Bar"], Language["Enable the data text bar on the bottom of the mini map"], UpdateShowBottomBar)
-	left:CreateSwitch("minimap-show-tracking", Settings["minimap-show-tracking"], Language["Enable Tracking"], Language["Enable the tracking button in the top left of the mini map"], UpdateShowTracking)
+	left:CreateSlider("minimap-size", Settings["minimap-size"], 100, 250, 10, Language["Mini Map Size"], Language["Set the size of the mini map"], UpdateMinimapSize)
+	left:CreateSlider("minimap-top-height", Settings["minimap-top-height"], 14, 40, 1, Language["Top Height"], Language["Set the height for the top of the minimap"], UpdateTopHeight)
+	left:CreateSlider("minimap-bottom-height", Settings["minimap-bottom-height"], 14, 40, 1, Language["Bottom Height"], Language["Set the height for the bottom of the minimap"], UpdateBottomHeight)
+	left:CreateSlider("minimap-top-fill", Settings["minimap-top-fill"], 0, 100, 5, Language["Top Fill"], Language["Set the opacity for the top of the minimap"], UpdateTopFill, nil, "%")
+	left:CreateSlider("minimap-bottom-fill", Settings["minimap-bottom-fill"], 0, 100, 5, Language["Bottom Fill"], Language["Set the opacity for the bottom of the minimap"], UpdateBottomFill, nil, "%")
 end)

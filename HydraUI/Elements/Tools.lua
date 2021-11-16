@@ -29,12 +29,12 @@ function HydraUI:StartTimer(seconds, callback, arg)
 		Timer = tremove(self.TimerPool, 1)
 	else
 		Timer = self.TimerParent:CreateAnimation("sleep")
+		Timer:SetScript("OnFinished", TimerOnFinished)
 	end
 	
 	Timer.Hook = callback
 	Timer.Arg = arg
 	Timer:SetDuration(seconds)
-	Timer:SetScript("OnFinished", TimerOnFinished)
 	Timer:Play()
 end
 
@@ -211,7 +211,7 @@ function HydraUI:print(...)
 	if Settings["ui-widget-color"] then
 		print("|cFF" .. Settings["ui-widget-color"] .. "Hydra|rUI:", ...)
 	else
-		printprint("|cFF" .. Defaults["ui-widget-color"] .. "Hydra|rUI:", ...)
+		print("|cFF" .. Defaults["ui-widget-color"] .. "Hydra|rUI:", ...)
 	end
 end
 
@@ -226,6 +226,51 @@ function HydraUI:SetFontInfo(object, font, size, flags)
 		object:SetShadowColor(0, 0, 0)
 		object:SetShadowOffset(1, -1)
 	end
+end
+
+local Outside = {
+	bgFile = Assets:GetTexture("Blank"),
+	edgeFile = Assets:GetTexture("Blank"),
+}
+
+local Inside = {
+	bgFile = Assets:GetTexture("Blank"),
+	edgeFile = Assets:GetTexture("Blank"),
+}
+
+function HydraUI:AddBackdrop(frame, texture)
+	if (frame.Outside or frame.Inside) then
+		return
+	end
+	
+	local Border = Settings["ui-border-thickness"]
+	
+	Outside.edgeSize = 1 > Border and 1 or (Border + 2)
+	Inside.edgeSize = Border
+	
+	if texture then
+		Outside.bgFile = texture
+	else
+		Outside.bgFile = Assets:GetTexture("Blank")
+	end
+	
+	frame.Outside = CreateFrame("Frame", nil, frame, "BackdropTemplate")
+	frame.Outside:SetAllPoints()
+	frame.Outside:SetBackdrop(Outside)
+	frame.Outside:SetBackdropBorderColor(0, 0, 0)
+	frame.Outside:SetBackdropColor(0, 0, 0, 0)
+	
+	if (Border == 0) then
+		return
+	end
+	
+	frame.Inside = CreateFrame("Frame", nil, frame, "BackdropTemplate")
+	frame.Inside:SetPoint("TOPLEFT", 1, -1)
+	frame.Inside:SetPoint("BOTTOMRIGHT", -1, 1)
+	frame.Inside:SetFrameLevel(frame.Outside:GetFrameLevel() + 1)
+	frame.Inside:SetBackdrop(Inside)
+	frame.Inside:SetBackdropBorderColor(HydraUI:HexToRGB(Settings["ui-window-bg-color"]))
+	frame.Inside:SetBackdropColor(0, 0, 0, 0)
 end
 
 -- NYI, Concept list for my preferred CVars, and those important to the UI

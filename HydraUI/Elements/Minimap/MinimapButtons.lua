@@ -219,7 +219,7 @@ function MinimapButtons:CreatePanel()
 	Frame:SetBackdropColor(HydraUI:HexToRGB(Settings["ui-window-bg-color"]))
 	Frame:SetBackdropBorderColor(0, 0, 0)
 	Frame:SetFrameStrata("LOW")
-	Frame:SetPoint("TOPRIGHT", HydraUI:GetModule("Minimap"), "BOTTOMRIGHT", 0, -2)
+	Frame:SetPoint("TOPRIGHT", HydraUI:GetModule("Minimap").BottomFrame, "BOTTOMRIGHT", 0, -2)
 	
 	self.Panel = Frame
 end

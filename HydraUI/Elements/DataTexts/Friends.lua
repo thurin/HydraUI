@@ -24,6 +24,7 @@ local ClientToName = {
 	["S2"] = Language["StarCraft 2"],
 	["VIPR"] = Language["Call of Duty: Black Ops 4"],
 	["ODIN"] = Language["Call of Duty: Modern Warfare"],
+	["OSI"] = "Diablo II: Resurrected",
 	["WoW"] = CINEMATIC_NAME_1,
 	["WTCG"] = Language["Hearthstone"],
 }
@@ -164,6 +165,18 @@ ClientInfo["ODIN"] = function(name, info)
 	return name, ClientToName[info.gameAccountInfo.clientProgram]
 end
 
+ClientInfo["OSI"] = function(name, info)
+	if info.gameAccountInfo.isGameAFK then
+		name = format("|cFF9E9E9E%s|r", name)
+	elseif info.gameAccountInfo.isGameBusy then
+		name = format("|cFFF44336%s|r", name)
+	else
+		name = format("|cFF00FFF6%s|r", name)
+	end
+	
+	return name, ClientToName[info.gameAccountInfo.clientProgram]
+end
+
 ClientInfo["WoW"] = function(name, info)
 	Class = GetClass(info.gameAccountInfo.className)
 	
@@ -255,7 +268,9 @@ local OnLeave = function()
 end
 
 local OnMouseUp = function()
-	ToggleFriendsFrame(1)
+	if (not InCombatLockdown()) then
+		ToggleFriendsFrame(1)
+	end
 end
 
 local Update = function(self)
