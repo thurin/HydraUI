@@ -6,9 +6,10 @@ local HydraUI, GUI, Language, Assets, Settings, Defaults = select(2, ...):get()
 Defaults["ui-scale"] = 0.71111111111111
 Defaults["ui-display-welcome"] = true
 Defaults["ui-display-dev-tools"] = false
-Defaults["ui-display-whats-new"] = true -- NYI
+Defaults["ui-border-thickness"] = 0
 
 -- Main
+
 Defaults["ui-style"] = "HydraUI"
 
 Defaults["ui-header-font"] = "Roboto"
@@ -152,36 +153,6 @@ Defaults["chat-bubbles-font"] = "PT Sans"
 Defaults["chat-bubbles-font-size"] = 14
 Defaults["chat-bubbles-font-flags"] = ""
 
--- Experience
-Defaults["experience-enable"] = true
-Defaults["experience-width"] = 310
-Defaults["experience-height"] = 18
-Defaults["experience-mouseover"] = false
-Defaults["experience-mouseover-opacity"] = 0
-Defaults["experience-display-level"] = false
-Defaults["experience-display-progress"] = true
-Defaults["experience-display-percent"] = true
-Defaults["experience-display-rested-value"] = true
-Defaults["experience-show-tooltip"] = true
-Defaults["experience-animate"] = true
-Defaults["experience-progress-visibility"] = "ALWAYS"
-Defaults["experience-percent-visibility"] = "ALWAYS"
-Defaults["experience-bar-color"] = "4C9900" -- 1AE045
-Defaults["experience-rested-color"] = "00B4FF"
-
--- Reputation
-Defaults["reputation-enable"] = true
-Defaults["reputation-width"] = 310
-Defaults["reputation-height"] = 18
-Defaults["reputation-mouseover"] = false
-Defaults["reputation-mouseover-opacity"] = 0
-Defaults["reputation-display-progress"] = true
-Defaults["reputation-display-percent"] = true
-Defaults["reputation-show-tooltip"] = true
-Defaults["reputation-animate"] = true
-Defaults["reputation-progress-visibility"] = "ALWAYS"
-Defaults["reputation-percent-visibility"] = "ALWAYS"
-
 -- Auras
 Defaults["auras-enable"] = true
 Defaults["auras-size"] = 30
@@ -198,16 +169,13 @@ Defaults["minimap-buttons-enable"] = true
 Defaults["minimap-buttons-size"] = 22
 Defaults["minimap-buttons-spacing"] = 2
 Defaults["minimap-buttons-perrow"] = 5
+Defaults["minimap-top-height"] = 28
+Defaults["minimap-bottom-height"] = 28
+Defaults["minimap-top-fill"] = 100
+Defaults["minimap-bottom-fill"] = 100
 
 -- Cooldowns
 Defaults["cooldowns-enable"] = true
-
--- Right Window
-Defaults["right-window-enable"] = true
-Defaults["right-window-size"] = "SINGLE"
-Defaults["right-window-width"] = 392
-Defaults["right-window-height"] = 128
-Defaults["right-window-opacity"] = 70
 
 -- Bags Frame
 Defaults["bags-frame-visiblity"] = "SHOW"

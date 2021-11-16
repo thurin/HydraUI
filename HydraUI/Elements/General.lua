@@ -135,7 +135,10 @@ GUI:AddWidgets(Language["General"], Language["Styles"], function(left, right)
 	
 	right:CreateHeader(Language["Console"])
 	right:CreateButton("", Language["Reload"], Language["Reload UI"], Language["Reload the UI"], ReloadUI)
-	right:CreateButton("", Language["Delete"], Language["Delete Saved Variables"], Language["Reset all saved variables"], HydraUI.Reset)
+	--right:CreateButton("", Language["Delete"], Language["Delete Saved Variables"], Language["Reset all saved variables"], HydraUI.Reset)
+	
+	right:CreateHeader(Language["Border Thickness"])
+	right:CreateSlider('ui-border-thickness', Settings['ui-border-thickness'], 0, 2, 1, Language["Border Thickness"], Language["Set how thick the border on UI elements is"], ReloadUI, nil, "px"):RequiresReload(true)
 	
 	right:CreateHeader(Language["Windows"])
 	right:CreateColorSelection("ui-window-bg-color", Settings["ui-window-bg-color"], Language["Background Color"], "")

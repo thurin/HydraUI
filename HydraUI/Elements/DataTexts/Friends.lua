@@ -17,12 +17,12 @@ local ClientToName = {
 	["DST2"] = Language["Destiny 2"],
 	["D3"] = Language["Diablo 3"],
 	["Hero"] = Language["Heroes of the Storm"],
-	["OSI"] = "Diablo II: Resurrected",
 	["Pro"] = Language["Overwatch"],
 	["S1"] = Language["StarCraft: Remastered"],
 	["S2"] = Language["StarCraft 2"],
 	["VIPR"] = Language["Call of Duty: Black Ops 4"],
 	["ODIN"] = Language["Call of Duty: Modern Warfare"],
+	["OSI"] = "Diablo II: Resurrected",
 	["WoW"] = CINEMATIC_NAME_1,
 	["WTCG"] = Language["Hearthstone"],
 }
@@ -185,6 +185,20 @@ ClientInfo["ODIN"] = function(name, id)
 	return name, ClientToName[Client]
 end
 
+ClientInfo["OSI"] = function(name, id)
+	local HasFocus, CharacterName, Client, RealmName, RealmID, Faction, Race, Class, Blank, Area, Level, RichPresence, CustomMessage, CustomMessageTime, IsOnline, GameAccountID, BNetAccountID, IsAFK, IsBusy, GUID, WoWProjectID, IsWoWMobile = BNGetGameAccountInfo(id)
+	
+	if IsAFK then
+		name = format("|cFF9E9E9E%s|r", name)
+	elseif IsBusy then
+		name = format("|cFFF44336%s|r", name)
+	else
+		name = format("|cFF00FFF6%s|r", name)
+	end
+	
+	return name, ClientToName[Client]
+end
+
 ClientInfo["WoW"] = function(name, id)
 	local HasFocus, CharacterName, Client, RealmName, RealmID, Faction, Race, Class, Blank, Area, Level, RichPresence, CustomMessage, CustomMessageTime, IsOnline, GameAccountID, BNetAccountID, IsAFK, IsBusy, GUID, WoWProjectID, IsWoWMobile = BNGetGameAccountInfo(id)
 	
@@ -278,7 +292,9 @@ local OnLeave = function()
 end
 
 local OnMouseUp = function()
-	ToggleFriendsFrame(1)
+	if (not InCombatLockdown()) then
+		ToggleFriendsFrame(1)
+	end
 end
 
 local Update = function(self)

@@ -270,11 +270,7 @@ Methods["Resting"] = function(unit)
 end
 
 Events["Health"] = "UNIT_HEALTH_FREQUENT PLAYER_ENTERING_WORLD"
-Methods["Health"] = function(unit)
-	local Current = UnitHealth(unit)
-	
-	return Current
-end
+Methods["Health"] = UnitHealth
 
 Events["Health:Short"] = "UNIT_HEALTH_FREQUENT PLAYER_ENTERING_WORLD"
 Methods["Health:Short"] = function(unit)

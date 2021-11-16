@@ -1,10 +1,22 @@
-local HydraUI, GUI, Language, Assets, Settings = select(2, ...):get()
+local HydraUI, GUI, Language, Assets, Settings, Defaults = select(2, ...):get()
 
 local Reputation = HydraUI:NewModule("Reputation")
 
 local format = format
 local floor = floor
 local GetWatchedFactionInfo = GetWatchedFactionInfo
+
+Defaults["reputation-enable"] = true
+Defaults["reputation-width"] = 316 -- 310
+Defaults["reputation-height"] = 24 -- 18
+Defaults["reputation-mouseover"] = false
+Defaults["reputation-mouseover-opacity"] = 0
+Defaults["reputation-display-progress"] = true
+Defaults["reputation-display-percent"] = true
+Defaults["reputation-show-tooltip"] = true
+Defaults["reputation-animate"] = true
+Defaults["reputation-progress-visibility"] = "ALWAYS"
+Defaults["reputation-percent-visibility"] = "ALWAYS"
 
 local FadeOnFinished = function(self)
 	self.Parent:Hide()
@@ -27,13 +39,16 @@ local UpdatePercentVisibility = function(value)
 end
 
 function Reputation:CreateBar()
+	local Border = Settings["ui-border-thickness"]
+	local Offset = 1 > Border and 1 or (Border + 2)
+	
 	self:SetSize(Settings["reputation-width"], Settings["reputation-height"])
 	self:SetFrameStrata("MEDIUM")
 	
 	if (Settings["experience-enable"] and UnitLevel("player") ~= MAX_PLAYER_LEVEL) then
-		self:SetPoint("TOP", HydraUIExperienceBar, "BOTTOM", 0, -8)
+		self:SetPoint("TOP", HydraUI:GetModule("Experience"), "BOTTOM", 0, -8) -- self:SetPoint("TOP", HydraUIExperienceBar, "BOTTOM", 0, -8)
 	else
-		self:SetPoint("TOP", HydraUI.UIParent, 0, -13)
+		self:SetPoint("TOP", HydraUI.UIParent, 0, -13) -- self:SetPoint("TOP", HydraUI.UIParent, 0, -13)
 	end
 	
 	if Settings["reputation-mouseover"] then
@@ -56,27 +71,13 @@ function Reputation:CreateBar()
 	self.BarBG = CreateFrame("Frame", nil, self, "BackdropTemplate")
 	self.BarBG:SetPoint("TOPLEFT", self, 0, 0)
 	self.BarBG:SetPoint("BOTTOMRIGHT", self, 0, 0)
-	self.BarBG:SetBackdrop(HydraUI.BackdropAndBorder)
-	self.BarBG:SetBackdropColor(HydraUI:HexToRGB(Settings["ui-window-main-color"]))
-	self.BarBG:SetBackdropBorderColor(0, 0, 0)
-	
-	self.Texture = self.BarBG:CreateTexture(nil, "ARTWORK")
-	self.Texture:SetPoint("TOPLEFT", self.BarBG, 1, -1)
-	self.Texture:SetPoint("BOTTOMRIGHT", self.BarBG, -1, 1)
-	self.Texture:SetTexture(Assets:GetTexture(Settings["ui-header-texture"]))
-	self.Texture:SetVertexColor(HydraUI:HexToRGB(Settings["ui-window-main-color"]))
-	
-	self.BGAll = CreateFrame("Frame", nil, self, "BackdropTemplate")
-	self.BGAll:SetPoint("TOPLEFT", self.BarBG, -3, 3)
-	self.BGAll:SetPoint("BOTTOMRIGHT", self.BarBG, 3, -3)
-	self.BGAll:SetBackdrop(HydraUI.BackdropAndBorder)
-	self.BGAll:SetBackdropColor(HydraUI:HexToRGB(Settings["ui-window-bg-color"]))
-	self.BGAll:SetBackdropBorderColor(0, 0, 0)
+	HydraUI:AddBackdrop(self.BarBG)
+	self.BarBG.Outside:SetBackdropColor(HydraUI:HexToRGB(Settings["ui-window-main-color"]))
 	
 	self.Bar = CreateFrame("StatusBar", nil, self.BarBG)
 	self.Bar:SetStatusBarTexture(Assets:GetTexture(Settings["ui-widget-texture"]))
-	self.Bar:SetPoint("TOPLEFT", self.BarBG, 1, -1)
-	self.Bar:SetPoint("BOTTOMRIGHT", self.BarBG, -1, 1)
+	self.Bar:SetPoint("TOPLEFT", self.BarBG, Offset, -Offset)
+	self.Bar:SetPoint("BOTTOMRIGHT", self.BarBG, -Offset, Offset)
 	self.Bar:SetFrameLevel(6)
 	
 	self.Bar.BG = self.Bar:CreateTexture(nil, "BORDER")
@@ -87,8 +88,9 @@ function Reputation:CreateBar()
 	
 	self.Bar.Spark = self.Bar:CreateTexture(nil, "OVERLAY")
 	self.Bar.Spark:SetDrawLayer("OVERLAY", 7)
-	self.Bar.Spark:SetSize(1, Settings["reputation-height"])
-	self.Bar.Spark:SetPoint("LEFT", self.Bar:GetStatusBarTexture(), "RIGHT", 0, 0)
+	self.Bar.Spark:SetWidth(1)
+	self.Bar.Spark:SetPoint("TOPLEFT", self.Bar:GetStatusBarTexture(), "TOPRIGHT", 0, 0)
+	self.Bar.Spark:SetPoint("BOTTOMLEFT", self.Bar:GetStatusBarTexture(), "BOTTOMRIGHT", 0, 0)
 	self.Bar.Spark:SetTexture(Assets:GetTexture("Blank"))
 	self.Bar.Spark:SetVertexColor(0, 0, 0)
 	
@@ -129,9 +131,6 @@ function Reputation:CreateBar()
 	self.Percentage:SetPoint("RIGHT", self.Bar, -5, 0)
 	HydraUI:SetFontInfo(self.Percentage, Settings["ui-widget-font"], Settings["ui-font-size"])
 	self.Percentage:SetJustifyH("RIGHT")
-	
-	UpdateProgressVisibility(Settings["reputation-progress-visibility"])
-	UpdatePercentVisibility(Settings["reputation-percent-visibility"])
 	
 	if (not Settings["reputation-display-percent"]) then
 		self.Percentage:Hide()
@@ -268,6 +267,9 @@ function Reputation:Load()
 	self:SetScript("OnEnter", self.OnEnter)
 	self:SetScript("OnLeave", self.OnLeave)
 	self:SetScript("OnMouseUp", self.OnMouseUp)
+	
+	UpdateProgressVisibility(Settings["reputation-progress-visibility"])
+	UpdatePercentVisibility(Settings["reputation-percent-visibility"])
 end
 
 local UpdateDisplayProgress = function(value)
@@ -320,7 +322,7 @@ GUI:AddWidgets(Language["General"], Language["Reputation"], function(left, right
 	left:CreateSwitch("reputation-animate", Settings["reputation-animate"], Language["Animate Reputation Changes"], Language["Smoothly animate changes to the reputation bar"])
 	
 	right:CreateHeader(Language["Size"])
-	right:CreateSlider("reputation-width", Settings["reputation-width"], 180, 400, 10, Language["Bar Width"], Language["Set the width of the reputation bar"], UpdateBarWidth)
+	right:CreateSlider("reputation-width", Settings["reputation-width"], 180, 400, 2, Language["Bar Width"], Language["Set the width of the reputation bar"], UpdateBarWidth)
 	right:CreateSlider("reputation-height", Settings["reputation-height"], 6, 30, 1, Language["Bar Height"], Language["Set the height of the reputation bar"], UpdateBarHeight)
 	
 	right:CreateHeader(Language["Visibility"])

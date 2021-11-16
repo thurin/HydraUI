@@ -118,12 +118,12 @@ HydraUI.StyleFuncs["pet"] = function(self, unit)
 		if (Settings["unitframes-pet-buff-pos"] == "TOP") then
 			Buffs:SetPoint("BOTTOM", self, "TOP", 0, 2)
 			Buffs.initialAnchor = "TOPLEFT"
-			Buffs["growth-x"] = "LEFT"
+			Buffs["growth-x"] = "RIGHT"
 			Buffs["growth-y"] = "UP"
 		else
 			Buffs:SetPoint("TOP", self, "BOTTOM", 0, -2)
 			Buffs.initialAnchor = "TOPLEFT"
-			Buffs["growth-x"] = "LEFT"
+			Buffs["growth-x"] = "RIGHT"
 			Buffs["growth-y"] = "DOWN"
 		end
 		
