@@ -23,8 +23,6 @@ function Window:CreateSingleWindow()
 	local Border = Settings["ui-border-thickness"]
 	local Width = Settings["right-window-width"]
 	
-	self:SetFrameStrata("LOW")
-	
 	self.Bottom = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
 	self.Bottom:SetSize(Width, Settings["right-window-bottom-height"])
 	self.Bottom:SetPoint("BOTTOMRIGHT", self, 0, 0)
@@ -51,8 +49,6 @@ function Window:CreateDoubleWindow()
 	local Width = Settings["right-window-width"]
 	local LeftWidth = (Width * Settings["right-window-middle-pos"] / 100) - Adjust
 	local RightWidth = (Width - (Width * Settings["right-window-middle-pos"] / 100))
-	
-	self:SetFrameStrata("LOW")
 	
 	self.Bottom = CreateFrame("Frame", nil, self, "BackdropTemplate")
 	self.Bottom:SetSize(Width, Settings["right-window-bottom-height"])
@@ -132,6 +128,7 @@ function Window:Load()
 	
 	self:SetSize(Settings["right-window-width"], Settings["right-window-height"] + Settings["right-window-bottom-height"] + Settings["right-window-top-height"]) -- Border fix me
 	self:SetPoint("BOTTOMRIGHT", HydraUI.UIParent, -13, 13)
+	self:SetFrameStrata("BACKGROUND")
 	
 	if (Settings["right-window-size"] == "SINGLE") then
 		self:CreateSingleWindow()

@@ -218,7 +218,6 @@ function AB:StyleActionButton(button)
 	
 	if button.Count then
 		button.Count:ClearAllPoints()
-		--button.Count:SetPoint("TOPRIGHT", button, -2, -2)
 		button.Count:SetPoint("BOTTOMRIGHT", button, -2, 2)
 		HydraUI:SetFontInfo(button.Count, Settings["ab-font"], Settings["ab-font-size"], Settings["ab-font-flags"])
 		button.Count:SetJustifyH("RIGHT")
@@ -372,7 +371,7 @@ function AB:StylePetActionButton(button)
 	
 	if button.Count then
 		button.Count:ClearAllPoints()
-		button.Count:SetPoint("TOPRIGHT", button, -2, -2)
+		button.Count:SetPoint("BOTTOMRIGHT", button, -2, 2)
 		HydraUI:SetFontInfo(button.Count, Settings["ab-font"], Settings["ab-font-size"], Settings["ab-font-flags"])
 		button.Count:SetJustifyH("RIGHT")
 		button.Count:SetDrawLayer("OVERLAY")

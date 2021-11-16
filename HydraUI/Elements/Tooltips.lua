@@ -141,7 +141,8 @@ local SetTooltipStyle = function(self)
 		self.Backdrop = CreateFrame("Frame", nil, self, "BackdropTemplate")
 		self.Backdrop:SetPoint("TOPLEFT", self, 0, 0)
 		self.Backdrop:SetPoint("BOTTOMRIGHT", self, 0, 0)
-		self.Backdrop:SetFrameLevel(self:GetFrameLevel() - 1)
+		self.Backdrop:SetFrameLevel(0)
+		self.Backdrop:SetFrameStrata("LOW")
 		HydraUI:AddBackdrop(self.Backdrop)
 		self.Backdrop.Outside:SetBackdropColor(R, G, B)
 		
@@ -578,8 +579,6 @@ function Tooltips:StyleStatusBar()
 	GameTooltipStatusBar.BG:SetAlpha(0.2)
 	
 	GameTooltipStatusBar.Backdrop = CreateFrame("Frame", nil, GameTooltipStatusBar, "BackdropTemplate")
-	--GameTooltipStatusBar.Backdrop:SetPoint("TOPLEFT", GameTooltipStatusBar, -1, 1)
-	--GameTooltipStatusBar.Backdrop:SetPoint("BOTTOMRIGHT", GameTooltipStatusBar, 1, -1)
 	GameTooltipStatusBar.Backdrop:SetPoint("TOPLEFT", GameTooltipStatusBar, -Adjust, Adjust)
 	GameTooltipStatusBar.Backdrop:SetPoint("BOTTOMRIGHT", GameTooltipStatusBar, Adjust, -Adjust)
 	GameTooltipStatusBar.Backdrop:SetFrameLevel(0)
@@ -674,8 +673,7 @@ function Tooltips:Load()
 	if Settings["right-window-enable"] then
 		local Mod = HydraUI:GetModule("Right Window")
 		local Offset = Settings["ui-border-thickness"]
-		--self:SetPoint("BOTTOMLEFT", HydraUI:GetModule("Right Window"), "TOPLEFT", 0, 3)
-		--self:SetPoint("BOTTOMLEFT", HydraUI.UIParent, "BOTTOMRIGHT", -(13 + Settings["right-window-width"]), 170)
+		
 		self:SetPoint("BOTTOMLEFT", Mod.TopLeft or Mod.Top, "TOPLEFT", 0, 1 > Offset and -1 or -(Offset + 2))
 	else
 		self:SetPoint("BOTTOMRIGHT", HydraUI.UIParent, -13, 101)

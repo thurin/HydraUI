@@ -254,11 +254,6 @@ function HydraUI:AddBackdrop(frame, texture)
 		Outside.bgFile = Assets:GetTexture("Blank")
 	end
 	
-	--[[
-		local FS = frame:GetFrameStrata()
-		local FL = frame:GetFrameLevel()
-	--]]
-	
 	frame.Outside = CreateFrame("Frame", nil, frame, "BackdropTemplate")
 	frame.Outside:SetAllPoints()
 	frame.Outside:SetBackdrop(Outside)

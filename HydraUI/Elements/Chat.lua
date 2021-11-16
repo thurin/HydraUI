@@ -225,7 +225,6 @@ Chat.RemoveTextures = {
 function Chat:CreateChatWindow()
 	local R, G, B = HydraUI:HexToRGB(Settings["ui-window-main-color"])
 	local Border = Settings["ui-border-thickness"]
-	--local Width = Settings["chat-frame-width"] + (Border * 3)
 	local Width = Settings["chat-frame-width"]
 	
 	self:SetSize(Width, Settings["chat-frame-height"] + Settings["chat-bottom-height"] + Settings["chat-top-height"] + (4 * 2))
@@ -770,8 +769,8 @@ function Chat:MoveChatFrames()
 			Frame:ClearAllPoints()
 			Frame:SetPoint("TOPLEFT", self.Middle, 4 + Settings["ui-border-thickness"], -(4 + Settings["ui-border-thickness"]))
 			Frame:SetPoint("BOTTOMRIGHT", self.Middle, -(4 + Settings["ui-border-thickness"]), 4 + Settings["ui-border-thickness"])
-		elseif (Settings["right-window-enable"] and Frame.name and Frame.name == Defaults["chat-right-frame"]) then
-			--print(HydraUI:GetModule("Right Window").Backdrop)
+		elseif (Settings["right-window-enable"] and Frame.name and Frame.name == Settings["chat-right-frame"]) then
+			-- Grab the frame
 		end
 		
 		if (not Frame.isLocked) then
@@ -1060,18 +1059,11 @@ end
 HydraUI.FormatLinks = FormatLinks
 
 local UpdateChatFrameHeight = function(value)
-	--local Border = Settings["ui-border-thickness"]
-	--local Width = Settings["chat-frame-width"] + (Border * 3)
-	
-	--Chat:SetSize(Width + 4, Settings["chat-frame-height"] + (BarHeight * 2) + (4 * 2))
-	
 	Chat.Middle:SetHeight(value)
 end
 
 local UpdateChatFrameWidth = function()
 	local Width = Settings["chat-frame-width"]
-	
-	--Chat:SetSize(Width + 4, Settings["chat-frame-height"] + Settings["chat-bottom-height"] + Settings["chat-top-height"] + (4 * 2))
 	
 	Chat.Bottom:SetWidth(Width)
 	Chat.Middle:SetWidth(Width)
