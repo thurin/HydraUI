@@ -103,6 +103,7 @@ function Experience:CreateBar()
 	self:SetSize(Settings["experience-width"], Settings["experience-height"])
 	self:SetPoint("TOP", HydraUI.UIParent, 0, -13)
 	self:SetFrameStrata("MEDIUM")
+	self.Elapsed = 0
 	
 	if Settings["experience-mouseover"] then
 		self:SetAlpha(Settings["experience-mouseover-opacity"] / 100)
