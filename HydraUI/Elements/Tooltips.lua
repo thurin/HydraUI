@@ -582,9 +582,13 @@ function Tooltips:StyleStatusBar()
 	GameTooltipStatusBar.Backdrop = CreateFrame("Frame", nil, GameTooltipStatusBar, "BackdropTemplate")
 	GameTooltipStatusBar.Backdrop:SetPoint("TOPLEFT", GameTooltipStatusBar, -Adjust, Adjust)
 	GameTooltipStatusBar.Backdrop:SetPoint("BOTTOMRIGHT", GameTooltipStatusBar, Adjust, -Adjust)
-	GameTooltipStatusBar.Backdrop:SetFrameLevel(0)
 	
 	HydraUI:AddBackdrop(GameTooltipStatusBar.Backdrop)
+	
+	GameTooltipStatusBar.BG2 = GameTooltipStatusBar:CreateTexture(nil, "BACKGROUND")
+	GameTooltipStatusBar.BG2:SetAllPoints(GameTooltipStatusBar)
+	GameTooltipStatusBar.BG2:SetTexture(Assets:GetTexture("Blank"))
+	GameTooltipStatusBar.BG2:SetVertexColor(0, 0, 0)
 	
 	GameTooltipStatusBar.HealthValue = GameTooltipStatusBar:CreateFontString(nil, "OVERLAY")
 	HydraUI:SetFontInfo(GameTooltipStatusBar.HealthValue, Settings["tooltips-font"], Settings["tooltips-font-size"], Settings["tooltips-font-flags"])
