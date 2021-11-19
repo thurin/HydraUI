@@ -1,4 +1,4 @@
-local HydraUI, GUI, Language, Assets, Settings = select(2, ...):get()
+local HydraUI, GUI, Language, Assets, Settings, Defaults = select(2, ...):get()
 
 local Experience = HydraUI:NewModule("Experience")
 
@@ -12,15 +12,195 @@ local UnitXPMax = UnitXPMax
 local UnitLevel = UnitLevel
 local GetXPExhaustion = GetXPExhaustion
 local MAX_PLAYER_LEVEL = MAX_PLAYER_LEVEL
-
-local ExperienceBar = CreateFrame("StatusBar", "HydraUIExperienceBar", HydraUI.UIParent)
-
-ExperienceBar.Elapsed = 0
+local GetQuestLogTitle = GetQuestLogTitle
+local GetNumQuestLogEntries = GetNumQuestLogEntries
 
 local Gained = 0
 local Seconds = 0
 
-local UpdateXP = function(self, first)
+Defaults["experience-enable"] = true
+Defaults["experience-width"] = 316
+Defaults["experience-height"] = 24
+Defaults["experience-mouseover"] = false
+Defaults["experience-mouseover-opacity"] = 0
+Defaults["experience-display-level"] = false
+Defaults["experience-display-progress"] = true
+Defaults["experience-display-percent"] = true
+Defaults["experience-display-rested-value"] = true
+Defaults["experience-show-tooltip"] = true
+Defaults["experience-animate"] = true
+Defaults["experience-progress-visibility"] = "ALWAYS"
+Defaults["experience-percent-visibility"] = "ALWAYS"
+Defaults["experience-bar-color"] = "4C9900" -- 1AE045
+Defaults["experience-rested-color"] = "00B4FF"
+
+local FadeOnFinished = function(self)
+	self.Parent:Hide()
+end
+
+local UpdateDisplayLevel = function(value)
+	if value then
+	--[[	Experience.HeaderBG:Show()
+		
+		Experience.BarBG:ClearAllPoints()
+		Experience.BarBG:SetPoint("TOPLEFT", Experience.HeaderBG, "TOPRIGHT", 2, 0)
+		Experience.BarBG:SetPoint("BOTTOMRIGHT", Experience, 0, 0)]]
+	else
+	--[[	Experience.HeaderBG:Hide()
+		
+		Experience.BarBG:ClearAllPoints()
+		Experience.BarBG:SetPoint("TOPLEFT", Experience, 0, 0)
+		Experience.BarBG:SetPoint("BOTTOMRIGHT", Experience, 0, 0)]]
+	end
+end
+
+local UpdateDisplayProgress = function(value)
+	if (value and Settings["experience-progress-visibility"] ~= "MOUSEOVER") then
+		Experience.Progress:Show()
+	else
+		Experience.Progress:Hide()
+	end
+end
+
+local UpdateDisplayPercent = function(value)
+	if (value and Settings["experience-percent-visibility"] ~= "MOUSEOVER") then
+		Experience.Percentage:Show()
+	else
+		Experience.Percentage:Hide()
+	end
+end
+
+local UpdateBarWidth = function(value)
+	Experience:SetWidth(value)
+end
+
+local UpdateBarHeight = function(value)
+	Experience:SetHeight(value)
+	--Experience.HeaderBG:SetHeight(value)
+	Experience.Bar.Spark:SetHeight(value)
+end
+
+local UpdateProgressVisibility = function(value)
+	if (value == "MOUSEOVER") then
+		Experience.Progress:Hide()
+	elseif (value == "ALWAYS" and Settings["experience-display-progress"]) then
+		Experience.Progress:Show()
+	end
+end
+
+local UpdatePercentVisibility = function(value)
+	if (value == "MOUSEOVER") then
+		Experience.Percentage:Hide()
+	elseif (value == "ALWAYS" and Settings["experience-display-percent"]) then
+		Experience.Percentage:Show()
+	end
+end
+
+function Experience:CreateBar()
+	local Border = Settings["ui-border-thickness"]
+	local Offset = 1 > Border and 1 or (Border + 2)
+	
+	self:SetSize(Settings["experience-width"], Settings["experience-height"])
+	self:SetPoint("TOP", HydraUI.UIParent, 0, -13)
+	self:SetFrameStrata("MEDIUM")
+	
+	if Settings["experience-mouseover"] then
+		self:SetAlpha(Settings["experience-mouseover-opacity"] / 100)
+	end
+	
+	self.LastXP = UnitXP("player")
+	
+	self.BarBG = CreateFrame("Frame", nil, self, "BackdropTemplate")
+	self.BarBG:SetPoint("TOPLEFT", self, 0, 0)
+	self.BarBG:SetPoint("BOTTOMRIGHT", self, 0, 0)
+	HydraUI:AddBackdrop(self.BarBG)
+	self.BarBG.Outside:SetBackdropColor(HydraUI:HexToRGB(Settings["ui-window-main-color"]))
+	
+	self.Bar = CreateFrame("StatusBar", nil, self.BarBG)
+	self.Bar:SetStatusBarTexture(Assets:GetTexture(Settings["ui-widget-texture"]))
+	self.Bar:SetStatusBarColor(HydraUI:HexToRGB(Settings["experience-bar-color"]))
+	self.Bar:SetPoint("TOPLEFT", self.BarBG, Offset, -Offset)
+	self.Bar:SetPoint("BOTTOMRIGHT", self.BarBG, -Offset, Offset)
+	self.Bar:SetFrameLevel(6)
+	
+	self.Bar.BG = self.Bar:CreateTexture(nil, "BORDER")
+	self.Bar.BG:SetAllPoints(self.Bar)
+	self.Bar.BG:SetTexture(Assets:GetTexture(Settings["ui-widget-texture"]))
+	self.Bar.BG:SetVertexColor(HydraUI:HexToRGB(Settings["ui-window-main-color"]))
+	self.Bar.BG:SetAlpha(0.2)
+	
+	self.Bar.Spark = self.Bar:CreateTexture(nil, "OVERLAY")
+	self.Bar.Spark:SetDrawLayer("OVERLAY", 7)
+	self.Bar.Spark:SetWidth(1)
+	self.Bar.Spark:SetPoint("TOPLEFT", self.Bar:GetStatusBarTexture(), "TOPRIGHT", 0, 0)
+	self.Bar.Spark:SetPoint("BOTTOMLEFT", self.Bar:GetStatusBarTexture(), "BOTTOMRIGHT", 0, 0)
+	self.Bar.Spark:SetTexture(Assets:GetTexture("Blank"))
+	self.Bar.Spark:SetVertexColor(0, 0, 0)
+	
+	self.Shine = self.Bar:CreateTexture(nil, "ARTWORK")
+	self.Shine:SetAllPoints(self.Bar:GetStatusBarTexture())
+	self.Shine:SetTexture(Assets:GetTexture("pHishTex12"))
+	self.Shine:SetVertexColor(1, 1, 1)
+	self.Shine:SetAlpha(0)
+	self.Shine:SetDrawLayer("ARTWORK", 7)
+	
+	self.Change = CreateAnimationGroup(self.Bar):CreateAnimation("Progress")
+	self.Change:SetEasing("in")
+	self.Change:SetDuration(0.3)
+	
+	self.Flash = CreateAnimationGroup(self.Shine)
+	
+	self.Flash.In = self.Flash:CreateAnimation("Fade")
+	self.Flash.In:SetEasing("in")
+	self.Flash.In:SetDuration(0.3)
+	self.Flash.In:SetChange(0.3)
+	
+	self.Flash.Out = self.Flash:CreateAnimation("Fade")
+	self.Flash.Out:SetOrder(2)
+	self.Flash.Out:SetEasing("out")
+	self.Flash.Out:SetDuration(0.5)
+	self.Flash.Out:SetChange(0)
+	
+	self.Bar.Rested = CreateFrame("StatusBar", nil, self.Bar)
+	self.Bar.Rested:SetStatusBarTexture(Assets:GetTexture(Settings["ui-widget-texture"]))
+	self.Bar.Rested:SetStatusBarColor(HydraUI:HexToRGB(Settings["experience-rested-color"]))
+	self.Bar.Rested:SetFrameLevel(5)
+	self.Bar.Rested:SetAllPoints(self.Bar)
+	
+	self.Bar.Rested.Spark = self.Bar.Rested:CreateTexture(nil, "OVERLAY")
+	self.Bar.Rested.Spark:SetWidth(1)
+	self.Bar.Rested.Spark:SetPoint("TOPLEFT", self.Bar:GetStatusBarTexture(), "TOPRIGHT", 0, 0)
+	self.Bar.Rested.Spark:SetPoint("BOTTOMLEFT", self.Bar:GetStatusBarTexture(), "BOTTOMRIGHT", 0, 0)
+	self.Bar.Rested.Spark:SetTexture(Assets:GetTexture("Blank"))
+	self.Bar.Rested.Spark:SetVertexColor(0, 0, 0)
+	
+	self.Bar.Quest = CreateFrame("StatusBar", nil, self.Bar)
+	self.Bar.Quest:SetStatusBarTexture(Assets:GetTexture(Settings["ui-widget-texture"]))
+	self.Bar.Quest:SetStatusBarColor(0.8, 0.8, 0.1)
+	self.Bar.Quest:SetFrameLevel(6)
+	self.Bar.Quest:SetAllPoints(self.Bar)
+	
+	self.Bar.Quest.Spark = self.Bar.Quest:CreateTexture(nil, "OVERLAY")
+	self.Bar.Quest.Spark:SetWidth(1)
+	self.Bar.Quest.Spark:SetPoint("TOPLEFT", self.Bar:GetStatusBarTexture(), "TOPRIGHT", 0, 0)
+	self.Bar.Quest.Spark:SetPoint("BOTTOMLEFT", self.Bar:GetStatusBarTexture(), "BOTTOMRIGHT", 0, 0)
+	self.Bar.Quest.Spark:SetTexture(Assets:GetTexture("Blank"))
+	self.Bar.Quest.Spark:SetVertexColor(0, 0, 0)
+	
+	self.Progress = self.Bar:CreateFontString(nil, "OVERLAY")
+	self.Progress:SetPoint("LEFT", self.Bar, 5, 0)
+	HydraUI:SetFontInfo(self.Progress, Settings["ui-widget-font"], Settings["ui-font-size"])
+	self.Progress:SetJustifyH("LEFT")
+	
+	self.Percentage = self.Bar:CreateFontString(nil, "OVERLAY")
+	self.Percentage:SetPoint("RIGHT", self.Bar, -5, 0)
+	HydraUI:SetFontInfo(self.Percentage, Settings["ui-widget-font"], Settings["ui-font-size"])
+	self.Percentage:SetJustifyH("RIGHT")
+	
+	HydraUI:CreateMover(self, 6)
+end
+
+function Experience:OnEvent()
 	if (UnitLevel("player") == MAX_PLAYER_LEVEL) then
 		self:UnregisterAllEvents()
 		self:SetScript("OnEnter", nil)
@@ -45,6 +225,8 @@ local UpdateXP = function(self, first)
 		
 		if IsHeader then
 			ZoneName = TitleText
+			--if (ZoneName and Zone == ZoneName) and IsComplete then
+			--end
 		else
 			if (ZoneName and Zone == ZoneName and IsComplete) then
 				QuestLogXP = QuestLogXP + GetQuestLogRewardXP(QuestID)
@@ -77,9 +259,6 @@ local UpdateXP = function(self, first)
 	end
 	
 	self.Percentage:SetText(floor((XP / MaxXP * 100 + 0.05) * 10) / 10 .. "%")
-	
-	self.HeaderBG.Text:SetText(format("|cFF%s%s:|r %s", Settings["ui-header-font-color"], Language["Level"], UnitLevel("player")))
-	self.HeaderBG:SetWidth(self.HeaderBG.Text:GetWidth() + 14)
 	
 	if (XP > 0) then
 		if (self.Bar.Spark:GetAlpha() == 0) then
@@ -115,7 +294,7 @@ local UpdateXP = function(self, first)
 	Gained = (XP - self.LastXP) + Gained
 	
 	if (Seconds == 0 and Gained > 0) then -- Start the XP timer
-		ExperienceBar:SetScript("OnUpdate", ExperienceBar.OnUpdate)
+		Experience:SetScript("OnUpdate", Experience.OnUpdate)
 	end
 	
 	if self.TooltipShown then
@@ -126,49 +305,16 @@ local UpdateXP = function(self, first)
 	self.LastXP = XP
 end
 
-local UpdateDisplayLevel = function(value)
-	if value then
-		HydraUIExperienceBar.HeaderBG:Show()
-		
-		HydraUIExperienceBar.BarBG:ClearAllPoints()
-		HydraUIExperienceBar.BarBG:SetPoint("TOPLEFT", HydraUIExperienceBar.HeaderBG, "TOPRIGHT", 2, 0)
-		HydraUIExperienceBar.BarBG:SetPoint("BOTTOMRIGHT", HydraUIExperienceBar, 0, 0)
-	else
-		HydraUIExperienceBar.HeaderBG:Hide()
-		
-		HydraUIExperienceBar.BarBG:ClearAllPoints()
-		HydraUIExperienceBar.BarBG:SetPoint("TOPLEFT", HydraUIExperienceBar, 0, 0)
-		HydraUIExperienceBar.BarBG:SetPoint("BOTTOMRIGHT", HydraUIExperienceBar, 0, 0)
+function Experience:OnUpdate(elapsed)
+	self.Elapsed = self.Elapsed + elapsed
+	
+	if (self.Elapsed > 1) then
+		Seconds = Seconds + 1
+		self.Elapsed = 0
 	end
 end
 
-local UpdateDisplayProgress = function(value)
-	if (value and Settings["experience-progress-visibility"] ~= "MOUSEOVER") then
-		HydraUIExperienceBar.Progress:Show()
-	else
-		HydraUIExperienceBar.Progress:Hide()
-	end
-end
-
-local UpdateDisplayPercent = function(value)
-	if (value and Settings["experience-percent-visibility"] ~= "MOUSEOVER") then
-		HydraUIExperienceBar.Percentage:Show()
-	else
-		HydraUIExperienceBar.Percentage:Hide()
-	end
-end
-
-local UpdateBarWidth = function(value)
-	HydraUIExperienceBar:SetWidth(value)
-end
-
-local UpdateBarHeight = function(value)
-	HydraUIExperienceBar:SetHeight(value)
-	HydraUIExperienceBar.HeaderBG:SetHeight(value)
-	HydraUIExperienceBar.Bar.Spark:SetHeight(value)
-end
-
-function ExperienceBar:OnEnter()
+function Experience:OnEnter()
 	if Settings["experience-mouseover"] then
 		self:SetAlpha(1)
 	end
@@ -232,7 +378,7 @@ function ExperienceBar:OnEnter()
 	GameTooltip:Show()
 end
 
-function ExperienceBar:OnLeave()
+function Experience:OnLeave()
 	if Settings["experience-mouseover"] then
 		self:SetAlpha(Settings["experience-mouseover-opacity"] / 100)
 	end
@@ -256,223 +402,58 @@ function ExperienceBar:OnLeave()
 	end
 end
 
-local UpdateProgressVisibility = function(value)
-	if (value == "MOUSEOVER") then
-		ExperienceBar.Progress:Hide()
-	elseif (value == "ALWAYS" and Settings["experience-display-progress"]) then
-		ExperienceBar.Progress:Show()
-	end
-end
-
-local UpdatePercentVisibility = function(value)
-	if (value == "MOUSEOVER") then
-		ExperienceBar.Percentage:Hide()
-	elseif (value == "ALWAYS" and Settings["experience-display-percent"]) then
-		ExperienceBar.Percentage:Show()
-	end
-end
-
-ExperienceBar["PLAYER_LEVEL_UP"] = UpdateXP
-ExperienceBar["PLAYER_XP_UPDATE"] = UpdateXP
-ExperienceBar["PLAYER_UPDATE_RESTING"] = UpdateXP
-ExperienceBar["UPDATE_EXHAUSTION"] = UpdateXP
-
-ExperienceBar["PLAYER_ENTERING_WORLD"] = function(self)
+function Experience:Load()
 	if (not Settings["experience-enable"]) then
-		self:UnregisterAllEvents()
-		
 		return
 	end
 	
-	self:SetSize(Settings["experience-width"], Settings["experience-height"])
-	self:SetPoint("TOP", HydraUI.UIParent, 0, -13)
-	self:SetFrameStrata("MEDIUM")
+	self:CreateBar()
+	self:OnEvent()
+	
+	self:RegisterEvent("QUEST_LOG_UPDATE")
+	self:RegisterEvent("PLAYER_LEVEL_UP")
+	self:RegisterEvent("PLAYER_XP_UPDATE")
+	self:RegisterEvent("PLAYER_UPDATE_RESTING")
+	self:RegisterEvent("UPDATE_EXHAUSTION")
+	self:RegisterEvent("ZONE_CHANGED")
+	self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+	self:SetScript("OnEvent", self.OnEvent)
 	self:SetScript("OnEnter", self.OnEnter)
 	self:SetScript("OnLeave", self.OnLeave)
-	
-	if Settings["experience-mouseover"] then
-		self:SetAlpha(Settings["experience-mouseover-opacity"] / 100)
-	end
-	
-	self.LastXP = UnitXP("player")
-	
-	self.HeaderBG = CreateFrame("Frame", nil, self, "BackdropTemplate")
-	self.HeaderBG:SetHeight(Settings["experience-height"])
-	self.HeaderBG:SetPoint("LEFT", self, 0, 0)
-	self.HeaderBG:SetBackdrop(HydraUI.BackdropAndBorder)
-	self.HeaderBG:SetBackdropColor(HydraUI:HexToRGB(Settings["ui-window-bg-color"]))
-	self.HeaderBG:SetBackdropBorderColor(0, 0, 0)
-	
-	self.HeaderBG.Texture = self.HeaderBG:CreateTexture(nil, "ARTWORK")
-	self.HeaderBG.Texture:SetPoint("TOPLEFT", self.HeaderBG, 1, -1)
-	self.HeaderBG.Texture:SetPoint("BOTTOMRIGHT", self.HeaderBG, -1, 1)
-	self.HeaderBG.Texture:SetTexture(Assets:GetTexture(Settings["ui-header-texture"]))
-	self.HeaderBG.Texture:SetVertexColor(HydraUI:HexToRGB(Settings["ui-header-texture-color"]))
-	
-	self.HeaderBG.Text = self.HeaderBG:CreateFontString(nil, "OVERLAY")
-	self.HeaderBG.Text:SetPoint("CENTER", self.HeaderBG, 0, 0)
-	HydraUI:SetFontInfo(self.HeaderBG.Text, Settings["ui-widget-font"], Settings["ui-font-size"])
-	self.HeaderBG.Text:SetJustifyH("CENTER")
-	self.HeaderBG.Text:SetText(format("|cFF%s%s:|r", Settings["ui-widget-color"], Language["Level"]))
-	
-	self.BarBG = CreateFrame("Frame", nil, self, "BackdropTemplate")
-	self.BarBG:SetPoint("TOPLEFT", self.HeaderBG, "TOPRIGHT", 2, 0)
-	self.BarBG:SetPoint("BOTTOMRIGHT", self, 0, 0)
-	self.BarBG:SetBackdrop(HydraUI.BackdropAndBorder)
-	self.BarBG:SetBackdropColor(HydraUI:HexToRGB(Settings["ui-window-main-color"]))
-	self.BarBG:SetBackdropBorderColor(0, 0, 0)
-	
-	self.Texture = self.BarBG:CreateTexture(nil, "ARTWORK")
-	self.Texture:SetPoint("TOPLEFT", self.BarBG, 1, -1)
-	self.Texture:SetPoint("BOTTOMRIGHT", self.BarBG, -1, 1)
-	self.Texture:SetTexture(Assets:GetTexture(Settings["ui-header-texture"]))
-	self.Texture:SetVertexColor(HydraUI:HexToRGB(Settings["ui-window-main-color"]))
-	
-	self.BGAll = CreateFrame("Frame", nil, self, "BackdropTemplate")
-	self.BGAll:SetPoint("TOPLEFT", self.HeaderBG, -3, 3)
-	self.BGAll:SetPoint("BOTTOMRIGHT", self.BarBG, 3, -3)
-	self.BGAll:SetBackdrop(HydraUI.BackdropAndBorder)
-	self.BGAll:SetBackdropColor(HydraUI:HexToRGB(Settings["ui-window-bg-color"]))
-	self.BGAll:SetBackdropBorderColor(0, 0, 0)
-	
-	self.Bar = CreateFrame("StatusBar", nil, self.BarBG)
-	self.Bar:SetStatusBarTexture(Assets:GetTexture(Settings["ui-widget-texture"]))
-	self.Bar:SetStatusBarColor(HydraUI:HexToRGB(Settings["experience-bar-color"]))
-	self.Bar:SetPoint("TOPLEFT", self.BarBG, 1, -1)
-	self.Bar:SetPoint("BOTTOMRIGHT", self.BarBG, -1, 1)
-	self.Bar:SetFrameLevel(6)
-	
-	self.Bar.BG = self.Bar:CreateTexture(nil, "BORDER")
-	self.Bar.BG:SetAllPoints(self.Bar)
-	self.Bar.BG:SetTexture(Assets:GetTexture(Settings["ui-widget-texture"]))
-	self.Bar.BG:SetVertexColor(HydraUI:HexToRGB(Settings["ui-window-main-color"]))
-	self.Bar.BG:SetAlpha(0.2)
-	
-	self.Bar.Spark = self.Bar:CreateTexture(nil, "OVERLAY")
-	self.Bar.Spark:SetDrawLayer("OVERLAY", 7)
-	self.Bar.Spark:SetSize(1, Settings["experience-height"])
-	self.Bar.Spark:SetPoint("LEFT", self.Bar:GetStatusBarTexture(), "RIGHT", 0, 0)
-	self.Bar.Spark:SetTexture(Assets:GetTexture("Blank"))
-	self.Bar.Spark:SetVertexColor(0, 0, 0)
-	
-	self.Shine = self.Bar:CreateTexture(nil, "ARTWORK")
-	self.Shine:SetAllPoints(self.Bar:GetStatusBarTexture())
-	self.Shine:SetTexture(Assets:GetTexture("pHishTex12"))
-	self.Shine:SetVertexColor(1, 1, 1)
-	self.Shine:SetAlpha(0)
-	self.Shine:SetDrawLayer("ARTWORK", 7)
-	
-	self.Change = CreateAnimationGroup(self.Bar):CreateAnimation("Progress")
-	self.Change:SetEasing("in")
-	self.Change:SetDuration(0.3)
-	
-	self.Flash = CreateAnimationGroup(self.Shine)
-	
-	self.Flash.In = self.Flash:CreateAnimation("Fade")
-	self.Flash.In:SetEasing("in")
-	self.Flash.In:SetDuration(0.3)
-	self.Flash.In:SetChange(0.3)
-	
-	self.Flash.Out = self.Flash:CreateAnimation("Fade")
-	self.Flash.Out:SetOrder(2)
-	self.Flash.Out:SetEasing("out")
-	self.Flash.Out:SetDuration(0.5)
-	self.Flash.Out:SetChange(0)
-	
-	self.Bar.Rested = CreateFrame("StatusBar", nil, self.Bar)
-	self.Bar.Rested:SetStatusBarTexture(Assets:GetTexture(Settings["ui-widget-texture"]))
-	self.Bar.Rested:SetStatusBarColor(HydraUI:HexToRGB(Settings["experience-rested-color"]))
-	self.Bar.Rested:SetFrameLevel(5)
-	self.Bar.Rested:SetAllPoints(self.Bar)
-	
-	self.Bar.Rested.Spark = self.Bar.Rested:CreateTexture(nil, "OVERLAY")
-	self.Bar.Rested.Spark:SetSize(1, Settings["experience-height"])
-	self.Bar.Rested.Spark:SetPoint("LEFT", self.Bar.Rested:GetStatusBarTexture(), "RIGHT", 0, 0)
-	self.Bar.Rested.Spark:SetTexture(Assets:GetTexture("Blank"))
-	self.Bar.Rested.Spark:SetVertexColor(0, 0, 0)
-	
-	self.Bar.Quest = CreateFrame("StatusBar", nil, self.Bar)
-	self.Bar.Quest:SetStatusBarTexture(Assets:GetTexture(Settings["ui-widget-texture"]))
-	self.Bar.Quest:SetStatusBarColor(0.8, 0.8, 0.1)
-	self.Bar.Quest:SetFrameLevel(6)
-	self.Bar.Quest:SetAllPoints(self.Bar)
-	
-	self.Bar.Quest.Spark = self.Bar.Quest:CreateTexture(nil, "OVERLAY")
-	self.Bar.Quest.Spark:SetSize(1, Settings["experience-height"])
-	self.Bar.Quest.Spark:SetPoint("LEFT", self.Bar.Quest:GetStatusBarTexture(), "RIGHT", 0, 0)
-	self.Bar.Quest.Spark:SetTexture(Assets:GetTexture("Blank"))
-	self.Bar.Quest.Spark:SetVertexColor(0, 0, 0)
-	
-	self.Progress = self.Bar:CreateFontString(nil, "OVERLAY")
-	self.Progress:SetPoint("LEFT", self.Bar, 5, 0)
-	HydraUI:SetFontInfo(self.Progress, Settings["ui-widget-font"], Settings["ui-font-size"])
-	self.Progress:SetJustifyH("LEFT")
-	
-	-- Add fade to self.Progress
-	
-	self.Percentage = self.Bar:CreateFontString(nil, "OVERLAY")
-	self.Percentage:SetPoint("RIGHT", self.Bar, -5, 0)
-	HydraUI:SetFontInfo(self.Percentage, Settings["ui-widget-font"], Settings["ui-font-size"])
-	self.Percentage:SetJustifyH("RIGHT")
-	
-	-- Add fade to self.Percentage
 	
 	UpdateDisplayLevel(Settings["experience-display-level"])
 	UpdateDisplayProgress(Settings["experience-display-progress"])
 	UpdateDisplayPercent(Settings["experience-display-percent"])
 	UpdateProgressVisibility(Settings["experience-progress-visibility"])
 	UpdatePercentVisibility(Settings["experience-percent-visibility"])
-	UpdateXP(self, true)
-	
-	HydraUI:CreateMover(self, 6)
-	
-	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 end
-
-function ExperienceBar:OnUpdate(elapsed)
-	self.Elapsed = self.Elapsed + elapsed
-	
-	if (self.Elapsed > 1) then
-		Seconds = Seconds + 1
-		self.Elapsed = 0
-	end
-end
-
-ExperienceBar:RegisterEvent("PLAYER_LEVEL_UP")
-ExperienceBar:RegisterEvent("PLAYER_ENTERING_WORLD")
-ExperienceBar:RegisterEvent("PLAYER_XP_UPDATE")
-ExperienceBar:RegisterEvent("PLAYER_UPDATE_RESTING")
-ExperienceBar:RegisterEvent("UPDATE_EXHAUSTION")
-ExperienceBar:SetScript("OnEvent", function(self, event)
-	if self[event] then
-		self[event](self)
-	end
-end)
 
 local UpdateBarColor = function(value)
-	ExperienceBar.Bar:SetStatusBarColor(HydraUI:HexToRGB(value))
-	ExperienceBar.Bar.BG:SetVertexColor(HydraUI:HexToRGB(value))
+	Experience.Bar:SetStatusBarColor(HydraUI:HexToRGB(value))
+	Experience.Bar.BG:SetVertexColor(HydraUI:HexToRGB(value))
 end
 
 local UpdateRestedColor = function(value)
-	ExperienceBar.Bar.Rested:SetStatusBarColor(HydraUI:HexToRGB(value))
+	Experience.Bar.Rested:SetStatusBarColor(HydraUI:HexToRGB(value))
 end
 
 local UpdateShowRestedValue = function()
-	UpdateXP(ExperienceBar)
+	--UpdateXP(Experience)
+	
+	Experience:OnEvent()
 end
 
 local UpdateMouseover = function(value)
 	if value then
-		ExperienceBar:SetAlpha(Settings["experience-mouseover-opacity"] / 100)
+		Experience:SetAlpha(Settings["experience-mouseover-opacity"] / 100)
 	else
-		ExperienceBar:SetAlpha(1)
+		Experience:SetAlpha(1)
 	end
 end
 
 local UpdateMouseoverOpacity = function(value)
 	if Settings["experience-mouseover"] then
-		ExperienceBar:SetAlpha(value / 100)
+		Experience:SetAlpha(value / 100)
 	end
 end
 
@@ -489,7 +470,7 @@ GUI:AddWidgets(Language["General"], Language["Experience"], function(left, right
 	left:CreateSwitch("experience-animate", Settings["experience-animate"], Language["Animate Experience Changes"], Language["Smoothly animate changes to the experience bar"])
 	
 	right:CreateHeader(Language["Size"])
-	right:CreateSlider("experience-width", Settings["experience-width"], 180, 400, 10, Language["Bar Width"], Language["Set the width of the experience bar"], UpdateBarWidth)
+	right:CreateSlider("experience-width", Settings["experience-width"], 180, 400, 2, Language["Bar Width"], Language["Set the width of the experience bar"], UpdateBarWidth)
 	right:CreateSlider("experience-height", Settings["experience-height"], 6, 30, 1, Language["Bar Height"], Language["Set the height of the experience bar"], UpdateBarHeight)
 	
 	right:CreateHeader(Language["Colors"])

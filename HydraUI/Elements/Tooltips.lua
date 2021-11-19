@@ -112,45 +112,22 @@ function Tooltips:UpdateFonts(tooltip)
 end
 
 local SetTooltipStyle = function(self)
-	self:SetBackdrop(nil) -- To stop blue tooltips
+	if self.NineSlice then
+		self.NineSlice:Hide()
+	end
 	
 	if self.Styled then
-		self.OuterBG:ClearAllPoints()
-		self.OuterBG:SetPoint("BOTTOMRIGHT", self, 3, -3)
-	
-		if (self.GetUnit and self:GetUnit() and Settings["tooltips-show-health"]) then
-			self.OuterBG:SetPoint("TOPLEFT", GameTooltipStatusBar, -4, 4)
-		else
-			self.OuterBG:SetPoint("TOPLEFT", self, -3, 3)
-		end
-		
 		Tooltips:UpdateFonts(self)
 	else
-		self:SetFrameLevel(10)
-		self.SetFrameLevel = function() end
+		local R, G, B = HydraUI:HexToRGB(Settings["ui-window-main-color"])
 		
 		self.Backdrop = CreateFrame("Frame", nil, self, "BackdropTemplate")
-		self.Backdrop:SetAllPoints(self)
-		self.Backdrop:SetBackdrop(HydraUI.BackdropAndBorder)
-		self.Backdrop:SetBackdropBorderColor(0, 0, 0)
-		self.Backdrop:SetBackdropColor(HydraUI:HexToRGB(Settings["ui-window-main-color"]))
-		self.Backdrop:SetFrameStrata("TOOLTIP")
-		self.Backdrop:SetFrameLevel(2)
-		
-		self.OuterBG = CreateFrame("Frame", nil, self, "BackdropTemplate")
-		--self.OuterBG:SetPoint("TOPLEFT", self, -3, 3)
-		self.OuterBG:SetPoint("BOTTOMRIGHT", self, 3, -3)
-		self.OuterBG:SetBackdrop(HydraUI.BackdropAndBorder)
-		self.OuterBG:SetBackdropBorderColor(0, 0, 0)
-		self.OuterBG:SetFrameStrata("TOOLTIP")
-		self.OuterBG:SetFrameLevel(1)
-		self.OuterBG:SetBackdropColor(HydraUI:HexToRGB(Settings["ui-window-bg-color"]))
-		
-		if (self.GetUnit and self:GetUnit() and Settings["tooltips-show-health"]) then
-			self.OuterBG:SetPoint("TOPLEFT", GameTooltipStatusBar, -4, 4)
-		else
-			self.OuterBG:SetPoint("TOPLEFT", self, -3, 3)
-		end
+		self.Backdrop:SetPoint("TOPLEFT", self, 0, 0)
+		self.Backdrop:SetPoint("BOTTOMRIGHT", self, 0, 0)
+		self.Backdrop:SetFrameLevel(1)
+		self.Backdrop:SetFrameStrata("DIALOG")
+		HydraUI:AddBackdrop(self.Backdrop)
+		self.Backdrop.Outside:SetBackdropColor(R, G, B, (Settings["tooltips-opacity"] / 100))
 		
 		if (self == AutoCompleteBox) then
 			for i = 1, AUTOCOMPLETE_MAX_BUTTONS do
@@ -160,9 +137,6 @@ local SetTooltipStyle = function(self)
 			end
 			
 			HydraUI:SetFontInfo(AutoCompleteInstructions, Settings["tooltips-font"], Settings["tooltips-font-size"], Settings["tooltips-font-flags"])
-			
-			AutoCompleteBox.Backdrop:SetFrameStrata("DIALOG")
-			AutoCompleteBox.OuterBG:SetFrameStrata("DIALOG")
 		end
 		
 		Tooltips:UpdateFonts(self)
@@ -343,10 +317,6 @@ local OnTooltipSetUnit = function(self)
 				end
 			end
 		end
-		
-		--[[if self.OuterBG then
-			self.OuterBG:SetPoint("TOPLEFT", self, -3, 22)
-		end]]
 	end
 end
 
@@ -367,7 +337,9 @@ local OnTooltipSetItem = function(self)
 		return
 	end
 	
-	self:SetBackdrop(nil)
+	if self.NineSlice then
+		self.NineSlice:Hide()
+	end
 	
 	if Settings["tooltips-show-price"] then
 		local VendorPrice = select(11, GetItemInfo(Link))
@@ -469,10 +441,12 @@ local SetDefaultAnchor = function(self, parent)
 	
 	self:ClearAllPoints()
 	
+	local Offset = Settings["ui-border-thickness"]
+	
 	if Settings["right-window-enable"] then
-		self:SetPoint("BOTTOMLEFT", Tooltips, 3, 3)
+		self:SetPoint("BOTTOMLEFT", Tooltips, 0, 3 + Offset)
 	else
-		self:SetPoint("BOTTOMRIGHT", Tooltips, -3, 3)
+		self:SetPoint("BOTTOMRIGHT", Tooltips, 0, 3 + Offset)
 	end
 end
 
@@ -558,10 +532,13 @@ function Tooltips:UpdateStatusBarFonts()
 end
 
 function Tooltips:StyleStatusBar()
+	local Border = Settings["ui-border-thickness"]
+	local Adjust = 1 > Border and 1 or (Border + 2)
+	
 	GameTooltipStatusBar:ClearAllPoints()
 	GameTooltipStatusBar:SetHeight(Settings["tooltips-health-bar-height"])
-	GameTooltipStatusBar:SetPoint("BOTTOMLEFT", GameTooltipStatusBar:GetParent(), "TOPLEFT", 1, 3)
-	GameTooltipStatusBar:SetPoint("BOTTOMRIGHT", GameTooltipStatusBar:GetParent(), "TOPRIGHT", -1, 3)
+	GameTooltipStatusBar:SetPoint("BOTTOMLEFT", GameTooltipStatusBar:GetParent(), "TOPLEFT", Adjust, 0)
+	GameTooltipStatusBar:SetPoint("BOTTOMRIGHT", GameTooltipStatusBar:GetParent(), "TOPRIGHT", -Adjust, 0)
 	GameTooltipStatusBar:SetStatusBarTexture(Assets:GetTexture(Settings["ui-widget-texture"]))
 	
 	GameTooltipStatusBar.BG = GameTooltipStatusBar:CreateTexture(nil, "ARTWORK")
@@ -571,12 +548,11 @@ function Tooltips:StyleStatusBar()
 	GameTooltipStatusBar.BG:SetAlpha(0.2)
 	
 	GameTooltipStatusBar.Backdrop = CreateFrame("Frame", nil, GameTooltipStatusBar, "BackdropTemplate")
-	GameTooltipStatusBar.Backdrop:SetPoint("TOPLEFT", GameTooltipStatusBar, -1, 1)
-	GameTooltipStatusBar.Backdrop:SetPoint("BOTTOMRIGHT", GameTooltipStatusBar, 1, -1)
-	GameTooltipStatusBar.Backdrop:SetBackdrop(HydraUI.BackdropAndBorder)
-	GameTooltipStatusBar.Backdrop:SetBackdropColor(0, 0, 0)
-	GameTooltipStatusBar.Backdrop:SetBackdropBorderColor(0, 0, 0)
-	GameTooltipStatusBar.Backdrop:SetFrameLevel(GameTooltipStatusBar:GetFrameLevel() - 1)
+	GameTooltipStatusBar.Backdrop:SetPoint("TOPLEFT", GameTooltipStatusBar, -Adjust, Adjust)
+	GameTooltipStatusBar.Backdrop:SetPoint("BOTTOMRIGHT", GameTooltipStatusBar, Adjust, -Adjust)
+	GameTooltipStatusBar.Backdrop:SetFrameLevel(0)
+	
+	HydraUI:AddBackdrop(GameTooltipStatusBar.Backdrop)
 	
 	GameTooltipStatusBar.HealthValue = GameTooltipStatusBar:CreateFontString(nil, "OVERLAY")
 	HydraUI:SetFontInfo(GameTooltipStatusBar.HealthValue, Settings["tooltips-font"], Settings["tooltips-font-size"], Settings["tooltips-font-flags"])
@@ -650,8 +626,10 @@ function Tooltips:Load()
 	self:SetSize(200, 26)
 	
 	if Settings["right-window-enable"] then
-		--self:SetPoint("BOTTOMLEFT", HydraUI:GetModule("Right Window"), "TOPLEFT", 0, 3)
-		self:SetPoint("BOTTOMLEFT", HydraUI.UIParent, "BOTTOMRIGHT", -(13 + Settings["right-window-width"]), 170)
+		local Mod = HydraUI:GetModule("Right Window")
+		local Offset = Settings["ui-border-thickness"]
+		
+		self:SetPoint("BOTTOMLEFT", Mod.TopLeft or Mod.Top, "TOPLEFT", 0, 1 > Offset and -1 or -(Offset + 2))
 	else
 		self:SetPoint("BOTTOMRIGHT", HydraUI.UIParent, -13, 101)
 	end
@@ -678,6 +656,16 @@ local UpdateShowHealthText = function(value)
 	end
 end
 
+local UpdateTooltipBackdrop = function(value)
+	local R, G, B = HydraUI:HexToRGB(Settings["ui-window-main-color"])
+
+	for i = 1, #Tooltips.Handled do
+		if Tooltips.Handled[i].Backdrop then
+			Tooltips.Handled[i].Backdrop.Outside:SetBackdropColor(R, G, B, (value / 100))
+		end
+	end
+end
+
 GUI:AddWidgets(Language["General"], Language["Tooltips"], function(left, right)
 	left:CreateHeader(Language["Enable"])
 	left:CreateSwitch("tooltips-enable", Settings["tooltips-enable"], Language["Enable Tooltips Module"], Language["Enable the HydraUI tooltips module"], ReloadUI):RequiresReload(true)
@@ -694,6 +682,9 @@ GUI:AddWidgets(Language["General"], Language["Tooltips"], function(left, right)
 	left:CreateSwitch("tooltips-display-title", Settings["tooltips-display-title"], Language["Display Title"], Language["Display character titles"])
 	left:CreateSwitch("tooltips-display-rank", Settings["tooltips-display-rank"], Language["Display Guild Rank"], Language["Display character guild ranks"])
 	left:CreateSwitch("tooltips-show-price", Settings["tooltips-show-price"], Language["Display Vendor Price"], Language["Display the vendor price of an item"])
+	
+	left:CreateHeader(Language["Opacity"])
+	left:CreateSlider("tooltips-opacity", Settings["tooltips-opacity"], 0, 100, 5, Language["Tooltip Opacity"], Language["Set the opacity of the tooltip background"], UpdateTooltipBackdrop)
 	
 	right:CreateHeader(Language["Font"])
 	right:CreateDropdown("tooltips-font", Settings["tooltips-font"], Assets:GetFontList(), Language["Font"], Language["Set the font of the tooltip text"], nil, "Font")

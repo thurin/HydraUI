@@ -6,7 +6,7 @@ local HydraUI, GUI, Language, Assets, Settings, Defaults = select(2, ...):get()
 Defaults["ui-scale"] = 0.71111111111111
 Defaults["ui-display-welcome"] = true
 Defaults["ui-display-dev-tools"] = false
-Defaults["ui-display-whats-new"] = true -- NYI
+Defaults["ui-border-thickness"] = 2
 
 -- Main
 Defaults["ui-style"] = "HydraUI"
@@ -198,6 +198,10 @@ Defaults["minimap-buttons-enable"] = true
 Defaults["minimap-buttons-size"] = 22
 Defaults["minimap-buttons-spacing"] = 2
 Defaults["minimap-buttons-perrow"] = 5
+Defaults["minimap-top-height"] = 28
+Defaults["minimap-bottom-height"] = 28
+Defaults["minimap-top-fill"] = 100
+Defaults["minimap-bottom-fill"] = 100
 
 -- Cooldowns
 Defaults["cooldowns-enable"] = true
@@ -247,6 +251,7 @@ Defaults["tooltips-cursor-anchor-x"] = 0
 Defaults["tooltips-cursor-anchor-y"] = 8
 Defaults["tooltips-show-price"] = true
 Defaults["tooltips-show-health"] = true
+Defaults["tooltips-opacity"] = 100
 
 -- Bags
 Defaults["bags-loot-from-left"] = false

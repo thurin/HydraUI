@@ -1,4 +1,31 @@
-local HydraUI, GUI, Language, Assets, Settings = select(2, ...):get()
+local HydraUI, GUI, Language, Assets, Settings, Defaults = select(2, ...):get()
+
+-- Default setting values
+Defaults["chat-enable"] = true
+Defaults["chat-bg-opacity"] = 70
+Defaults["chat-top-opacity"] = 100
+Defaults["chat-bottom-opacity"] = 100
+Defaults["chat-enable-url-links"] = true
+Defaults["chat-enable-discord-links"] = true
+Defaults["chat-enable-email-links"] = true
+Defaults["chat-enable-friend-links"] = true
+Defaults["chat-font"] = "PT Sans"
+Defaults["chat-font-size"] = 12
+Defaults["chat-font-flags"] = ""
+Defaults["chat-tab-font"] = "Roboto"
+Defaults["chat-tab-font-size"] = 12
+Defaults["chat-tab-font-flags"] = ""
+Defaults["chat-tab-font-color"] = "FFFFFF"
+Defaults["chat-tab-font-color-mouseover"] = "FFCE54"
+Defaults["chat-frame-width"] = 392
+Defaults["chat-frame-height"] = 104
+Defaults["chat-bottom-height"] = 26
+Defaults["chat-top-height"] = 26
+Defaults["chat-enable-fading"] = false
+Defaults["chat-fade-time"] = 15
+Defaults["chat-link-tooltip"] = true
+Defaults["chat-shorten-channels"] = true
+Defaults["chat-right-frame"] = "Loot"
 
 local select = select
 local tostring = tostring
@@ -7,9 +34,8 @@ local sub = string.sub
 local gsub = string.gsub
 local match = string.match
 
-local FRAME_WIDTH = 392
-local FRAME_HEIGHT = 104
-local BAR_HEIGHT = 22
+local BarHeight = 22 -- Potential setting
+local NoCall = function() end
 
 local SetHyperlink = ItemRefTooltip.SetHyperlink
 local ChatEdit_ChooseBoxForSend = ChatEdit_ChooseBoxForSend
@@ -198,97 +224,37 @@ Chat.RemoveTextures = {
 
 function Chat:CreateChatWindow()
 	local R, G, B = HydraUI:HexToRGB(Settings["ui-window-main-color"])
+	local Border = Settings["ui-border-thickness"]
 	local Width = Settings["chat-frame-width"]
 	
-	self:SetSize(Width + 4, Settings["chat-frame-height"] + (BAR_HEIGHT * 2) + (4 * 2))
-	self:SetPoint("BOTTOMLEFT", HydraUI.UIParent, 11, 11)
-	self:SetBackdrop(HydraUI.BackdropAndBorder)
-	self:SetBackdropColor(R, G, B, (Settings["chat-bg-opacity"] / 100))
-	self:SetBackdropBorderColor(0, 0, 0)
-	self:SetFrameStrata("LOW")
+	self:SetSize(Width, Settings["chat-frame-height"] + Settings["chat-bottom-height"] + Settings["chat-top-height"] + (4 * 2))
+	self:SetPoint("BOTTOMLEFT", HydraUI.UIParent, 12, 12)
+	self:SetFrameStrata("BACKGROUND")
 	
-	-- All this just to achieve an empty center :P
-	self.Top = CreateFrame("Frame", nil, self, "BackdropTemplate")
-	self.Top:SetHeight(BAR_HEIGHT + 4)
-	self.Top:SetPoint("TOPLEFT", self, 0, 0)
-	self.Top:SetPoint("TOPRIGHT", self, 0, 0)
-	self.Top:SetBackdrop(HydraUI.BackdropAndBorder)
-	self.Top:SetBackdropColor(HydraUI:HexToRGB(Settings["ui-window-bg-color"]))
-	self.Top:SetBackdropBorderColor(0, 0, 0, 0)
-	self.Top:SetFrameStrata("LOW")
-	
-	self.Bottom = CreateFrame("Frame", nil, self, "BackdropTemplate")
-	self.Bottom:SetHeight(BAR_HEIGHT + 4)
+	self.Bottom = CreateFrame("Frame", "HydraUIChatFrameBottom", self, "BackdropTemplate")
+	self.Bottom:SetSize(Width, Settings["chat-bottom-height"])
 	self.Bottom:SetPoint("BOTTOMLEFT", self, 0, 0)
-	self.Bottom:SetPoint("BOTTOMRIGHT", self, 0, 0)
-	self.Bottom:SetBackdrop(HydraUI.BackdropAndBorder)
-	self.Bottom:SetBackdropColor(HydraUI:HexToRGB(Settings["ui-window-bg-color"]))
-	self.Bottom:SetBackdropBorderColor(0, 0, 0, 0)
-	self.Bottom:SetFrameStrata("LOW")
+	HydraUI:AddBackdrop(self.Bottom, Assets:GetTexture(Settings["ui-header-texture"]))
+	self.Bottom.Outside:SetBackdropColor(R, G, B, (Settings["chat-bottom-opacity"] / 100))
 	
-	self.Left = CreateFrame("Frame", nil, self, "BackdropTemplate")
-	self.Left:SetWidth(2)
-	self.Left:SetPoint("TOPLEFT", self, 0, 0)
-	self.Left:SetPoint("BOTTOMLEFT", self, 0, 0)
-	self.Left:SetBackdrop(HydraUI.BackdropAndBorder)
-	self.Left:SetBackdropColor(HydraUI:HexToRGB(Settings["ui-window-bg-color"]))
-	self.Left:SetBackdropBorderColor(0, 0, 0, 0)
-	self.Left:SetFrameStrata("LOW")
+	self.EditBox = CreateFrame("Frame", nil, self, "BackdropTemplate")
+	self.EditBox:SetSize(Width, Settings["chat-bottom-height"])
+	self.EditBox:SetPoint("BOTTOMLEFT", self, 0, 0)
+	HydraUI:AddBackdrop(self.EditBox, Assets:GetTexture(Settings["ui-header-texture"]))
+	self.EditBox.Outside:SetBackdropColor(R, G, B, (Settings["chat-bottom-opacity"] / 100))
+	self.EditBox:Hide()
 	
-	self.Right = CreateFrame("Frame", nil, self, "BackdropTemplate")
-	self.Right:SetWidth(2)
-	self.Right:SetPoint("TOPRIGHT", self, 0, 0)
-	self.Right:SetPoint("BOTTOMRIGHT", self, 0, 0)
-	self.Right:SetBackdrop(HydraUI.BackdropAndBorder)
-	self.Right:SetBackdropColor(HydraUI:HexToRGB(Settings["ui-window-bg-color"]))
-	self.Right:SetBackdropBorderColor(0, 0, 0, 0)
-	self.Right:SetFrameStrata("LOW")
+	self.Middle = CreateFrame("Frame", "HydraUIChatFrameMiddle", self, "BackdropTemplate")
+	self.Middle:SetSize(Width, Settings["chat-frame-height"])
+	self.Middle:SetPoint("BOTTOM", self.Bottom, "TOP", 0, 1 > Border and -1 or -(Border + 2))
+	HydraUI:AddBackdrop(self.Middle)
+	self.Middle.Outside:SetBackdropColor(R, G, B, (Settings["chat-bg-opacity"] / 100))
 	
-	self.TopBar = CreateFrame("Frame", "HydraUIChatFrameTop", HydraUI.UIParent, "BackdropTemplate")
-	self.TopBar:SetHeight(BAR_HEIGHT)
-	self.TopBar:SetPoint("TOPLEFT", self, 2, -2)
-	self.TopBar:SetPoint("TOPRIGHT", self, -2, -2)
-	self.TopBar:SetBackdrop(HydraUI.BackdropAndBorder)
-	self.TopBar:SetBackdropColor(HydraUI:HexToRGB(Settings["ui-window-bg-color"]))
-	self.TopBar:SetBackdropBorderColor(0, 0, 0)
-	self.TopBar:SetFrameStrata("MEDIUM")
-	
-	self.TopBar.Texture = self.TopBar:CreateTexture(nil, "OVERLAY")
-	self.TopBar.Texture:SetPoint("TOPLEFT", self.TopBar, 1, -1)
-	self.TopBar.Texture:SetPoint("BOTTOMRIGHT", self.TopBar, -1, 1)
-	self.TopBar.Texture:SetTexture(Assets:GetTexture(Settings["ui-header-texture"]))
-	self.TopBar.Texture:SetVertexColor(HydraUI:HexToRGB(Settings["ui-window-main-color"]))
-	
-	self.BottomBar = CreateFrame("Frame", "HydraUIChatFrameBottom", HydraUI.UIParent, "BackdropTemplate")
-	self.BottomBar:SetHeight(BAR_HEIGHT)
-	self.BottomBar:SetPoint("BOTTOMLEFT", self, 2, 2)
-	self.BottomBar:SetPoint("BOTTOMRIGHT", self, -2, 2)
-	self.BottomBar:SetBackdrop(HydraUI.BackdropAndBorder)
-	self.BottomBar:SetBackdropColor(HydraUI:HexToRGB(Settings["ui-window-main-color"]))
-	self.BottomBar:SetBackdropBorderColor(0, 0, 0)
-	self.BottomBar:SetFrameStrata("MEDIUM")
-	
-	self.BottomBar.Texture = self.BottomBar:CreateTexture(nil, "OVERLAY")
-	self.BottomBar.Texture:SetPoint("TOPLEFT", self.BottomBar, 1, -1)
-	self.BottomBar.Texture:SetPoint("BOTTOMRIGHT", self.BottomBar, -1, 1)
-	self.BottomBar.Texture:SetTexture(Assets:GetTexture(Settings["ui-header-texture"]))
-	self.BottomBar.Texture:SetVertexColor(HydraUI:HexToRGB(Settings["ui-window-main-color"]))
-	
-	self.Anchor = CreateFrame("Frame", nil, self)
-	self.Anchor:SetPoint("TOPLEFT", self.TopBar, "BOTTOMLEFT", 0, -2)
-	self.Anchor:SetPoint("BOTTOMRIGHT", self.BottomBar, "TOPRIGHT", 0, 2)
-	
-	self.OuterOutline = CreateFrame("Frame", nil, self, "BackdropTemplate")
-	self.OuterOutline:SetPoint("TOPLEFT", self.TopBar, -3, 3)
-	self.OuterOutline:SetPoint("BOTTOMRIGHT", self.BottomBar, 3, -3)
-	self.OuterOutline:SetBackdrop(HydraUI.Outline)
-	self.OuterOutline:SetBackdropBorderColor(0, 0, 0)
-	
-	self.InnerOutline = CreateFrame("Frame", nil, self, "BackdropTemplate")
-	self.InnerOutline:SetPoint("TOPLEFT", self.TopBar, "BOTTOMLEFT", 0, -2)
-	self.InnerOutline:SetPoint("BOTTOMRIGHT", self.BottomBar, "TOPRIGHT", 0, 2)
-	self.InnerOutline:SetBackdrop(HydraUI.Outline)
-	self.InnerOutline:SetBackdropBorderColor(0, 0, 0)
+	self.Top = CreateFrame("Frame", "HydraUIChatFrameTop", self, "BackdropTemplate")
+	self.Top:SetSize(Width, Settings["chat-top-height"])
+	self.Top:SetPoint("BOTTOM", self.Middle, "TOP", 0, 1 > Border and -1 or -(Border + 2))
+	HydraUI:AddBackdrop(self.Top, Assets:GetTexture(Settings["ui-header-texture"]))
+	self.Top.Outside:SetBackdropColor(R, G, B, (Settings["chat-top-opacity"] / 100))
 	
 	HydraUI:CreateMover(self, 2)
 end
@@ -306,7 +272,7 @@ local Disable = function(object)
 		object:SetScript("OnUpdate", nil)
 	end
 	
-	object.Show = function() end
+	object.Show = NoCall
 	object:Hide()
 end
 
@@ -331,55 +297,34 @@ end
 
 local UpdateHeader = function(editbox)
 	local ChatType = editbox:GetAttribute("chatType")
-	local Backdrop = editbox.Backdrop
 	
-	if Backdrop then
-		if (ChatType == "CHANNEL") then
-			if editbox:GetAttribute("channelTarget") then
-				local ID = GetChannelName(editbox:GetAttribute("channelTarget"))
-				
-				if (ID == 0) then
-					Backdrop.Change:SetChange(HydraUI:HexToRGB(Settings["ui-header-texture-color"]))
-				else
-					Backdrop.Change:SetChange(ChatTypeInfo[ChatType..ID].r * 0.2, ChatTypeInfo[ChatType..ID].g * 0.2, ChatTypeInfo[ChatType..ID].b * 0.2)
-				end
+	if (ChatType == "CHANNEL") then
+		if editbox:GetAttribute("channelTarget") then
+			local ID = GetChannelName(editbox:GetAttribute("channelTarget"))
+			
+			if (ID == 0) then
+				Chat.EditBox.Outside:SetBackdropColor(HydraUI:HexToRGB(Settings["ui-header-texture-color"]))
 			else
-				Backdrop.Change:SetChange(HydraUI:HexToRGB(Settings["ui-header-texture-color"]))
+				Chat.EditBox.Outside:SetBackdropColor(ChatTypeInfo[ChatType..ID].r * 0.2, ChatTypeInfo[ChatType..ID].g * 0.2, ChatTypeInfo[ChatType..ID].b * 0.2)
 			end
 		else
-			Backdrop.Change:SetChange(ChatTypeInfo[ChatType].r * 0.2, ChatTypeInfo[ChatType].g * 0.2, ChatTypeInfo[ChatType].b * 0.2)
+			Chat.EditBox.Outside:SetBackdropColor(HydraUI:HexToRGB(Settings["ui-header-texture-color"]))
 		end
-		
-		Backdrop.Change:Play()
-	end
-	
-	if (not editbox.header) then
-		return
-	end
-	
-	local HeaderText = editbox.header:GetText()
-	
-	if HeaderText then
-		local Subs = 0
-		
-		HeaderText, Subs = gsub(HeaderText, "%s$", "")
-		
-		if Subs then
-			editbox.header:SetText(HeaderText)
-		end
-		
-		editbox.HeaderBackdrop:SetWidth(editbox.header:GetWidth() + 14)
+	else
+		Chat.EditBox.Outside:SetBackdropColor(ChatTypeInfo[ChatType].r * 0.2, ChatTypeInfo[ChatType].g * 0.2, ChatTypeInfo[ChatType].b * 0.2)
 	end
 end
 
 local OnEditFocusLost = function(self)
-	Chat.BottomBar:Show()
+	Chat.EditBox:Hide()
+	Chat.Bottom:Show()
 	
 	self:Hide()
 end
 
 local OnEditFocusGained = function(self)
-	Chat.BottomBar:Hide()
+	Chat.Bottom:Hide()
+	Chat.EditBox:Show()
 end
 
 local CheckForBottom = function(self)
@@ -577,12 +522,10 @@ local CopyButtonOnMouseUp = function(self)
 	
 	if Parent:IsTextCopyable() then
 		Parent:SetTextCopyable(false)
-		Parent:EnableMouse(false)
 		
 		Parent.CopyHighlight:SetAlpha(0)
 	else
 		Parent:SetTextCopyable(true)
-		Parent:EnableMouse(true)
 		
 		Parent.CopyHighlight:SetAlpha(0.1)
 	end
@@ -664,18 +607,19 @@ function Chat:StyleChatFrame(frame)
 	Tab:HookScript("OnLeave", TabOnLeave)
 	
 	HydraUI:SetFontInfo(TabText, Settings["chat-tab-font"], Settings["chat-tab-font-size"], Settings["chat-tab-font-flags"])
-	--TabText.SetFont = function() end
+	TabText._SetFont = TabText.SetFont
+	TabText.SetFont = NoCall
 	
 	TabText:SetTextColor(HydraUI:HexToRGB(Settings["chat-tab-font-color"]))
 	TabText._SetTextColor = TabText.SetTextColor
-	TabText.SetTextColor = function() end
+	TabText.SetTextColor = NoCall
 	
 	if Tab.glow then
 		Tab.glow:SetPoint("CENTER", Tab, 0, 1)
 		Tab.glow:SetWidth(TabText:GetWidth() + 6)
 	end
 	
-	frame:SetFrameStrata("MEDIUM")
+	frame:SetFrameStrata("LOW")
 	frame:SetClampRectInsets(0, 0, 0, 0)
 	frame:SetClampedToScreen(false)
 	frame:SetFading(false)
@@ -683,7 +627,6 @@ function Chat:StyleChatFrame(frame)
 	frame:SetScript("OnMouseWheel", OnMouseWheel)
 	frame:SetSize(self:GetWidth() - 8, self:GetHeight() - 8)
 	frame:SetFrameLevel(self:GetFrameLevel() + 1)
-	frame:SetFrameStrata("MEDIUM")
 	frame:SetJustifyH("LEFT")
 	frame:SetFading(Settings["chat-enable-fading"])
 	frame:SetTimeVisible(Settings["chat-fade-time"])
@@ -703,55 +646,16 @@ function Chat:StyleChatFrame(frame)
 	end
 	
 	EditBox:ClearAllPoints()
-	EditBox:SetPoint("TOPLEFT", self.BottomBar, 5, -2)
-	EditBox:SetPoint("BOTTOMRIGHT", self.BottomBar, -1, 2)
+	EditBox:SetPoint("TOPLEFT", self.EditBox, -2, 0)
+	EditBox:SetPoint("BOTTOMRIGHT", self.EditBox, 0, 0)
 	HydraUI:SetFontInfo(EditBox, Settings["chat-font"], Settings["chat-font-size"], Settings["chat-font-flags"])
 	EditBox:SetAltArrowKeyMode(false)
+	EditBox:SetTextInsets(0, 0, 0, 0)
 	EditBox:Hide()
 	EditBox:HookScript("OnEditFocusLost", OnEditFocusLost)
 	EditBox:HookScript("OnEditFocusGained", OnEditFocusGained)
 	
-	EditBox.HeaderBackdrop = CreateFrame("Frame", nil, EditBox, "BackdropTemplate")
-	EditBox.HeaderBackdrop:SetBackdrop(HydraUI.BackdropAndBorder)
-	EditBox.HeaderBackdrop:SetBackdropColor(HydraUI:HexToRGB(Settings["ui-header-texture-color"]))
-	EditBox.HeaderBackdrop:SetBackdropBorderColor(0, 0, 0)
-	EditBox.HeaderBackdrop:SetSize(60, 22)
-	EditBox.HeaderBackdrop:SetPoint("LEFT", self.BottomBar, 0, 0)
-	EditBox.HeaderBackdrop:SetFrameStrata("HIGH")
-	EditBox.HeaderBackdrop:SetFrameLevel(1)
-	
-	EditBox.HeaderBackdrop.Tex = EditBox.HeaderBackdrop:CreateTexture(nil, "BORDER")
-	EditBox.HeaderBackdrop.Tex:SetPoint("TOPLEFT", EditBox.HeaderBackdrop, 1, -1)
-	EditBox.HeaderBackdrop.Tex:SetPoint("BOTTOMRIGHT", EditBox.HeaderBackdrop, -1, 1)
-	EditBox.HeaderBackdrop.Tex:SetTexture(Assets:GetTexture(Settings["ui-header-texture"]))
-	EditBox.HeaderBackdrop.Tex:SetVertexColor(HydraUI:HexToRGB(Settings["ui-header-texture-color"]))
-	
-	EditBox.Backdrop = CreateFrame("Frame", nil, EditBox, "BackdropTemplate")
-	EditBox.Backdrop:SetBackdrop(HydraUI.BackdropAndBorder)
-	EditBox.Backdrop:SetBackdropColor(HydraUI:HexToRGB(Settings["ui-header-texture-color"]))
-	EditBox.Backdrop:SetBackdropBorderColor(0, 0, 0)
-	EditBox.Backdrop:SetPoint("TOPLEFT", EditBox.HeaderBackdrop, "TOPRIGHT", 2, 0)
-	EditBox.Backdrop:SetPoint("BOTTOMRIGHT", HydraUIChatFrameBottom, 0, 0)
-	EditBox.Backdrop:SetFrameStrata("HIGH")
-	EditBox.Backdrop:SetFrameLevel(1)
-	
-	EditBox.Backdrop.Tex = EditBox.Backdrop:CreateTexture(nil, "BORDER")
-	EditBox.Backdrop.Tex:SetPoint("TOPLEFT", EditBox.Backdrop, 1, -1)
-	EditBox.Backdrop.Tex:SetPoint("BOTTOMRIGHT", EditBox.Backdrop, -1, 1)
-	EditBox.Backdrop.Tex:SetTexture(Assets:GetTexture(Settings["ui-header-texture"]))
-	EditBox.Backdrop.Tex:SetVertexColor(HydraUI:HexToRGB(Settings["ui-window-main-color"]))
-	
-	local AnimGroup = CreateAnimationGroup(EditBox.Backdrop.Tex)
-	
-	EditBox.Backdrop.Change = AnimGroup:CreateAnimation("Color")
-	EditBox.Backdrop.Change:SetColorType("vertex")
-	EditBox.Backdrop.Change:SetEasing("in")
-	EditBox.Backdrop.Change:SetDuration(0.2)
-	
-	EditBox.header:ClearAllPoints()
-	EditBox.header:SetPoint("CENTER", EditBox.HeaderBackdrop, 0, 0)
 	HydraUI:SetFontInfo(EditBox.header, Settings["chat-font"], Settings["chat-font-size"], Settings["chat-font-flags"])
-	EditBox.header:SetJustifyH("CENTER")
 	
 	-- Scroll to bottom
 	local JumpButton = CreateFrame("Frame", nil, frame, "BackdropTemplate")
@@ -842,6 +746,10 @@ end
 local OpenTemporaryWindow = function()
 	local Frame = FCF_GetCurrentChatFrame()
 	
+	if (_G[Frame:GetName().."Tab"]:GetText() == PET_BATTLE_COMBAT_LOG) then
+		return FCF_Close(Frame)
+	end
+	
 	if (not Frame.Styled) then
 		Chat:StyleChatFrame(Frame)
 	end
@@ -851,16 +759,17 @@ function Chat:MoveChatFrames()
 	for i = 1, NUM_CHAT_WINDOWS do
 		local Frame = _G["ChatFrame"..i]
 		
-		Frame:SetSize(self.Anchor:GetWidth() - 8, self.Anchor:GetHeight() - 8)
-		Frame:SetFrameLevel(self.Anchor:GetFrameLevel() + 1)
+		Frame:SetFrameLevel(self.Middle:GetFrameLevel() + 1)
 		Frame:SetFrameStrata("MEDIUM")
 		Frame:SetJustifyH("LEFT")
 		
 		if (Frame:GetID() == 1) then
 			Frame:SetUserPlaced(true)
 			Frame:ClearAllPoints()
-			Frame:SetPoint("TOPLEFT", self.Anchor, 4, -3)
-			Frame:SetPoint("BOTTOMRIGHT", self.Anchor, -4, 3)
+			Frame:SetPoint("TOPLEFT", self.Middle, 4 + Settings["ui-border-thickness"], -(4 + Settings["ui-border-thickness"]))
+			Frame:SetPoint("BOTTOMRIGHT", self.Middle, -(4 + Settings["ui-border-thickness"]), 4 + Settings["ui-border-thickness"])
+		elseif (Settings["right-window-enable"] and Frame.name and Frame.name == Settings["chat-right-frame"]) then
+			-- Grab the frame
 		end
 		
 		if (not Frame.isLocked) then
@@ -882,19 +791,17 @@ function Chat:MoveChatFrames()
 	end
 	
 	GeneralDockManager:ClearAllPoints()
-	GeneralDockManager:SetPoint("LEFT", self.TopBar, 0, 6)
-	GeneralDockManager:SetPoint("RIGHT", self.TopBar, 0, 6)
+	GeneralDockManager:SetPoint("LEFT", self.Top, 0, 5)
+	GeneralDockManager:SetPoint("RIGHT", self.Top, 0, 5)
 	GeneralDockManager:SetFrameStrata("MEDIUM")
 	
 	GeneralDockManagerOverflowButton:ClearAllPoints()
-	GeneralDockManagerOverflowButton:SetPoint("RIGHT", self.TopBar, -2, 0)
+	GeneralDockManagerOverflowButton:SetPoint("RIGHT", self.Top, -2, 0)
 end
 
 function Chat:StyleChatFrames()
 	for i = 1, NUM_CHAT_WINDOWS do
-		local Frame = _G["ChatFrame"..i]
-		
-		self:StyleChatFrame(Frame)
+		self:StyleChatFrame(_G["ChatFrame"..i])
 	end
 	
 	Disable(ChatConfigFrameDefaultButton)
@@ -1020,14 +927,14 @@ function Chat:Install()
 	
 	DEFAULT_CHAT_FRAME:SetUserPlaced(true)
 	
-	SetCVar("chatMouseScroll", 1)
-	SetCVar("chatStyle", "im")
-	SetCVar("WholeChatWindowClickable", 0)
-	SetCVar("WhisperMode", "inline")
-	--SetCVar("BnWhisperMode", "inline")
-	SetCVar("removeChatDelay", 1)
-	SetCVar("colorChatNamesByClass", 1) -- Temp, remove me (Added 2021-05-20)
-	SetCVar("chatClassColorOverride", "0")
+	C_CVar.SetCVar("chatMouseScroll", 1)
+	C_CVar.SetCVar("chatStyle", "im")
+	C_CVar.SetCVar("WholeChatWindowClickable", 0)
+	C_CVar.SetCVar("WhisperMode", "inline")
+	--C_CVar.SetCVar("BnWhisperMode", "inline")
+	C_CVar.SetCVar("removeChatDelay", 1)
+	C_CVar.SetCVar("colorChatNamesByClass", 1)
+	C_CVar.SetCVar("chatClassColorOverride", "0")
 	
 	--Chat:MoveChatFrames()
 	FCF_SelectDockFrame(ChatFrame1)
@@ -1105,9 +1012,9 @@ function Chat:SetChatTypeInfo()
 	ChatTypeInfo["CHANNEL19"].colorNameByClass = true
 	ChatTypeInfo["CHANNEL20"].colorNameByClass = true
 	
-	if (GetCVar("colorChatNamesByClass") ~= 1) then
-		SetCVar("colorChatNamesByClass", 1)
-		SetCVar("chatClassColorOverride", "0")
+	if (C_CVar.GetCVar("colorChatNamesByClass") ~= 1) then
+		C_CVar.SetCVar("colorChatNamesByClass", 1)
+		C_CVar.SetCVar("chatClassColorOverride", "0")
 	end
 end
 
@@ -1134,8 +1041,6 @@ function Chat:Load()
 		HydraUIData.ChatInstalled = true
 	end
 	
-	SetCVar("colorChatNamesByClass", 1) -- Temp, remove me (Added 2021-05-20)
-	
 	self:MoveChatFrames()
 	self:SetChatTypeInfo()
 	
@@ -1152,18 +1057,16 @@ end
 
 HydraUI.FormatLinks = FormatLinks
 
-local UpdateChatFrameSize = function()
+local UpdateChatFrameHeight = function(value)
+	Chat.Middle:SetHeight(value)
+end
+
+local UpdateChatFrameWidth = function()
 	local Width = Settings["chat-frame-width"]
 	
-	Chat:SetSize(Width + 4, Settings["chat-frame-height"] + (BAR_HEIGHT * 2) + (4 * 2))
-	
-	Chat.TopBar:ClearAllPoints()
-	Chat.TopBar:SetPoint("TOPLEFT", Chat, 2, -2)
-	Chat.TopBar:SetPoint("TOPRIGHT", Chat, -2, -2)
-	
-	Chat.BottomBar:ClearAllPoints()
-	Chat.BottomBar:SetPoint("BOTTOMLEFT", Chat, 2, 2)
-	Chat.BottomBar:SetPoint("BOTTOMRIGHT", Chat, -2, 2)
+	Chat.Bottom:SetWidth(Width)
+	Chat.Middle:SetWidth(Width)
+	Chat.Top:SetWidth(Width)
 	
 	-- Update data text width
 	local DT = HydraUI:GetModule("DataText")
@@ -1173,10 +1076,30 @@ local UpdateChatFrameSize = function()
 	DT:GetAnchor("Chat-Right"):SetWidth(Width / 3)
 end
 
-local UpdateOpacity = function(value)
+local UpdateTopHeight = function(value)
+	Chat.Top:SetHeight(value)
+end
+
+local UpdateBottomHeight = function(value)
+	Chat.Top:SetHeight(value)
+end
+
+local UpdateTopOpacity = function(value)
 	local R, G, B = HydraUI:HexToRGB(Settings["ui-window-main-color"])
 	
-	Chat:SetBackdropColor(R, G, B, (value / 100))
+	Chat.Top.Outside:SetBackdropColor(R, G, B, (value / 100))
+end
+
+local UpdateMiddleOpacity = function(value)
+	local R, G, B = HydraUI:HexToRGB(Settings["ui-window-main-color"])
+	
+	Chat.Middle.Outside:SetBackdropColor(R, G, B, (value / 100))
+end
+
+local UpdateBottomOpacity = function(value)
+	local R, G, B = HydraUI:HexToRGB(Settings["ui-window-main-color"])
+	
+	Chat.Bottom.Outside:SetBackdropColor(R, G, B, (value / 100))
 end
 
 local UpdateChatFont = function()
@@ -1208,10 +1131,10 @@ local UpdateChatTabFont = function()
 		TabText:_SetTextColor(R, G, B)
 		
 		if IsPixel then
-			TabText:SetFont(Font, Settings["chat-tab-font-size"], "MONOCHROME, OUTLINE")
+			TabText:_SetFont(Font, Settings["chat-tab-font-size"], "MONOCHROME, OUTLINE")
 			TabText:SetShadowColor(0, 0, 0, 0)
 		else
-			TabText:SetFont(Font, Settings["chat-tab-font-size"], Settings["chat-tab-font-flags"])
+			TabText:_SetFont(Font, Settings["chat-tab-font-size"], Settings["chat-tab-font-flags"])
 			TabText:SetShadowColor(0, 0, 0)
 			TabText:SetShadowOffset(1, -1)
 		end
@@ -1268,25 +1191,22 @@ end
 
 GUI:AddWidgets(Language["General"], Language["Chat"], function(left, right)
 	left:CreateHeader(Language["Enable"])
-	left:CreateSwitch("chat-enable", Settings["chat-enable"], Language["Enable Chat Module"], "Enable the HydraUI chat module", ReloadUI):RequiresReload(true)
+	left:CreateSwitch("chat-enable", Settings["chat-enable"], Language["Enable Chat Module"], Language["Enable the HydraUI chat module"], ReloadUI):RequiresReload(true)
 	
 	left:CreateHeader(Language["General"])
-	left:CreateSlider("chat-frame-width", Settings["chat-frame-width"], 300, 650, 1, "Chat Width", "Set the width of the chat frame", UpdateChatFrameSize)
-	left:CreateSlider("chat-frame-height", Settings["chat-frame-height"], 40, 350, 1, "Chat Height", "Set the height of the chat frame", UpdateChatFrameSize)
-	left:CreateSlider("chat-bg-opacity", Settings["chat-bg-opacity"], 0, 100, 5, "Background Opacity", "Set the opacity of the chat background", UpdateOpacity, nil, "%")
-	left:CreateSlider("chat-fade-time", Settings["chat-enable-fading"], 0, 60, 5, "Set Fade Time", "Set the duration to display text before fading out", UpdateFadeTime, nil, "s")
-	left:CreateSwitch("chat-enable-fading", Settings["chat-enable-fading"], "Enable Text Fading", "Set the text to fade after the set amount of time", UpdateEnableFading)
-	left:CreateSwitch("chat-link-tooltip", Settings["chat-link-tooltip"], "Show Link Tooltips", "Display a tooltip when hovering over links in chat", UpdateEnableLinks)
+	left:CreateSlider("chat-fade-time", Settings["chat-enable-fading"], 0, 60, 5, Language["Set Fade Time"], Language["Set the duration to display text before fading out"], UpdateFadeTime, nil, "s")
+	left:CreateSwitch("chat-enable-fading", Settings["chat-enable-fading"], Language["Enable Text Fading"], Language["Set the text to fade after the set amount of time"], UpdateEnableFading)
+	left:CreateSwitch("chat-link-tooltip", Settings["chat-link-tooltip"], Language["Show Link Tooltips"], Language["Display a tooltip when hovering over links in chat"], UpdateEnableLinks)
 	left:CreateSwitch("chat-shorten-channels", Settings["chat-shorten-channels"], Language["Shorten Channel Names"], Language["Shorten chat channel names to their channel number"], UpdateShortenChannels)
 	
 	right:CreateHeader(Language["Install"])
-	right:CreateButton("", Language["Install"], Language["Install Chat Defaults"], "Set default channels and settings related to chat", RunChatInstall):RequiresReload(true)
+	right:CreateButton("", Language["Install"], Language["Install Chat Defaults"], Language["Set default channels and settings related to chat"], RunChatInstall):RequiresReload(true)
 	
 	left:CreateHeader(Language["Links"])
-	left:CreateSwitch("chat-enable-url-links", Settings["chat-enable-url-links"], Language["Enable URL Links"], "Enable URL links in the chat frame")
-	left:CreateSwitch("chat-enable-discord-links", Settings["chat-enable-discord-links"], Language["Enable Discord Links"], "Enable Discord links in the chat frame")
-	left:CreateSwitch("chat-enable-email-links", Settings["chat-enable-email-links"], Language["Enable Email Links"], "Enable email links in the chat frame")
-	left:CreateSwitch("chat-enable-friend-links", Settings["chat-enable-friend-links"], Language["Enable Friend Tag Links"], "Enable friend tag links in the chat frame")
+	left:CreateSwitch("chat-enable-url-links", Settings["chat-enable-url-links"], Language["Enable URL Links"], Language["Enable URL links in the chat frame"])
+	left:CreateSwitch("chat-enable-discord-links", Settings["chat-enable-discord-links"], Language["Enable Discord Links"], Language["Enable Discord links in the chat frame"])
+	left:CreateSwitch("chat-enable-email-links", Settings["chat-enable-email-links"], Language["Enable Email Links"], Language["Enable email links in the chat frame"])
+	left:CreateSwitch("chat-enable-friend-links", Settings["chat-enable-friend-links"], Language["Enable Friend Tag Links"], Language["Enable friend tag links in the chat frame"])
 	
 	right:CreateHeader(Language["Chat Frame Font"])
 	right:CreateDropdown("chat-font", Settings["chat-font"], Assets:GetFontList(), Language["Font"], Language["Set the font of the chat frame"], UpdateChatFont, "Font")
@@ -1299,4 +1219,13 @@ GUI:AddWidgets(Language["General"], Language["Chat"], function(left, right)
 	right:CreateDropdown("chat-tab-font-flags", Settings["chat-tab-font-flags"], Assets:GetFlagsList(), Language["Font Flags"], Language["Set the font flags of the chat frame tabs"], UpdateChatTabFont)
 	right:CreateColorSelection("chat-tab-font-color", Settings["chat-tab-font-color"], Language["Font Color"], Language["Set the color of the chat frame tabs"], UpdateChatTabFont)
 	right:CreateColorSelection("chat-tab-font-color-mouseover", Settings["chat-tab-font-color-mouseover"], Language["Font Color Mouseover"], Language["Set the color of the chat frame tab while mousing over it"])
+end)
+
+GUI:AddWidgets(Language["General"], Language["Left"], Language["Chat"], function(left, right)
+	left:CreateHeader(Language["General"])
+	left:CreateSlider("chat-frame-width", Settings["chat-frame-width"], 300, 650, 1, Language["Chat Width"], Language["Set the width of the chat frame"], UpdateChatFrameWidth)
+	left:CreateSlider("chat-frame-height", Settings["chat-frame-height"], 40, 350, 1, Language["Chat Height"], Language["Set the height of the chat frame"], UpdateChatFrameHeight)
+	left:CreateSlider("chat-top-opacity", Settings["chat-top-opacity"], 0, 100, 5, Language["Top Opacity"], Language["Set the opacity of the chat top"], UpdateTopOpacity, nil, "%")
+	left:CreateSlider("chat-bg-opacity", Settings["chat-bg-opacity"], 0, 100, 5, Language["Background Opacity"], Language["Set the opacity of the chat background"], UpdateMiddleOpacity, nil, "%")
+	left:CreateSlider("chat-bottom-opacity", Settings["chat-bottom-opacity"], 0, 100, 5, Language["Bottom Opacity"], Language["Set the opacity of the chat bottom"], UpdateBottomOpacity, nil, "%")
 end)
