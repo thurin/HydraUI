@@ -12,6 +12,7 @@ Defaults["unitframes-focus-power-smooth"] = true
 Defaults["unitframes-focus-health-left"] = "[Name10]"
 Defaults["unitframes-focus-health-right"] = "[HealthPercent]"
 Defaults["focus-enable"] = true
+Defaults["focus-enable-castbar"] = true
 
 local UF = HydraUI:GetModule("Unit Frames")
 
@@ -101,66 +102,70 @@ HydraUI.StyleFuncs["focus"] = function(self, unit)
 	
 	UF:SetPowerAttributes(Power, Settings["unitframes-focus-power-color"])
 	
-    -- Castbar
-    local Castbar = CreateFrame("StatusBar", nil, self)
-    Castbar:SetSize(Settings["unitframes-focus-width"] - 30, 24)
-    Castbar:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", -1, -3)
-    Castbar:SetStatusBarTexture(Assets:GetTexture(Settings["ui-widget-texture"]))
-	
-	local CastbarBG = Castbar:CreateTexture(nil, "ARTWORK")
-	CastbarBG:SetPoint("TOPLEFT", Castbar, 0, 0)
-	CastbarBG:SetPoint("BOTTOMRIGHT", Castbar, 0, 0)
-    CastbarBG:SetTexture(Assets:GetTexture(Settings["ui-widget-texture"]))
-	CastbarBG:SetAlpha(0.2)
-	
-    -- Add a background
-    local Background = Castbar:CreateTexture(nil, "BACKGROUND")
-    Background:SetPoint("TOPLEFT", Castbar, -1, 1)
-    Background:SetPoint("BOTTOMRIGHT", Castbar, 1, -1)
-    Background:SetTexture(Assets:GetTexture("Blank"))
-    Background:SetVertexColor(0, 0, 0)
-	
-    -- Add a timer
-    local Time = Castbar:CreateFontString(nil, "OVERLAY")
-	HydraUI:SetFontInfo(Time, Settings["unitframes-font"], Settings["unitframes-font-size"], Settings["unitframes-font-flags"])
-	Time:SetPoint("RIGHT", Castbar, -3, 0)
-	Time:SetJustifyH("RIGHT")
-	
-    -- Add spell text
-    local Text = Castbar:CreateFontString(nil, "OVERLAY")
-	HydraUI:SetFontInfo(Text, Settings["unitframes-font"], Settings["unitframes-font-size"], Settings["unitframes-font-flags"])
-	Text:SetPoint("LEFT", Castbar, 3, 0)
-	Text:SetSize(250 * 0.7, Settings["unitframes-font-size"])
-	Text:SetJustifyH("LEFT")
-	
-    -- Add spell icon
-    local Icon = Castbar:CreateTexture(nil, "OVERLAY")
-    Icon:SetSize(24, 24)
-    Icon:SetPoint("TOPRIGHT", Castbar, "TOPLEFT", -4, 0)
-    Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-	
-	local IconBG = Castbar:CreateTexture(nil, "BACKGROUND")
-    IconBG:SetPoint("TOPLEFT", Icon, -1, 1)
-    IconBG:SetPoint("BOTTOMRIGHT", Icon, 1, -1)
-    IconBG:SetTexture(Assets:GetTexture("Blank"))
-    IconBG:SetVertexColor(0, 0, 0)
-	
-    -- Add safezone
-    local SafeZone = Castbar:CreateTexture(nil, "OVERLAY")
-	SafeZone:SetTexture(Assets:GetTexture(Settings["ui-widget-texture"]))
-	SafeZone:SetVertexColor(HydraUI:HexToRGB("C0392B"))
-	
-    -- Register it with oUF
-    Castbar.bg = CastbarBG
-    Castbar.Time = Time
-    Castbar.Text = Text
-    Castbar.Icon = Icon
-    Castbar.SafeZone = SafeZone
-    Castbar.showTradeSkills = true
-    Castbar.timeToHold = 0.7
-	Castbar.PostCastStart = UF.PostCastStart
-	Castbar.PostChannelStart = UF.PostCastStart
-	Castbar.PostCastInterruptible = UF.PostCastStart
+	if Settings["focus-enable-castbar"] then
+		-- Castbar
+		local Castbar = CreateFrame("StatusBar", nil, self)
+		Castbar:SetSize(Settings["unitframes-focus-width"] - 30, 24)
+		Castbar:SetPoint("TOPRIGHT", self, "BOTTOMRIGHT", -1, -3)
+		Castbar:SetStatusBarTexture(Assets:GetTexture(Settings["ui-widget-texture"]))
+		
+		local CastbarBG = Castbar:CreateTexture(nil, "ARTWORK")
+		CastbarBG:SetPoint("TOPLEFT", Castbar, 0, 0)
+		CastbarBG:SetPoint("BOTTOMRIGHT", Castbar, 0, 0)
+		CastbarBG:SetTexture(Assets:GetTexture(Settings["ui-widget-texture"]))
+		CastbarBG:SetAlpha(0.2)
+		
+		-- Add a background
+		local Background = Castbar:CreateTexture(nil, "BACKGROUND")
+		Background:SetPoint("TOPLEFT", Castbar, -1, 1)
+		Background:SetPoint("BOTTOMRIGHT", Castbar, 1, -1)
+		Background:SetTexture(Assets:GetTexture("Blank"))
+		Background:SetVertexColor(0, 0, 0)
+		
+		-- Add a timer
+		local Time = Castbar:CreateFontString(nil, "OVERLAY")
+		HydraUI:SetFontInfo(Time, Settings["unitframes-font"], Settings["unitframes-font-size"], Settings["unitframes-font-flags"])
+		Time:SetPoint("RIGHT", Castbar, -3, 0)
+		Time:SetJustifyH("RIGHT")
+		
+		-- Add spell text
+		local Text = Castbar:CreateFontString(nil, "OVERLAY")
+		HydraUI:SetFontInfo(Text, Settings["unitframes-font"], Settings["unitframes-font-size"], Settings["unitframes-font-flags"])
+		Text:SetPoint("LEFT", Castbar, 3, 0)
+		Text:SetSize(250 * 0.7, Settings["unitframes-font-size"])
+		Text:SetJustifyH("LEFT")
+		
+		-- Add spell icon
+		local Icon = Castbar:CreateTexture(nil, "OVERLAY")
+		Icon:SetSize(24, 24)
+		Icon:SetPoint("TOPRIGHT", Castbar, "TOPLEFT", -4, 0)
+		Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+		
+		local IconBG = Castbar:CreateTexture(nil, "BACKGROUND")
+		IconBG:SetPoint("TOPLEFT", Icon, -1, 1)
+		IconBG:SetPoint("BOTTOMRIGHT", Icon, 1, -1)
+		IconBG:SetTexture(Assets:GetTexture("Blank"))
+		IconBG:SetVertexColor(0, 0, 0)
+		
+		-- Add safezone
+		local SafeZone = Castbar:CreateTexture(nil, "OVERLAY")
+		SafeZone:SetTexture(Assets:GetTexture(Settings["ui-widget-texture"]))
+		SafeZone:SetVertexColor(HydraUI:HexToRGB("C0392B"))
+		
+		-- Register it with oUF
+		Castbar.bg = CastbarBG
+		Castbar.Time = Time
+		Castbar.Text = Text
+		Castbar.Icon = Icon
+		Castbar.SafeZone = SafeZone
+		Castbar.showTradeSkills = true
+		Castbar.timeToHold = 0.7
+		Castbar.PostCastStart = UF.PostCastStart
+		Castbar.PostChannelStart = UF.PostCastStart
+		Castbar.PostCastInterruptible = UF.PostCastStart
+		
+		self.Castbar = Castbar
+	end
 	
 	-- Auras
 	local Buffs = CreateFrame("Frame", self:GetName() .. "Buffs", self)
@@ -203,7 +208,6 @@ HydraUI.StyleFuncs["focus"] = function(self, unit)
 	self.HealBar = HealBar
 	self.HealthLeft = HealthLeft
 	self.HealthRight = HealthRight
-	self.Castbar = Castbar
 	self.Buffs = Buffs
 	self.Debuffs = Debuffs
 end
@@ -281,6 +285,7 @@ GUI:AddWidgets(Language["General"], Language["Focus"], Language["Unit Frames"], 
 	left:CreateHeader(Language["Styling"])
 	left:CreateSwitch("focus-enable", Settings["focus-enable"], Language["Enable Focus"], Language["Enable the focus unit frame"], ReloadUI):RequiresReload(true)
 	left:CreateSlider("unitframes-focus-width", Settings["unitframes-focus-width"], 60, 320, 1, "Width", "Set the width of the focus unit frame", UpdateFocusWidth)
+	left:CreateSwitch("focus-enable-castbar", Settings["focus-enable-castbar"], Language["Enable Cast Bar"], Language["Enable the cast bar"], ReloadUI):RequiresReload(true)
 	
 	left:CreateHeader(Language["Health"])
 	left:CreateSwitch("unitframes-focus-health-reverse", Settings["unitframes-focus-health-reverse"], Language["Reverse Health Fill"], Language["Reverse the fill of the health bar"], UpdateFocusHealthFill)

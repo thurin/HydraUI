@@ -90,6 +90,9 @@ GUI:AddWidgets(Language["General"], Language["General"], function(left, right)
 	right:CreateSwitch("gui-enable-fade", Settings["gui-enable-fade"], Language["Fade While Moving"], Language["Fade out the settings window while moving"], UpdateGUIEnableFade)
 	right:CreateSlider("gui-faded-alpha", Settings["gui-faded-alpha"], 0, 100, 10, Language["Set Faded Opacity"], Language["Set the opacity of the settings window while faded"], nil, nil, "%")
 	
+	right:CreateHeader(Language["Border Thickness"])
+	right:CreateSlider('ui-border-thickness', Settings['ui-border-thickness'], 0, 2, 1, Language["Border Thickness"], Language["Set how thick the border on UI elements is"], ReloadUI, nil, "px"):RequiresReload(true)
+	
 	--left:CreateHeader(Language["Developer"])
 	--left:CreateSwitch("ui-display-dev-tools", Settings["ui-display-dev-tools"], Language["Display Developer Chat Tools"], "", UpdateDisplayDevTools)
 end)
@@ -135,9 +138,6 @@ GUI:AddWidgets(Language["General"], Language["Styles"], function(left, right)
 	right:CreateHeader(Language["Console"])
 	right:CreateButton("", Language["Reload"], Language["Reload UI"], Language["Reload the UI"], ReloadUI)
 	--right:CreateButton("", Language["Delete"], Language["Delete Saved Variables"], Language["Reset all saved variables"], HydraUI.Reset)
-	
-	right:CreateHeader(Language["Border Thickness"])
-	right:CreateSlider('ui-border-thickness', Settings['ui-border-thickness'], 0, 2, 1, Language["Border Thickness"], Language["Set how thick the border on UI elements is"], ReloadUI, nil, "px"):RequiresReload(true)
 	
 	right:CreateHeader(Language["Windows"])
 	right:CreateColorSelection("ui-window-bg-color", Settings["ui-window-bg-color"], Language["Background Color"], "")
