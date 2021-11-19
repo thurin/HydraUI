@@ -30,6 +30,11 @@ local OnEnter = function(self)
 		GameTooltip:AddDoubleLine(DISHONORABLE_KILLS, HydraUI:Comma(DK), 1, 1, 1, 1, 1, 1)
 	end
 	
+	-- GetCurrentArenaSeason()
+	
+	
+	-- if IsInArenaTeam() then
+	
 	GameTooltip:Show()
 end
 

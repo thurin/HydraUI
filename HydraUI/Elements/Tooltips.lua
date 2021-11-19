@@ -23,6 +23,7 @@ Defaults["tooltips-cursor-anchor-x"] = 0
 Defaults["tooltips-cursor-anchor-y"] = 8
 Defaults["tooltips-show-health"] = true
 Defaults["tooltips-show-price"] = true
+Defaults["tooltips-opacity"] = 100
 
 local select = select
 local find = string.find
@@ -142,9 +143,9 @@ local SetTooltipStyle = function(self)
 		self.Backdrop:SetPoint("TOPLEFT", self, 0, 0)
 		self.Backdrop:SetPoint("BOTTOMRIGHT", self, 0, 0)
 		self.Backdrop:SetFrameLevel(0)
-		self.Backdrop:SetFrameStrata("LOW")
+		self.Backdrop:SetFrameStrata("DIALOG")
 		HydraUI:AddBackdrop(self.Backdrop)
-		self.Backdrop.Outside:SetBackdropColor(R, G, B)
+		self.Backdrop.Outside:SetBackdropColor(R, G, B, (Settings["tooltips-opacity"] / 100))
 		
 		if (self == AutoCompleteBox) then
 			for i = 1, AUTOCOMPLETE_MAX_BUTTONS do
@@ -706,6 +707,16 @@ local UpdateShowHealthText = function(value)
 	end
 end
 
+local UpdateTooltipBackdrop = function(value)
+	local R, G, B = HydraUI:HexToRGB(Settings["ui-window-main-color"])
+	
+	for i = 1, #Tooltips.Handled do
+		if Tooltips.Handled[i].Backdrop then
+			Tooltips.Handled[i].Backdrop.Outside:SetBackdropColor(R, G, B, (value / 100))
+		end
+	end
+end
+
 GUI:AddWidgets(Language["General"], Language["Tooltips"], function(left, right)
 	left:CreateHeader(Language["Enable"])
 	left:CreateSwitch("tooltips-enable", Settings["tooltips-enable"], Language["Enable Tooltips Module"], Language["Enable the HydraUI tooltips module"], ReloadUI):RequiresReload(true)
@@ -722,6 +733,9 @@ GUI:AddWidgets(Language["General"], Language["Tooltips"], function(left, right)
 	left:CreateSwitch("tooltips-display-title", Settings["tooltips-display-title"], Language["Display Title"], Language["Display character titles"])
 	left:CreateSwitch("tooltips-display-rank", Settings["tooltips-display-rank"], Language["Display Guild Rank"], Language["Display character guild ranks"])
 	left:CreateSwitch("tooltips-show-price", Settings["tooltips-show-price"], Language["Display Vendor Price"], Language["Display the vendor price of an item"])
+	
+	left:CreateHeader(Language["Opacity"])
+	left:CreateSlider("tooltips-opacity", Settings["tooltips-opacity"], 0, 100, 5, Language["Tooltip Opacity"], Language["Set the opacity of the tooltip background"], UpdateTooltipBackdrop)
 	
 	right:CreateHeader(Language["Font"])
 	right:CreateDropdown("tooltips-font", Settings["tooltips-font"], Assets:GetFontList(), Language["Font"], Language["Set the font of the tooltip text"], nil, "Font")
