@@ -770,7 +770,7 @@ function Chat:MoveChatFrames()
 			Frame:SetPoint("TOPLEFT", self.Middle, 4 + Settings["ui-border-thickness"], -(4 + Settings["ui-border-thickness"]))
 			Frame:SetPoint("BOTTOMRIGHT", self.Middle, -(4 + Settings["ui-border-thickness"]), 4 + Settings["ui-border-thickness"])
 		elseif (Settings["right-window-enable"] and Frame.name and Frame.name == Settings["chat-right-frame"]) then
-			-- Grab the frame
+		
 		end
 		
 		if (not Frame.isLocked) then

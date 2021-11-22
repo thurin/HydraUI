@@ -33,7 +33,18 @@ local OnEnter = function(self)
 	-- GetCurrentArenaSeason()
 	
 	
-	-- if IsInArenaTeam() then
+	--[[
+		if IsInArenaTeam() then -- Inside OnEnable
+			self:RegisterEvent("ARENA_TEAM_ROSTER_UPDATE")
+			
+			ArenaTeamRoster(1)
+			ArenaTeamRoster(2)
+			ArenaTeamRoster(3)
+		end
+		
+		-- Inside tooltip
+		local name, rank, level, class, online, played, win, seasonPlayed, seasonWin, personalRating = GetArenaTeamRosterInfo(teamindex, playerid); teamindex=1-3, playerid=1-5
+	--]]
 	
 	GameTooltip:Show()
 end
