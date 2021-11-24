@@ -34,6 +34,7 @@ function Window:CreateSingleWindow()
 	self.Middle:SetPoint("BOTTOMLEFT", self.Bottom, "TOPLEFT", 0, 1 > Border and -1 or -(Border + 2))
 	HydraUI:AddBackdrop(self.Middle)
 	self.Middle.Outside:SetBackdropColor(R, G, B, (Settings["right-window-fill"] / 100))
+	self.Middle.Outside:SetFrameStrata("BACKGROUND")
 	
 	self.Top = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
 	self.Top:SetSize(Width, Settings["right-window-top-height"])
@@ -61,12 +62,14 @@ function Window:CreateDoubleWindow()
 	self.Left:SetPoint("BOTTOMLEFT", self.Bottom, "TOPLEFT", 0, Adjust) -- -4
 	HydraUI:AddBackdrop(self.Left)
 	self.Left.Outside:SetBackdropColor(R, G, B, (Settings["right-window-fill"] / 100))
+	self.Left.Outside:SetFrameStrata("BACKGROUND")
 	
 	self.Right = CreateFrame("Frame", nil, self, "BackdropTemplate")
 	self.Right:SetSize(RightWidth, Settings["right-window-height"])
 	self.Right:SetPoint("BOTTOMRIGHT", self.Bottom, "TOPRIGHT", 0, Adjust) -- -4
 	HydraUI:AddBackdrop(self.Right)
 	self.Right.Outside:SetBackdropColor(R, G, B, (Settings["right-window-fill"] / 100))
+	self.Right.Outside:SetFrameStrata("BACKGROUND")
 	
 	self.TopLeft = CreateFrame("Frame", nil, self, "BackdropTemplate")
 	self.TopLeft:SetSize(LeftWidth, Settings["right-window-top-height"])

@@ -1,6 +1,19 @@
-local HydraUI, GUI, Language, Assets, Settings = select(2, ...):get()
+local HydraUI, GUI, Language, Assets, Settings, Defaults = select(2, ...):get()
 
 local Map = HydraUI:NewModule("Minimap")
+
+Defaults["minimap-enable"] = true
+Defaults["minimap-size"] = 140
+Defaults["minimap-show-top"] = true
+Defaults["minimap-show-bottom"] = true
+Defaults["minimap-buttons-enable"] = true
+Defaults["minimap-buttons-size"] = 22
+Defaults["minimap-buttons-spacing"] = 2
+Defaults["minimap-buttons-perrow"] = 5
+Defaults["minimap-top-height"] = 28
+Defaults["minimap-bottom-height"] = 28
+Defaults["minimap-top-fill"] = 100
+Defaults["minimap-bottom-fill"] = 100
 
 function Map:Disable(object)
 	if object.UnregisterAllEvents then
@@ -54,6 +67,7 @@ function Map:Style()
 	Minimap:SetMaskTexture(Assets:GetTexture("Blank"))
 	Minimap:SetParent(self)
 	Minimap:ClearAllPoints()
+	Minimap:SetSize(Settings["minimap-size"], Settings["minimap-size"])
 	Minimap:SetPoint("TOPLEFT", self.Middle, Border + 1, -(Border + 1))
 	Minimap:SetPoint("BOTTOMRIGHT", self.Middle, -(Border + 1), Border + 1)
 	Minimap:EnableMouseWheel(true)
