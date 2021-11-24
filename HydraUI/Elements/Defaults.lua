@@ -160,20 +160,6 @@ Defaults["auras-spacing"] = 2
 Defaults["auras-row-spacing"] = 16
 Defaults["auras-per-row"] = 12
 
--- Minimap
-Defaults["minimap-enable"] = true
-Defaults["minimap-size"] = 140
-Defaults["minimap-show-top"] = true
-Defaults["minimap-show-bottom"] = true
-Defaults["minimap-buttons-enable"] = true
-Defaults["minimap-buttons-size"] = 22
-Defaults["minimap-buttons-spacing"] = 2
-Defaults["minimap-buttons-perrow"] = 5
-Defaults["minimap-top-height"] = 28
-Defaults["minimap-bottom-height"] = 28
-Defaults["minimap-top-fill"] = 100
-Defaults["minimap-bottom-fill"] = 100
-
 -- Cooldowns
 Defaults["cooldowns-enable"] = true
 
