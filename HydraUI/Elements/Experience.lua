@@ -12,8 +12,9 @@ local UnitXPMax = UnitXPMax
 local UnitLevel = UnitLevel
 local GetXPExhaustion = GetXPExhaustion
 local MAX_PLAYER_LEVEL = MAX_PLAYER_LEVEL
-local GetQuestLogTitle = GetQuestLogTitle
-local GetNumQuestLogEntries = GetNumQuestLogEntries
+local GetQuestInfo = C_QuestLog.GetInfo
+local ReadyForTurnIn = C_QuestLog.ReadyForTurnIn
+local GetNumQuestLogEntries = C_QuestLog.GetNumQuestLogEntries
 
 local Gained = 0
 local Seconds = 0
@@ -103,6 +104,7 @@ function Experience:CreateBar()
 	self:SetSize(Settings["experience-width"], Settings["experience-height"])
 	self:SetPoint("TOP", HydraUI.UIParent, 0, -13)
 	self:SetFrameStrata("MEDIUM")
+	self.Elapsed = 0
 	
 	if Settings["experience-mouseover"] then
 		self:SetAlpha(Settings["experience-mouseover-opacity"] / 100)
@@ -221,15 +223,13 @@ function Experience:OnEvent()
 	local ZoneName
 	
 	for i = 1, GetNumQuestLogEntries() do
-		local TitleText, _, _, IsHeader, _, IsComplete, _, QuestID = GetQuestLogTitle(i)
+		local Info = GetQuestInfo(i)
 		
-		if IsHeader then
-			ZoneName = TitleText
-			--if (ZoneName and Zone == ZoneName) and IsComplete then
-			--end
+		if (Info.isHeader and not Info.isHidden) then
+			ZoneName = Info.title
 		else
-			if (ZoneName and Zone == ZoneName and IsComplete) then
-				QuestLogXP = QuestLogXP + GetQuestLogRewardXP(QuestID)
+			if (ZoneName and Zone == ZoneName and ReadyForTurnIn(Info.questID)) then
+				QuestLogXP = QuestLogXP + GetQuestLogRewardXP(Info.questID)
 			end
 		end
 	end

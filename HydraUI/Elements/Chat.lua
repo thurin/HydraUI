@@ -249,6 +249,7 @@ function Chat:CreateChatWindow()
 	self.Middle:SetPoint("BOTTOM", self.Bottom, "TOP", 0, 1 > Border and -1 or -(Border + 2))
 	HydraUI:AddBackdrop(self.Middle)
 	self.Middle.Outside:SetBackdropColor(R, G, B, (Settings["chat-bg-opacity"] / 100))
+	self.Middle.Outside:SetFrameStrata("BACKGROUND")
 	
 	self.Top = CreateFrame("Frame", "HydraUIChatFrameTop", self, "BackdropTemplate")
 	self.Top:SetSize(Width, Settings["chat-top-height"])
