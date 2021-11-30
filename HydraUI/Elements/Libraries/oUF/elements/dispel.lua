@@ -154,9 +154,9 @@ local Enable = function(self)
 			Dispel.__owner = self
 			Dispel.Prio = 0
 			
-			Dispel:EnableMouse(true)
+			--[[Dispel:EnableMouse(true)
 			Dispel:SetScript("OnEnter", OnEnter)
-			Dispel:SetScript("OnLeave", OnLeave)
+			Dispel:SetScript("OnLeave", OnLeave)]]
 			
 			if (not Dispel.Updater) then
 				Dispel.Updater = CreateFrame("Frame")
@@ -178,9 +178,9 @@ local Disable = function(self)
 		self.Dispel:Hide()
 		self.Dispel.Updater:SetScript("OnEvent", nil)
 		self.Dispel.Updater:UnregisterAllEvents()
-		self.Dispel:EnableMouse(false)
+		--[[self.Dispel:EnableMouse(false)
 		self.Dispel:SetScript("OnEnter", nil)
-		self.Dispel:SetScript("OnLeave", nil)
+		self.Dispel:SetScript("OnLeave", nil)]]
 	end
 end
 

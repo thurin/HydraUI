@@ -12,10 +12,9 @@ local UnitXPMax = UnitXPMax
 local UnitLevel = UnitLevel
 local GetXPExhaustion = GetXPExhaustion
 local MAX_PLAYER_LEVEL = MAX_PLAYER_LEVEL
-local GetQuestInfo = C_QuestLog.GetInfo
-local ReadyForTurnIn = C_QuestLog.ReadyForTurnIn
-local GetNumQuestLogEntries = C_QuestLog.GetNumQuestLogEntries
-
+local GetQuestLogTitle = GetQuestLogTitle
+local GetNumQuestLogEntries = GetNumQuestLogEntries
+local LEVEL = LEVEL
 local Gained = 0
 local Seconds = 0
 
@@ -37,22 +36,6 @@ Defaults["experience-rested-color"] = "00B4FF"
 
 local FadeOnFinished = function(self)
 	self.Parent:Hide()
-end
-
-local UpdateDisplayLevel = function(value)
-	if value then
-	--[[	Experience.HeaderBG:Show()
-		
-		Experience.BarBG:ClearAllPoints()
-		Experience.BarBG:SetPoint("TOPLEFT", Experience.HeaderBG, "TOPRIGHT", 2, 0)
-		Experience.BarBG:SetPoint("BOTTOMRIGHT", Experience, 0, 0)]]
-	else
-	--[[	Experience.HeaderBG:Hide()
-		
-		Experience.BarBG:ClearAllPoints()
-		Experience.BarBG:SetPoint("TOPLEFT", Experience, 0, 0)
-		Experience.BarBG:SetPoint("BOTTOMRIGHT", Experience, 0, 0)]]
-	end
 end
 
 local UpdateDisplayProgress = function(value)
@@ -77,7 +60,6 @@ end
 
 local UpdateBarHeight = function(value)
 	Experience:SetHeight(value)
-	--Experience.HeaderBG:SetHeight(value)
 	Experience.Bar.Spark:SetHeight(value)
 end
 
@@ -221,15 +203,18 @@ function Experience:OnEvent()
 	local QuestLogXP = 0
 	local Zone = GetRealZoneText()
 	local ZoneName
+	local Level = Settings["experience-display-level"] and (format("%s %d - ", LEVEL, UnitLevel("player"))) or ""
 	
 	for i = 1, GetNumQuestLogEntries() do
-		local Info = GetQuestInfo(i)
+		local TitleText, _, _, IsHeader, _, IsComplete, _, QuestID = GetQuestLogTitle(i)
 		
-		if (Info.isHeader and not Info.isHidden) then
-			ZoneName = Info.title
+		if IsHeader then
+			ZoneName = TitleText
+			--if (ZoneName and Zone == ZoneName) and IsComplete then
+			--end
 		else
-			if (ZoneName and Zone == ZoneName and ReadyForTurnIn(Info.questID)) then
-				QuestLogXP = QuestLogXP + GetQuestLogRewardXP(Info.questID)
+			if (ZoneName and Zone == ZoneName and IsComplete) then
+				QuestLogXP = QuestLogXP + GetQuestLogRewardXP(QuestID)
 			end
 		end
 	end
@@ -249,13 +234,13 @@ function Experience:OnEvent()
 		self.Bar.Rested:SetValue(XP + Rested)
 		
 		if Settings["experience-display-rested-value"] then
-			self.Progress:SetText(format("%s / %s (+%s) %s", HydraUI:Comma(XP), HydraUI:Comma(MaxXP), HydraUI:Comma(Rested), RestingText))
+			self.Progress:SetFormattedText("%s%s / %s (+%s) %s", Level, HydraUI:Comma(XP), HydraUI:Comma(MaxXP), HydraUI:Comma(Rested), RestingText)
 		else
-			self.Progress:SetText(format("%s / %s %s", HydraUI:Comma(XP), HydraUI:Comma(MaxXP), RestingText))
+			self.Progress:SetFormattedText("%s%s / %s %s", Level, HydraUI:Comma(XP), HydraUI:Comma(MaxXP), RestingText)
 		end
 	else
 		self.Bar.Rested:SetValue(0)
-		self.Progress:SetText(format("%s / %s %s", HydraUI:Comma(XP), HydraUI:Comma(MaxXP), RestingText))
+		self.Progress:SetFormattedText("%s%s / %s %s", Level, HydraUI:Comma(XP), HydraUI:Comma(MaxXP), RestingText)
 	end
 	
 	self.Percentage:SetText(floor((XP / MaxXP * 100 + 0.05) * 10) / 10 .. "%")
@@ -421,7 +406,6 @@ function Experience:Load()
 	self:SetScript("OnEnter", self.OnEnter)
 	self:SetScript("OnLeave", self.OnLeave)
 	
-	UpdateDisplayLevel(Settings["experience-display-level"])
 	UpdateDisplayProgress(Settings["experience-display-progress"])
 	UpdateDisplayPercent(Settings["experience-display-percent"])
 	UpdateProgressVisibility(Settings["experience-progress-visibility"])
@@ -437,9 +421,7 @@ local UpdateRestedColor = function(value)
 	Experience.Bar.Rested:SetStatusBarColor(HydraUI:HexToRGB(value))
 end
 
-local UpdateShowRestedValue = function()
-	--UpdateXP(Experience)
-	
+local UpdateExperience = function()
 	Experience:OnEvent()
 end
 
@@ -462,10 +444,10 @@ GUI:AddWidgets(Language["General"], Language["Experience"], function(left, right
 	left:CreateSwitch("experience-enable", Settings["experience-enable"], Language["Enable Experience Module"], Language["Enable the HydraUI experience module"], ReloadUI):RequiresReload(true)
 	
 	left:CreateHeader(Language["Styling"])
-	left:CreateSwitch("experience-display-level", Settings["experience-display-level"], Language["Display Level"], Language["Display your current level in the experience bar"], UpdateDisplayLevel)
+	left:CreateSwitch("experience-display-level", Settings["experience-display-level"], Language["Display Level"], Language["Display your current level in the experience bar"], UpdateExperience)
 	left:CreateSwitch("experience-display-progress", Settings["experience-display-progress"], Language["Display Progress Value"], Language["Display your current progress information in the experience bar"], UpdateDisplayProgress)
 	left:CreateSwitch("experience-display-percent", Settings["experience-display-percent"], Language["Display Percent Value"], Language["Display your current percent information in the experience bar"], UpdateDisplayPercent)
-	left:CreateSwitch("experience-display-rested-value", Settings["experience-display-rested-value"], Language["Display Rested Value"], Language["Display your current rested value on the experience bar"], UpdateShowRestedValue)
+	left:CreateSwitch("experience-display-rested-value", Settings["experience-display-rested-value"], Language["Display Rested Value"], Language["Display your current rested value on the experience bar"], UpdateExperience)
 	left:CreateSwitch("experience-show-tooltip", Settings["experience-show-tooltip"], Language["Enable Tooltip"], Language["Display a tooltip when mousing over the experience bar"])
 	left:CreateSwitch("experience-animate", Settings["experience-animate"], Language["Animate Experience Changes"], Language["Smoothly animate changes to the experience bar"])
 	
