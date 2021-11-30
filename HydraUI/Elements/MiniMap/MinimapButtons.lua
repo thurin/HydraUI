@@ -119,9 +119,10 @@ end
 function MinimapButtons:SkinButtons()
 	for _, Child in next, {Minimap:GetChildren()} do
 		local Name = Child:GetName()
+		local Type = Child:GetObjectType()
 		
-		if (Name and not IgnoredBlizzard[Name] and not IsIgnoredAddOn(Name) and Child:IsShown()) then
-			local Type = Child:GetObjectType()
+		--if (Name and not IgnoredBlizzard[Name] and not IsIgnoredAddOn(Name) and Child:IsShown()) then
+		if (Name and not IgnoredBlizzard[Name] and not IsIgnoredAddOn(Name)) or (Child:IsShown() and Type ~= "Frame") then
 			
 			Child:SetParent(self.Panel)
 			
@@ -229,23 +230,27 @@ local UpdateBar = function()
 	MinimapButtons:PositionButtons(Settings["minimap-buttons-perrow"], Settings["minimap-buttons-size"], Settings["minimap-buttons-spacing"])
 end
 
-function MinimapButtons:Load()
-	if (not Settings["minimap-buttons-enable"]) then
-		return
-	end
+local DelayedLoad = function()
+	MinimapButtons:CreatePanel()
+	MinimapButtons:SkinButtons()
 	
-	self:CreatePanel()
-	self:SkinButtons()
-	
-	if (#self.Items == 0) then
-		self:Hide()
+	if (#MinimapButtons.Items == 0) then
+		MinimapButtons:Hide()
 		
 		return
 	end
 	
 	UpdateBar()
 	
-   HydraUI:CreateMover(self.Panel)
+	HydraUI:CreateMover(MinimapButtons.Panel)
+end
+
+function MinimapButtons:Load()
+	if (not Settings["minimap-buttons-enable"]) then
+		return
+	end
+
+   HydraUI:StartTimer(2, DelayedLoad)
 end
 
 GUI:AddWidgets(Language["General"], Language["Minimap"], function(left, right)

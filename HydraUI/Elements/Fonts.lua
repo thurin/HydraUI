@@ -29,6 +29,7 @@ Defaults["error-font-flags"] = ""
 
 Defaults["replace-ui-fonts"] = true
 Defaults["replacement-ui-font"] = "Roboto"
+Defaults["ui-font-offset"] = 0
 
 function Fonts:UpdateFont(object)
 	local _, Size, Outline = object:GetFont()
@@ -37,7 +38,7 @@ function Fonts:UpdateFont(object)
 		Size = 12
 	end
 	
-	object:SetFont(Font, Size, Outline)
+	object:SetFont(Font, Size + Settings["ui-font-offset"], Outline)
 end
 
 function Fonts:Load()
@@ -191,5 +192,6 @@ GUI:AddWidgets(Language["General"], Language["General"], function(left, right)
 	
 	left:CreateHeader(Language["Replace UI Fonts"])
 	left:CreateSwitch("replace-ui-fonts", Settings["replace-ui-fonts"], Language["Enable Font Replacement"], Language["Replace default fonts around the UI"], ReloadUI):RequiresReload(true)
+	left:CreateSlider("ui-font-offset", Settings["ui-font-offset"], -2, 6, 2, Language["Size Offset"], Language["Add an offset to the font size"], ReloadUI):RequiresReload(true)
 	left:CreateDropdown("replacement-ui-font", Settings["replacement-ui-font"], Assets:GetFontList(), Language["Font"], Language["Set the font"], ReloadUI, "Font"):RequiresReload(true)
 end)

@@ -138,9 +138,9 @@ local Enable = function(self)
 		self.Dispel.__owner = self
 		self.Dispel.Prio = 0
 		
-		self.Dispel:EnableMouse(true)
+		--[[self.Dispel:EnableMouse(true)
 		self.Dispel:SetScript("OnEnter", OnEnter)
-		self.Dispel:SetScript("OnLeave", OnLeave)
+		self.Dispel:SetScript("OnLeave", OnLeave)]]
 		
 		self.Dispel:Hide()
 		
@@ -153,9 +153,9 @@ local Disable = function(self)
 		self:UnregisterEvent("UNIT_AURA", Update)
 		self.Dispel:Hide()
 		self.Dispel.__owner = nil
-		self.Dispel:EnableMouse(false)
+		--[[self.Dispel:EnableMouse(false)
 		self.Dispel:SetScript("OnEnter", nil)
-		self.Dispel:SetScript("OnLeave", nil)
+		self.Dispel:SetScript("OnLeave", nil)]]
 	end
 end
 
