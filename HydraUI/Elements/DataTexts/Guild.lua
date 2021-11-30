@@ -18,6 +18,16 @@ local StatusLabels = {
 	[2] = "|cFFFF6666" .. CHAT_FLAG_DND .. "|r",
 }
 
+local OnUpdate = function(self, elapsed)
+	self.Elapsed = self.Elapsed + elapsed
+	
+	if (self.Elapsed > 10) then
+		GuildRoster()
+		
+		self.Elapsed = 0
+	end
+end
+
 local OnEnter = function(self)
 	if (not IsInGuild()) then
 		return
@@ -87,6 +97,11 @@ local OnEnter = function(self)
 	
 	self.TooltipShown = true
 	
+	if (not self:GetScript("OnUpdate")) then
+		self.Elapsed = 0
+		self:SetScript("OnUpdate", OnUpdate)
+	end
+	
 	GameTooltip:Show()
 end
 
@@ -94,6 +109,10 @@ local OnLeave = function(self)
 	GameTooltip:Hide()
 	self:UnregisterEvent("MODIFIER_STATE_CHANGED")
 	self.TooltipShown = false
+	
+	if self:GetScript("OnUpdate") then
+		self:SetScript("OnUpdate", nil)
+	end
 end
 
 local Update = function(self, event)
@@ -144,6 +163,11 @@ local OnDisable = function(self)
 	self:SetScript("OnEnter", nil)
 	self:SetScript("OnLeave", nil)
 	self:SetScript("OnMouseUp", nil)
+	self:SetScript("OnUpdate", nil)
+	
+	if self.Elapsed then
+		self.Elapsed = 0
+	end
 	
 	self.Text:SetText("")
 end
