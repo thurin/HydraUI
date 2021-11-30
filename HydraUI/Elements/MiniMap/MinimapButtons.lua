@@ -249,8 +249,8 @@ function MinimapButtons:Load()
 	if (not Settings["minimap-buttons-enable"]) then
 		return
 	end
-
-   HydraUI:StartTimer(2, DelayedLoad)
+	
+	C_Timer.After(2, DelayedLoad)
 end
 
 GUI:AddWidgets(Language["General"], Language["Minimap"], function(left, right)

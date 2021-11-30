@@ -840,7 +840,7 @@ function Chat:MoveChatFrames()
 		local Frame = _G["ChatFrame"..i]
 		
 		Frame:SetFrameLevel(self.Middle:GetFrameLevel() + 1)
-		Frame:SetFrameStrata("HIGH")
+		Frame:SetFrameStrata("MEDIUM")
 		Frame:SetJustifyH("LEFT")
 		
 		if (Frame:GetID() == 1) then
