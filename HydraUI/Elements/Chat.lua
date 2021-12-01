@@ -55,6 +55,7 @@ local ChatEdit_ChooseBoxForSend = ChatEdit_ChooseBoxForSend
 local ChatEdit_ActivateChat = ChatEdit_ActivateChat
 local ChatEdit_ParseText = ChatEdit_ParseText
 local ChatEdit_UpdateHeader = ChatEdit_UpdateHeader
+local CHAT_LABEL = CHAT_LABEL
 
 local Window = HydraUI:NewModule("Right Window")
 local Chat = HydraUI:NewModule("Chat")
@@ -294,18 +295,15 @@ end
 local OnMouseWheel = function(self, delta)
 	if (delta < 0) then
 		if IsShiftKeyDown() then
-			--self:ScrollToBottom()
-			ChatFrame_ScrollToBottom()
+			self:ScrollToBottom()
 		else
 			self:ScrollDown()
-			ChatFrame_ScrollDown()
 		end
 	elseif (delta > 0) then
 		if IsShiftKeyDown() then
 			self:ScrollToTop()
 		else
-			--self:ScrollUp()
-			ChatFrame_ScrollUp()
+			self:ScrollUp()
 		end
 	end
 end
@@ -862,11 +860,11 @@ function Chat:MoveChatFrames()
 				Frame:ClearAllPoints()
 				Frame:SetPoint("TOPLEFT", Window.Middle, 4 + Settings["ui-border-thickness"], -(4 + Settings["ui-border-thickness"]))
 				Frame:SetPoint("BOTTOMRIGHT", Window.Middle, -(4 + Settings["ui-border-thickness"]), 4 + Settings["ui-border-thickness"])
-			elseif (not Frame.isDocked and (not match(Frame.name, "Chat%s%d+")) and Frame.name ~= Settings["rw-single-embed"]) then
+			elseif (not Frame.isDocked and (not match(Frame.name, CHAT_LABEL .. "%s%d+")) and Frame.name ~= Settings["rw-single-embed"]) then
 				FCF_DockFrame(Frame, #FCFDock_GetChatFrames(GENERAL_CHAT_DOCK) + 1, true)
 			end
 		else
-			if (not Frame.isDocked and (not match(Frame.name, "Chat%s%d+"))) then
+			if (not Frame.isDocked and (not match(Frame.name, CHAT_LABEL .. "%s%d+"))) then
 				FCF_DockFrame(Frame, #FCFDock_GetChatFrames(GENERAL_CHAT_DOCK) + 1, true)
 			end
 		end
@@ -1553,7 +1551,7 @@ local GetChatFrameList = function()
 	for i = 3, NUM_CHAT_WINDOWS do
 		Frame = _G["ChatFrame"..i]
 		
-		if Frame.name and (not match(Frame.name, "Chat%s%d+")) then
+		if Frame.name and (not match(Frame.name, CHAT_LABEL .. "%s%d+")) then
 			Frames[Frame.name] = Frame.name
 		end
 	end
