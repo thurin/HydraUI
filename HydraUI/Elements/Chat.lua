@@ -658,7 +658,8 @@ function Chat:StyleChatFrame(frame)
 	TabText.SetTextColor = NoCall
 	
 	if Tab.glow then
-		Tab.glow:SetPoint("CENTER", Tab, 0, 1)
+		Tab.glow:ClearAllPoints()
+		Tab.glow:SetPoint("BOTTOM", Tab, 0, 1 > Settings["ui-border-thickness"] and -1 or -(Settings["ui-border-thickness"] + 2)) -- 1
 		Tab.glow:SetWidth(TabText:GetWidth() + 6)
 	end
 	
@@ -666,7 +667,6 @@ function Chat:StyleChatFrame(frame)
 	frame:SetClampRectInsets(0, 0, 0, 0)
 	frame:SetClampedToScreen(false)
 	frame:SetFading(false)
-	--frame:SetMovable(true)
 	frame:SetScript("OnMouseWheel", OnMouseWheel)
 	frame:SetSize(self:GetWidth() - 8, self:GetHeight() - 8)
 	frame:SetFrameLevel(self:GetFrameLevel() + 1)
@@ -790,10 +790,6 @@ end
 local OpenTemporaryWindow = function()
 	local Frame = FCF_GetCurrentChatFrame()
 	
-	if (_G[Frame:GetName().."Tab"]:GetText() == PET_BATTLE_COMBAT_LOG) then
-		return FCF_Close(Frame)
-	end
-	
 	if (not Frame.Styled) then
 		Chat:StyleChatFrame(Frame)
 	end
@@ -853,7 +849,6 @@ function Chat:MoveChatFrames()
 				FCF_DockFrame(Frame, #FCFDock_GetChatFrames(GENERAL_CHAT_DOCK) + 1, true)
 				FCF_UnDockFrame(Frame)
 				FCF_SetTabPosition(Frame, 0)
-				--FCF_SetLocked(Frame, true)
 				
 				Frame:SetMovable(true)
 				Frame:SetUserPlaced(true)

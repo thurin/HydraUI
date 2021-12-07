@@ -237,6 +237,8 @@ local function Enable(self, unit)
 		
 		self:RegisterEvent('UNIT_MAXHEALTH', Path)
 		self:RegisterEvent('UNIT_CONNECTION', Path)
+		self:RegisterEvent('PARTY_MEMBER_ENABLE', Path)
+		self:RegisterEvent('PARTY_MEMBER_DISABLE', Path)
 		self:RegisterEvent('UNIT_FACTION', Path) -- For tapping
 		self:RegisterEvent('UNIT_FLAGS', Path) -- For selection
 
@@ -265,6 +267,8 @@ local function Disable(self)
 		self:UnregisterEvent('UNIT_CONNECTION', Path)
 		self:UnregisterEvent('UNIT_FACTION', Path)
 		self:UnregisterEvent('UNIT_FLAGS', Path)
+		self:UnregisterEvent('PARTY_MEMBER_ENABLE', Path)
+		self:UnregisterEvent('PARTY_MEMBER_DISABLE', Path)
 	end
 end
 

@@ -88,9 +88,6 @@ function Map:Style()
 	
 	MinimapNorthTag:SetTexture(nil)
 	
-	--[[MiniMapBattlefieldFrame:ClearAllPoints()
-	MiniMapBattlefieldFrame:SetPoint("BOTTOMLEFT", Minimap, 0, -2)]]
-	
 	if MiniMapTrackingFrame then
 		MiniMapTrackingFrame:ClearAllPoints()
 		MiniMapTrackingFrame:SetSize(24, 24)
@@ -106,6 +103,9 @@ function Map:Style()
 		MiniMapTrackingBorder:Hide()
 		MiniMapTrackingBorder.Show = function() end
 	end
+	
+	MiniMapBattlefieldFrame:ClearAllPoints()
+	MiniMapBattlefieldFrame:SetPoint("BOTTOMLEFT", Minimap, 0, -3)
 	
 	self:Disable(MinimapCluster)
 	self:Disable(MinimapBorder)
