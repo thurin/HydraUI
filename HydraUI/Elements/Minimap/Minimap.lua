@@ -86,7 +86,7 @@ function Map:Style()
 	MinimapNorthTag:SetTexture(nil)
 	
 	QueueStatusMinimapButton:ClearAllPoints()
-	QueueStatusMinimapButton:SetPoint("BOTTOMLEFT", Minimap, -1, 1)
+	QueueStatusMinimapButton:SetPoint("BOTTOMLEFT", Minimap, 0, -3)
 	
 	GarrisonLandingPageMinimapButton:SetSize(40, 40)
 	GarrisonLandingPageMinimapButton:ClearAllPoints()
