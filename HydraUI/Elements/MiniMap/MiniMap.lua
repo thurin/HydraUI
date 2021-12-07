@@ -107,6 +107,9 @@ function Map:Style()
 	MiniMapTrackingIcon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
 	MiniMapTrackingIcon:SetPoint("CENTER", self.Tracking)
 	
+	MiniMapBattlefieldFrame:ClearAllPoints()
+	MiniMapBattlefieldFrame:SetPoint("BOTTOMLEFT", Minimap, 0, -3)
+	
 	self:Disable(MinimapCluster)
 	self:Disable(MinimapBorder)
 	self:Disable(MinimapBorderTop)

@@ -28,14 +28,12 @@ local IgnoredBlizzard = {
 	["TimeManagerClockButton"] = true,
 }
 
--- List borrowed from MBB AddOn
 local IgnoredAddOns = {
 	"archy",
 	"bookoftracksframe",
 	"cartographernotespoi",
 	"cork",
 	"da_minimap",
-	"dragon",
 	"dugisarrowminimappoint",
 	"enhancedframeminimapbutton",
 	"fishingextravaganzamini",
@@ -121,92 +119,94 @@ function MinimapButtons:SkinButtons()
 		local Name = Child:GetName()
 		local Type = Child:GetObjectType()
 		
-		--if (Name and not IgnoredBlizzard[Name] and not IsIgnoredAddOn(Name) and Child:IsShown()) then
-		if (Name and not IgnoredBlizzard[Name] and not IsIgnoredAddOn(Name)) or (Child:IsShown() and Type ~= "Frame") then
+		if (Child:IsShown() and Type ~= "Frame") then
+			local Valid = (Name and not IgnoredBlizzard[Name] and not IsIgnoredAddOn(Name)) or not Name
 			
-			Child:SetParent(self.Panel)
-			
-			if (Child:HasScript("OnDragStart")) then
-				Child:SetScript("OnDragStart", nil)
-			end
-			
-			if (Child:HasScript("OnDragStop")) then
-				Child:SetScript("OnDragStop", nil)
-			end
-			
-			for i = 1, Child:GetNumRegions() do
-				local Region = select(i, Child:GetRegions())
+			if Valid then
+				Child:SetParent(self.Panel)
 				
-				if (Region:GetObjectType() == "Texture") then
-					local ID = Region:GetTextureFileID()
-					local Texture = Region:GetTexture() or ""
-					Texture = lower(Texture)
-					
-					if (ID and RemoveByID[ID]) then
-						Region:SetTexture(nil)
-					end
-					
-					if (
-						find(Texture, [[interface\characterframe]]) or
-						find(Texture, [[interface\minimap]]) or
-						find(Texture, "border") or 
-						find(Texture, "background") or 
-						find(Texture, "alphamask") or
-						find(Texture, "highlight")
-					) then
-						Region:SetTexture(nil)
-						Region:SetAlpha(0)
-					end
-					
-					Region:ClearAllPoints()
-					Region:SetPoint("TOPLEFT", Child, 1, -1)
-					Region:SetPoint("BOTTOMRIGHT", Child, -1, 1)
-					Region:SetDrawLayer('ARTWORK')
-					Region:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-				end
-			end
-			
-			Child.Backdrop = CreateFrame("Frame", nil, Child, "BackdropTemplate")
-			Child.Backdrop:SetPoint("TOPLEFT", Child, 0, 0)
-			Child.Backdrop:SetPoint("BOTTOMRIGHT", Child, 0, 0)
-			Child.Backdrop:SetBackdrop(HydraUI.Backdrop)
-			Child.Backdrop:SetBackdropColor(0, 0, 0)
-			Child.Backdrop:SetFrameLevel(Child:GetFrameLevel() - 1)
-			
-			Child.Backdrop.Texture = Child.Backdrop:CreateTexture(nil, "BACKDROP")
-			Child.Backdrop.Texture:SetPoint("TOPLEFT", Child.Backdrop, 1, -1)
-			Child.Backdrop.Texture:SetPoint("BOTTOMRIGHT", Child.Backdrop, -1, 1)
-			Child.Backdrop.Texture:SetTexture(Assets:GetTexture(Settings["ui-header-texture"]))
-			Child.Backdrop.Texture:SetVertexColor(HydraUI:HexToRGB(Settings["ui-window-main-color"]))
-			
-			Child:SetFrameLevel(Minimap:GetFrameLevel() + 10)
-			Child:SetFrameStrata(Minimap:GetFrameStrata())
-			
-			if (Type == "Button" or Type == "Frame") then
-				if (Child.SetHighlightTexture) then
-					local Highlight = Child:CreateTexture(nil, "ARTWORK", button)
-					Highlight:SetTexture(Assets:GetTexture(Settings["action-bars-button-highlight"]))
-					Highlight:SetVertexColor(1, 1, 1, 0.2)
-					Highlight:SetPoint("TOPLEFT", Child, 1, -1)
-					Highlight:SetPoint("BOTTOMRIGHT", Child, -1, 1)
-					
-					Child.Highlight = Highlight
-					Child:SetHighlightTexture(Highlight)
+				if (Child:HasScript("OnDragStart")) then
+					Child:SetScript("OnDragStart", nil)
 				end
 				
-				if (Child.SetPushedTexture) then
-					local Pushed = Child:CreateTexture(nil, "ARTWORK", button)
-					Pushed:SetTexture(Assets:GetTexture(Settings["action-bars-button-highlight"]))
-					Pushed:SetVertexColor(0.9, 0.8, 0.1, 0.3)
-					Pushed:SetPoint("TOPLEFT", Child, 1, -1)
-					Pushed:SetPoint("BOTTOMRIGHT", Child, -1, 1)
-					
-					Child.Pushed = Pushed
-					Child:SetPushedTexture(Pushed)
+				if (Child:HasScript("OnDragStop")) then
+					Child:SetScript("OnDragStop", nil)
 				end
+				
+				for i = 1, Child:GetNumRegions() do
+					local Region = select(i, Child:GetRegions())
+					
+					if (Region:GetObjectType() == "Texture") then
+						local ID = Region:GetTextureFileID()
+						local Texture = Region:GetTexture() or ""
+						Texture = lower(Texture)
+						
+						if (ID and RemoveByID[ID]) then
+							Region:SetTexture(nil)
+						end
+						
+						if (
+							find(Texture, [[interface\characterframe]]) or
+							find(Texture, [[interface\minimap]]) or
+							find(Texture, "border") or 
+							find(Texture, "background") or 
+							find(Texture, "alphamask") or
+							find(Texture, "highlight")
+						) then
+							Region:SetTexture(nil)
+							Region:SetAlpha(0)
+						end
+						
+						Region:ClearAllPoints()
+						Region:SetPoint("TOPLEFT", Child, 1, -1)
+						Region:SetPoint("BOTTOMRIGHT", Child, -1, 1)
+						Region:SetDrawLayer('ARTWORK')
+						Region:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+					end
+				end
+				
+				Child.Backdrop = CreateFrame("Frame", nil, Child, "BackdropTemplate")
+				Child.Backdrop:SetPoint("TOPLEFT", Child, 0, 0)
+				Child.Backdrop:SetPoint("BOTTOMRIGHT", Child, 0, 0)
+				Child.Backdrop:SetBackdrop(HydraUI.Backdrop)
+				Child.Backdrop:SetBackdropColor(0, 0, 0)
+				Child.Backdrop:SetFrameLevel(Child:GetFrameLevel() - 1)
+				
+				Child.Backdrop.Texture = Child.Backdrop:CreateTexture(nil, "BACKDROP")
+				Child.Backdrop.Texture:SetPoint("TOPLEFT", Child.Backdrop, 1, -1)
+				Child.Backdrop.Texture:SetPoint("BOTTOMRIGHT", Child.Backdrop, -1, 1)
+				Child.Backdrop.Texture:SetTexture(Assets:GetTexture(Settings["ui-header-texture"]))
+				Child.Backdrop.Texture:SetVertexColor(HydraUI:HexToRGB(Settings["ui-window-main-color"]))
+				
+				Child:SetFrameLevel(Minimap:GetFrameLevel() + 10)
+				Child:SetFrameStrata(Minimap:GetFrameStrata())
+				
+				if (Type == "Button" or Type == "Frame") then
+					if (Child.SetHighlightTexture) then
+						local Highlight = Child:CreateTexture(nil, "ARTWORK", button)
+						Highlight:SetTexture(Assets:GetTexture(Settings["action-bars-button-highlight"]))
+						Highlight:SetVertexColor(1, 1, 1, 0.2)
+						Highlight:SetPoint("TOPLEFT", Child, 1, -1)
+						Highlight:SetPoint("BOTTOMRIGHT", Child, -1, 1)
+						
+						Child.Highlight = Highlight
+						Child:SetHighlightTexture(Highlight)
+					end
+					
+					if (Child.SetPushedTexture) then
+						local Pushed = Child:CreateTexture(nil, "ARTWORK", button)
+						Pushed:SetTexture(Assets:GetTexture(Settings["action-bars-button-highlight"]))
+						Pushed:SetVertexColor(0.9, 0.8, 0.1, 0.3)
+						Pushed:SetPoint("TOPLEFT", Child, 1, -1)
+						Pushed:SetPoint("BOTTOMRIGHT", Child, -1, 1)
+						
+						Child.Pushed = Pushed
+						Child:SetPushedTexture(Pushed)
+					end
+				end
+				
+				tinsert(self.Items, Child)
 			end
-			
-			tinsert(self.Items, Child)
 		end
 	end
 end
