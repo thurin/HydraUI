@@ -297,12 +297,20 @@ local OnMouseWheel = function(self, delta)
 	if (delta < 0) then
 		if IsShiftKeyDown() then
 			self:ScrollToBottom()
+		elseif IsControlKeyDown() then
+			for i = 1, 5 do
+				self:ScrollDown()
+			end
 		else
 			self:ScrollDown()
 		end
 	elseif (delta > 0) then
 		if IsShiftKeyDown() then
 			self:ScrollToTop()
+		elseif IsControlKeyDown() then
+			for i = 1, 5 do
+				self:ScrollUp()
+			end
 		else
 			self:ScrollUp()
 		end
@@ -330,7 +338,6 @@ local UpdateHeader = function(editbox)
 end
 
 local OnEditFocusLost = function(self)
-	local DT = HydraUI:GetModule("DataText")
 	local Left = DT:GetAnchor("Chat-Left")
 	local Middle = DT:GetAnchor("Chat-Middle")
 	local Right = DT:GetAnchor("Chat-Right")
@@ -350,7 +357,6 @@ local OnEditFocusLost = function(self)
 end
 
 local OnEditFocusGained = function(self)
-	local DT = HydraUI:GetModule("DataText")
 	local Left = DT:GetAnchor("Chat-Left")
 	local Middle = DT:GetAnchor("Chat-Middle")
 	local Right = DT:GetAnchor("Chat-Right")
@@ -1165,8 +1171,6 @@ local UpdateChatFrameWidth = function()
 	Chat.Top:SetWidth(Width)
 	
 	-- Update data text width
-	local DT = HydraUI:GetModule("DataText")
-	
 	DT:GetAnchor("Chat-Left"):SetWidth(Width / 3)
 	DT:GetAnchor("Chat-Middle"):SetWidth(Width / 3)
 	DT:GetAnchor("Chat-Right"):SetWidth(Width / 3)
@@ -1435,11 +1439,11 @@ function Window:UpdateDataTexts()
 end
 
 function Window:Load()
+	DT = HydraUI:GetModule("DataText")
+	
 	if (not Settings["right-window-enable"]) then
 		return
 	end
-
-	DT = HydraUI:GetModule("DataText")
 
 	self:SetSize(Settings["right-window-width"], Settings["right-window-height"] + Settings["right-window-bottom-height"] + Settings["right-window-top-height"]) -- Border fix me
 	self:SetPoint("BOTTOMRIGHT", HydraUI.UIParent, -13, 13)

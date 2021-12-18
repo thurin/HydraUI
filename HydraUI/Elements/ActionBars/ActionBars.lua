@@ -181,6 +181,9 @@ function AB:StyleActionButton(button)
 			HotKeyText = HotKeyText:gsub(WheelDown, "MWD")
 			HotKeyText = HotKeyText:gsub(MouseButton, "MB")
 			HotKeyText = HotKeyText:gsub(MiddleButton, "MMB")
+			HotKeyText = HotKeyText:gsub(CTRL_KEY_TEXT, "c")
+			HotKeyText = HotKeyText:gsub(SHIFT_KEY_TEXT, "s")
+			HotKeyText = HotKeyText:gsub(ALT_KEY_TEXT, "a")
 			
 			button.HotKey:SetText("|cFFFFFFFF" .. HotKeyText .. "|r")
 		else
