@@ -142,16 +142,21 @@ local FindLinks = function(self, event, msg, ...)
 end
 
 --[[ Scooping the GMOTD to see if there's any yummy links.
-ChatFrame_DisplayGMOTD = function(frame, message)
-	if (message and (message ~= "")) then
-		local Info = ChatTypeInfo["GUILD"]
+ChatFrame_DisplayGMOTD = function(self, text)
+	if (text and (text ~= "")) then
+		text = FormatLinks(text)
 		
-		message = format(GUILD_MOTD_TEMPLATE, message)
-		message = FormatLinks(message)
-		
-		frame:AddMessage(message, Info.r, Info.g, Info.b, Info.id)
+		self:AddMessage(format(GUILD_MOTD_TEMPLATE, text), 0.250, 1, 0.250, 5)
 	end
-end]]
+end
+
+local DisplayGMOTD = function(self, text)
+	if text and text ~= "" then
+		self:AddMessage(FormatLinks(text))
+	end
+end
+
+hooksecurefunc("ChatFrame_DisplayGMOTD", DisplayGMOTD)]]
 
 local SetEditBoxToLink = function(box, text)
 	box:SetText("")
@@ -162,6 +167,7 @@ local SetEditBoxToLink = function(box, text)
 		ChatEdit_UpdateHeader(box)
 	end
 	
+	box:SetFocus(true)
 	box:Insert(text)
 	box:HighlightText()
 end
@@ -296,12 +302,20 @@ local OnMouseWheel = function(self, delta)
 	if (delta < 0) then
 		if IsShiftKeyDown() then
 			self:ScrollToBottom()
+		elseif IsControlKeyDown() then
+			for i = 1, 5 do
+				self:ScrollDown()
+			end
 		else
 			self:ScrollDown()
 		end
 	elseif (delta > 0) then
 		if IsShiftKeyDown() then
 			self:ScrollToTop()
+		elseif IsControlKeyDown() then
+			for i = 1, 5 do
+				self:ScrollUp()
+			end
 		else
 			self:ScrollUp()
 		end
@@ -329,7 +343,6 @@ local UpdateHeader = function(editbox)
 end
 
 local OnEditFocusLost = function(self)
-	local DT = HydraUI:GetModule("DataText")
 	local Left = DT:GetAnchor("Chat-Left")
 	local Middle = DT:GetAnchor("Chat-Middle")
 	local Right = DT:GetAnchor("Chat-Right")
@@ -349,7 +362,6 @@ local OnEditFocusLost = function(self)
 end
 
 local OnEditFocusGained = function(self)
-	local DT = HydraUI:GetModule("DataText")
 	local Left = DT:GetAnchor("Chat-Left")
 	local Middle = DT:GetAnchor("Chat-Middle")
 	local Right = DT:GetAnchor("Chat-Right")
@@ -1166,8 +1178,6 @@ local UpdateChatFrameWidth = function()
 	Chat.Top:SetWidth(Width)
 	
 	-- Update data text width
-	local DT = HydraUI:GetModule("DataText")
-	
 	DT:GetAnchor("Chat-Left"):SetWidth(Width / 3)
 	DT:GetAnchor("Chat-Middle"):SetWidth(Width / 3)
 	DT:GetAnchor("Chat-Right"):SetWidth(Width / 3)
@@ -1436,11 +1446,11 @@ function Window:UpdateDataTexts()
 end
 
 function Window:Load()
+	DT = HydraUI:GetModule("DataText")
+	
 	if (not Settings["right-window-enable"]) then
 		return
 	end
-	
-	DT = HydraUI:GetModule("DataText")
 	
 	self:SetSize(Settings["right-window-width"], Settings["right-window-height"] + Settings["right-window-bottom-height"] + Settings["right-window-top-height"]) -- Border fix me
 	self:SetPoint("BOTTOMRIGHT", HydraUI.UIParent, -13, 13)
