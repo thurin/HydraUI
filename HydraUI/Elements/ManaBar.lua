@@ -1,14 +1,14 @@
 local HydraUI, GUI, Language, Assets, Settings, Defaults = select(2, ...):get()
 
-local Load = {["DRUID"] = 1, ["PRIEST"] = 1, ["SHAMAN"] = 1}
+local Load = {DRUID = 1, PRIEST = 1, SHAMAN = 1}
 
 if (not Load[HydraUI.UserClass]) then
 	return
 end
 
 local Visibility = {
-	["SHAMAN"] = 2, -- Show for Enhance
-	["PRIEST"] = 3, -- Show for Shadow
+	SHAMAN = {[262] = 1, [263] = 1}, -- Elemental, Enhance
+	PRIEST = {[258] = 1}, -- Shadow
 }
 
 Defaults["unitframes-show-mana-bar"] = true
@@ -52,7 +52,9 @@ function ManaBar:UPDATE_SHAPESHIFT_FORM()
 end
 
 function ManaBar:ACTIVE_TALENT_GROUP_CHANGED()
-	if (GetSpecialization() == Visibility[HydraUI.UserClass]) then
+	local SpecID = GetSpecializationInfo(GetSpecialization())
+	
+	if (SpecID and Visibility[HydraUI.UserClass][SpecID]) then
 		self:Show()
 	else
 		self:Hide()

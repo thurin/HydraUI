@@ -3,17 +3,17 @@ local HydraUI, GUI, Language, Assets, Settings = select(2, ...):get()
 local Tiers = {"FF8000", "A335EE", "0070DD", "1EFF00", "FFFFFF"}
 
 local Patrons = {
-	{"Dragonhawk", "Halven"},
+	{"Dragonhawk", "Halven", "last"},
 	{},
 	{"Dillan", "deck"},
-	{"JDoubleU00", "sylvester", "Innie", "Dellamaik", "protocol7", "thurin"},
+	{"JDoubleU00", "sylvester", "Innie", "Dellamaik", "protocol7", "thurin", "Cyber"},
 	{"momzzze"},
 }
 
 local Previous = {
-	{"SwoopCrown", "Cheeso_76", "last", "Erieeroot"},
+	{"SwoopCrown", "Cheeso_76", "Erieeroot"},
 	{"Smelly", "Trix", "wolimazo", "Ari", "MrPoundsign"},
-	{"Euphoria", "Mitooshin", "MisseFar", "FrankPatten", "Cyber"},
+	{"Euphoria", "Mitooshin", "MisseFar", "FrankPatten"},
 	{"Maski", "Raze", "Ingrimmosch", "Chris B.", "Suppabad", "Aaron B.", "Steve R.", "Angel", "Jeor", "Mcbooze", "stko", "Syn", "Oxymorphone", "Rytok", "Ryex", "Blom"},
 	{"Akab00m", "OzzFreak", "madmaddy", "Uzify", "Erthelmi", "silence"},
 }
