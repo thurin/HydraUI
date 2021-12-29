@@ -145,10 +145,6 @@ function Map:Style()
 		self.BottomFrame:Hide()
 	end
 	
-	if (not Settings["minimap-show-tracking"]) then
-		self.Tracking:Hide()
-	end
-	
 	HydraUI:CreateMover(self)
 end
 

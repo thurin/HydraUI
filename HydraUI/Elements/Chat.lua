@@ -806,40 +806,6 @@ local OpenTemporaryWindow = function()
 	end
 end
 
-Chat.WindowGroups = {
-	[Language["Whispers"]] = function(frame)
-		ChatFrame_AddMessageGroup(frame, "WHISPER")
-		ChatFrame_AddMessageGroup(frame, "BN_WHISPER")
-		ChatFrame_AddMessageGroup(frame, "BN_CONVERSATION")
-	end,
-	
-	[Language["Trade"]] = function(frame)
-		ChatFrame_AddChannel(frame, TRADE)
-		ChatFrame_AddChannel(frame, GENERAL)
-	end,
-	
-	[Language["Loot"]] = function(frame)
-		ChatFrame_AddMessageGroup(frame, "COMBAT_XP_GAIN")
-		ChatFrame_AddMessageGroup(frame, "COMBAT_HONOR_GAIN")
-		ChatFrame_AddMessageGroup(frame, "COMBAT_FACTION_CHANGE")
-		ChatFrame_AddMessageGroup(frame, "LOOT")
-		ChatFrame_AddMessageGroup(frame, "MONEY")
-		ChatFrame_AddMessageGroup(frame, "SKILL")
-	end,
-}
-
-function Chat:UpdateChatMessageGroups()
-	local Frame
-	
-	for i = 3, NUM_CHAT_WINDOWS do
-		Frame = _G["ChatFrame" .. i]
-		
-		if Frame.name and Chat.WindowGroups[Frame.name] then
-			Chat.WindowGroups[Frame.name](Frame)
-		end
-	end
-end
-
 function Chat:MoveChatFrames()
 	for i = 1, NUM_CHAT_WINDOWS do
 		local Frame = _G["ChatFrame"..i]
@@ -866,11 +832,11 @@ function Chat:MoveChatFrames()
 				Frame:ClearAllPoints()
 				Frame:SetPoint("TOPLEFT", Window.Middle, 4 + Settings["ui-border-thickness"], -(4 + Settings["ui-border-thickness"]))
 				Frame:SetPoint("BOTTOMRIGHT", Window.Middle, -(4 + Settings["ui-border-thickness"]), 4 + Settings["ui-border-thickness"])
-			elseif (not Frame.isDocked and (not match(Frame.name, CHAT_LABEL .. "%s%d+")) and Frame.name ~= Settings["rw-single-embed"]) then
+			elseif (not Frame.isDocked and not Frame.isLocked and (not match(Frame.name, CHAT_LABEL .. "%s%d+")) and Frame.name ~= Settings["rw-single-embed"]) then
 				FCF_DockFrame(Frame, #FCFDock_GetChatFrames(GENERAL_CHAT_DOCK) + 1, true)
 			end
 		else
-			if (not Frame.isDocked and (not match(Frame.name, CHAT_LABEL .. "%s%d+"))) then
+			if (not Frame.isDocked and not Frame.isLocked and (not match(Frame.name, CHAT_LABEL .. "%s%d+"))) then
 				FCF_DockFrame(Frame, #FCFDock_GetChatFrames(GENERAL_CHAT_DOCK) + 1, true)
 			end
 		end
@@ -901,8 +867,6 @@ function Chat:MoveChatFrames()
 	
 	GeneralDockManagerOverflowButton:ClearAllPoints()
 	GeneralDockManagerOverflowButton:SetPoint("RIGHT", self.Top, -2, 0)
-	
-	self:UpdateChatMessageGroups()
 	
 	FCF_SelectDockFrame(ChatFrame1)
 end
