@@ -322,7 +322,7 @@ local UpdateAuraFont = function()
 		local Child = Auras.Headers[i]:GetAttribute("child1")
 		local Index = 1
 		
-		while Child  do
+		while Child do
 			HydraUI:SetFontInfo(Child.Count, Settings["auras-font"], Settings["auras-font-size"], Settings["auras-font-flags"])
 			HydraUI:SetFontInfo(Child.Duration, Settings["auras-font"], Settings["auras-font-size"], Settings["auras-font-flags"])
 			
@@ -337,7 +337,7 @@ local UpdateCountColor = function(value)
 		local Child = Auras.Headers[i]:GetAttribute("child1")
 		local Index = 1
 		
-		while Child  do
+		while Child do
 			Child.Count:SetTextColor(HydraUI:HexToRGB(value))
 			
 			Index = Index + 1
@@ -351,7 +351,7 @@ local UpdateDurationColor = function(value)
 		local Child = Auras.Headers[i]:GetAttribute("child1")
 		local Index = 1
 		
-		while Child  do
+		while Child do
 			Child.Duration:SetTextColor(HydraUI:HexToRGB(value))
 			
 			Index = Index + 1
@@ -365,7 +365,7 @@ local UpdateCountPosition = function()
 		local Child = Auras.Headers[i]:GetAttribute("child1")
 		local Index = 1
 		
-		while Child  do
+		while Child do
 			Child.Count:ClearAllPoints()
 			Child.Count:SetPoint("CENTER", Child, Settings["auras-count-xoffset"], Settings["auras-count-yoffset"])
 			
@@ -380,7 +380,7 @@ local UpdateDurationPosition = function()
 		local Child = Auras.Headers[i]:GetAttribute("child1")
 		local Index = 1
 		
-		while Child  do
+		while Child do
 			Child.Duration:ClearAllPoints()
 			Child.Duration:SetPoint("CENTER", Child, Settings["auras-duration-xoffset"], Settings["auras-duration-yoffset"])
 			
@@ -395,7 +395,7 @@ local UpdateDurationAlignment = function(value)
 		local Child = Auras.Headers[i]:GetAttribute("child1")
 		local Index = 1
 		
-		while Child  do
+		while Child do
 			Child.Duration:SetJustifyH(value)
 			
 			Index = Index + 1
@@ -409,7 +409,7 @@ local UpdateCountAlignment = function(value)
 		local Child = Auras.Headers[i]:GetAttribute("child1")
 		local Index = 1
 		
-		while Child  do
+		while Child do
 			Child.Count:SetJustifyH(value)
 			
 			Index = Index + 1

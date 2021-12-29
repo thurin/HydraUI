@@ -63,7 +63,7 @@ end
 function Update:VARIABLES_LOADED()
 	HydraUI:BindSavedVariable("HydraUIData", "Data")
 	
-	if (not HydraUI.Data.Version) then
+	if (not HydraUI.Data.Version) or (HydraUI.Data.Version and HydraUI.Data.Version ~= AddOnVersion) then -- Create version, or store a new version if needed.
 		HydraUI.Data.Version = AddOnVersion
 	end
 	
@@ -75,11 +75,6 @@ function Update:VARIABLES_LOADED()
 			self.NewVersion = true -- Let PEW take over from here.
 		end
 	end]]
-	
-	-- Store a new version if needed.
-	if (StoredVersion ~= AddOnVersion) then
-		HydraUI.Data.Version = AddOnVersion
-	end
 	
 	self:UnregisterEvent("VARIABLES_LOADED")
 end
