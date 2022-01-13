@@ -209,18 +209,6 @@ function Auras:Load()
 		return
 	end
 	
-	-- Check if the setting is valid
-	local Value = Settings["auras-size"]
-	
-	if (Value and Value % 2 ~= 0) then
-		Value = Round(Value + 0.5)
-		
-		local Profile = HydraUI:GetActiveProfile()
-		
-		Settings["auras-size"] = Value
-		Profile["auras-size"] = Value
-	end
-	
 	local Header
 	
 	self.Buffs = CreateFrame("Frame", "HydraUI Buffs", HydraUI.UIParent)

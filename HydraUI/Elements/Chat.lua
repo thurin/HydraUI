@@ -672,7 +672,7 @@ function Chat:StyleChatFrame(frame)
 	if Tab.glow then
 		Tab.glow:ClearAllPoints()
 		Tab.glow:SetPoint("BOTTOM", Tab, 0, 1 > Settings["ui-border-thickness"] and -1 or -(Settings["ui-border-thickness"] + 2)) -- 1
-		Tab.glow:SetWidth(TabText:GetWidth() + 6)
+		Tab.glow:SetWidth(TabText:GetStringWidth() + 10)
 	end
 	
 	frame:SetFrameStrata("MEDIUM")
@@ -780,6 +780,12 @@ function Chat:StyleChatFrame(frame)
 	CopyButton.Texture:SetSize(16, 16)
 	CopyButton.Texture:SetTexture(Assets:GetTexture("Copy"))
 	
+	CopyButton.Highlight = CopyButton:CreateTexture(nil, "HIGHLIGHT")
+	CopyButton.Highlight:SetPoint("CENTER", CopyButton, 0, 0)
+	CopyButton.Highlight:SetSize(16, 16)
+	CopyButton.Highlight:SetTexture(Assets:GetTexture("Blank"))
+	CopyButton.Highlight:SetVertexColor(1, 1, 1, 0.2)
+	
 	frame.CopyButton = CopyButton
 	
 	-- Remove textures
@@ -834,18 +840,19 @@ function Chat:MoveChatFrames()
 				Frame:ClearAllPoints()
 				Frame:SetPoint("TOPLEFT", Window.Middle, 4 + Settings["ui-border-thickness"], -(4 + Settings["ui-border-thickness"]))
 				Frame:SetPoint("BOTTOMRIGHT", Window.Middle, -(4 + Settings["ui-border-thickness"]), 4 + Settings["ui-border-thickness"])
-			elseif (not Frame.isDocked and not Frame.isLocked and (not match(Frame.name, CHAT_LABEL .. "%s%d+")) and Frame.name ~= Settings["rw-single-embed"]) then
+			--elseif (not Frame.isDocked and not Frame.isLocked and (not match(Frame.name, CHAT_LABEL .. "%s%d+")) and Frame.name ~= Settings["rw-single-embed"]) then
+			elseif (not Frame.isDocked and (not match(Frame.name, CHAT_LABEL .. "%s%d+")) and Frame.name ~= Settings["rw-single-embed"]) then
 				FCF_DockFrame(Frame, #FCFDock_GetChatFrames(GENERAL_CHAT_DOCK) + 1, true)
 			end
 		else
-			if (not Frame.isDocked and not Frame.isLocked and (not match(Frame.name, CHAT_LABEL .. "%s%d+"))) then
+			if (not Frame.isDocked) and Frame.isLocked and (not match(Frame.name, CHAT_LABEL .. "%s%d+")) then
 				FCF_DockFrame(Frame, #FCFDock_GetChatFrames(GENERAL_CHAT_DOCK) + 1, true)
 			end
 		end
 		
-		--[[if (not Frame.isLocked) then
+		if (not Frame.isLocked) then
 			FCF_SetLocked(Frame, true)
-		end]]
+		end
 		
 		FCF_SetChatWindowFontSize(nil, Frame, Settings["chat-font-size"])
 		FCF_SavePositionAndDimensions(Frame)
