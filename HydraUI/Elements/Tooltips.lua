@@ -132,7 +132,9 @@ function Tooltips:UpdateFonts(tooltip)
 end
 
 local SetTooltipStyle = function(self)
-	self:SetBackdrop(nil) -- To stop blue tooltips
+	if self.NineSlice then
+		self.NineSlice:Hide()
+	end
 	
 	if self.Styled then
 		Tooltips:UpdateFonts(self)
