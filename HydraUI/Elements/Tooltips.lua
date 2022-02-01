@@ -133,12 +133,13 @@ local SetTooltipStyle = function(self)
 		Tooltips:UpdateFonts(self)
 	else
 		local R, G, B = HydraUI:HexToRGB(Settings["ui-window-main-color"])
+		local Level = self:GetFrameLevel()
 		
 		self.Backdrop = CreateFrame("Frame", nil, self, "BackdropTemplate")
 		self.Backdrop:SetPoint("TOPLEFT", self, 0, 0)
 		self.Backdrop:SetPoint("BOTTOMRIGHT", self, 0, 0)
-		self.Backdrop:SetFrameLevel(1)
-		self.Backdrop:SetFrameStrata("DIALOG")
+		self.Backdrop:SetFrameLevel(Level > 1 and Level - 1 or 0)
+		self.Backdrop:SetFrameStrata(self:GetFrameStrata())
 		HydraUI:AddBackdrop(self.Backdrop)
 		self.Backdrop.Outside:SetBackdropColor(R, G, B, (Settings["tooltips-opacity"] / 100))
 		
